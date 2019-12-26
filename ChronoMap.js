@@ -1,3 +1,5 @@
+/* Build chronological map to visualize time and space using the charting library AmCharts V4 */
+
 class ChronoMap {
     constructor(){
         this.data = {
