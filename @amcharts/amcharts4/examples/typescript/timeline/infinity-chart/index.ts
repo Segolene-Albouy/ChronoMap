@@ -3,7 +3,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
+import am4geodata_continentsLow from "@amcharts/geodata/continentsLow";
 
 am4core.useTheme(am4themes_animated);
 

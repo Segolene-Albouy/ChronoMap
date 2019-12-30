@@ -391,7 +391,7 @@ export declare class MapChart extends SerialChart {
      * Can be used to override built-in English names for countries.
      *
      * ```TypeScript
-     * import am4geodata_lang_ES from '@amcharts4-geodata/lang/es';
+     * import am4geodata_lang_ES from '@geodata/lang/es';
      * // ...
      * map.geodataNames = am4geodata_lang_ES;
      * ```

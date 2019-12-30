@@ -1,40 +1,142 @@
 /* Build chronological map to visualize time and space using the charting library AmCharts V4 */
+/*import * as am4core from "@amcharts/amcharts4/core";
+import * as Map from "Map";
+import * as Timeline from "Timeline";*/
+
+
+// Possibilité de définir la granularité de la frise chronologique : tous les ans ou tous les dix ans
+// Possibilité de mettre des années ou des dates plus précises : voir parser des dates
+// possibilité de mettre différent types de graphes en dessous : heatmap, diagramme linéaire, ou points
+// mettre machin pour choisir la couleur en fonction de l'entité
+// pour un voyage : un truc plus stacked bar
+// possibilité de mettre ou non des box en dessous :
+// genre mettre une condition : si y a un id dans le dataset donné
+// bah on ajouter mets true l'attribue clickable => affichage de box
+
+const angle = [
+    [90], // only one series displayed on the map
+    [70, 110],
+    [50, 90, 130],
+    [30, 70, 110, 150],
+    [10, 50, 90, 130, 170]
+];
 
 class ChronoMap {
-    constructor(){
-        this.data = {
-            main: {},
-            time: {},
-            map: {}
-        };
+    constructor(dataset = null, series = null, config = null) {
+        if (config)
+            this.config = config;
+        else
+            this.config = new Config();
 
-        this.config = new Config();
+        if (series) {
+            this.series = series;
+        } else {
+            if (dataset)
+                this.series = this.generateSeries(dataset);
+            else
+                this.series = [];
+        }
 
-        /**
-         * Information concerning the series displayed
-         */
-        this.series = {};
+        this.data = {};
+        if (dataset)
+            this.addDataset(dataset);
+        else
+            this.data = { main: {}, time: [], map: [] };
+
+        this.container = this.generateContainer();
+        this.map = new Map(this);
+        this.timeline = new Timeline(this);
     }
 
-    addSeries = (name, color = null) => {
-        const seriesNumber = Object.keys(this.series).length;
-        color = color === null ? this.config.baseColors[seriesNumber] : color;
-        this.series[name] = {
-            color: color === null ? this.config.baseColors[seriesNumber] : color,
-            angle: 0,
-            prefix: seriesNumber
-        };
-    };
+    generateContainer() {
+        let container = am4core.create(this.config.elementId, am4core.Container);
+        container.width = am4core.percent(100); // make it the same size as the div element
+        container.height = am4core.percent(100);
+        container.exporting.menu = new am4core.ExportMenu(); // add an exporting menu
 
-    generateDatasets = (data) => {
-        this.data = {
-            main: data,
+        return container;
+    }
+
+    /**
+     *
+     * @param {array} dataset : array of objects structured like this
+     * dataset = [
+     *   {
+     *      series:
+     *   }
+     * ];
+     */
+    addDataset(dataset) {
+        this.data.main = this.generateMainDataset(dataset);
+        this.data.time = this.generateTimeDataset();
+        this.data.map = this.generateMapDataset();
+
+        /*this.data = {
+            main: this.generateMainDataset(dataset),
             time: this.generateTimeDataset(),
             map: this.generateMapDataset()
-        };
-    };
+        };*/
+        this.updateChronoMap();
+        // add method to update chronomap according to the dataset
+    }
 
-    addTimeData = (data) => {
+    addData(data) {
+        if (Object.keys(this.data).length !== 0){
+            this.data = {
+                main: this.addMainData(data),
+                time: this.addTimeData(data),
+                map: this.addMapData(data)
+            };
+        } else {
+            this.data = this.addDataset([data]);
+        }
+        this.updateChronoMap();
+    }
+
+    addSeries(name, color = null) {
+        const seriesNumber = Object.keys(this.series).length;
+
+        if (seriesNumber === 5){
+            windows.alert("Only five series can be displayed at the same time on the chronological map.");
+        } else {
+            this.series[name] = new Series(seriesNumber, name, color);
+
+            for (let i = 0; i < seriesNumber.length; i++) {
+                Object.values(this.series)[i].angle = angle[seriesNumber][i];
+            }
+        }
+    }
+
+    generateSeries(dataset) {
+        let series = {};
+
+        for (let i = dataset.length - 1; i >= 0; i--) {
+            if (typeof series[dataset[i].series] === "undefined")
+                series[dataset[i].series] = new Series(i, dataset[i].series);
+        }
+
+        const seriesNumber = Object.keys(series).length;
+
+        for (let i = seriesNumber - 1; i >= 0; i--) {
+            Object.values(series)[i].angle = angle[seriesNumber][i];
+        }
+
+        return series;
+    }
+
+    addMainData(data) {
+
+    }
+
+    generateMainDataset(dataset) {
+        let mainDataset = {};
+
+        dataset.map(data => mainDataset[`${this.series[data.series].prefix}${data.id}`] = data);
+
+        return mainDataset;
+    }
+
+    addTimeData(data) {
         /*public function getTimeData(\TAMAS\AstroBundle\Entity\OriginalText $item, $timeData, $entities){
         $year = $item->getTpq() ? substr($item->getTpq(),0,-1)."0" : 0;
         $taq = $item->getTaq() ? substr($item->getTaq(),0,-1)."0" : 0;
@@ -62,14 +164,16 @@ class ChronoMap {
     }*/
     };
 
-    generateTimeDataset = () => {
-        const data = this.data.main;
+    generateTimeDataset() {
+        const data = Object.values(this.data.main);
         let timeData = {};
 
         let template = {
-            "date": 0,
-            "i": "i"
+            date: 0,
+            ids: [],
+            i: "i"
         };
+
         Object.keys(this.series).map(e => {template[e] = 0});
 
         for (let i = data.length - 1; i >= 0; i--) {
@@ -77,7 +181,7 @@ class ChronoMap {
             let maxDate = typeof data[i].maxDate !== "undefined" ? data[i].maxDate : 0;
 
             for (date; date <= maxDate; date += 1) {
-                if (typeof data[date] === 'undefined'){
+                if (typeof timeData[parseInt(date)] === 'undefined'){
                     timeData[parseInt(date)] = JSON.parse(JSON.stringify(template));
                     timeData[parseInt(date)]["date"] = date;
                 }
@@ -141,8 +245,8 @@ class ChronoMap {
     /**
      *
      */
-    generateMapDataset = () => {
-        const data = this.data.main;
+    generateMapDataset() {
+        const data = Object.values(this.data.main);
 
         let mapData = {};
 
@@ -163,18 +267,32 @@ class ChronoMap {
             mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].prefix}${data[i].id}`);
         }
 
-        return Object.values(mapData);
+        return mapData/*Object.values(mapData)*/;
+    }
+
+    updateChronoMap() {
+
     }
 }
 
-class Config {
-    constructor(){
-        this.timeRange = ""; // 10y, 1y, 1M, 10d, 1d, 1h
-        this.timespan = 0; // timespan before and after the timedata, computed according to the timeRange
-
-        this.isClickable = false; // if the map pins/time chart are clickable
-        this.timeChart = "heatmap"; // heatmap, linechart, timeline
-
-        this.baseColors = ["#F77220", "#163d4a", "#0F8B8D", "#EC9A29", "#A8201A"];
+/**
+ * This class is the parent class of all type of charts
+ */
+class AbstractChart {
+    /**
+     * @param {ChronoMap} chronoMap
+     */
+    constructor(chronoMap){
+        this.chronoMap = chronoMap;
+        this.data = chronoMap.data;
+        this.config = this.chronoMap.config;
     }
+
+    generate(){}
+    _generateSeries(){}
+    _generateAllSeries(){}
+    _generateConfig(){}
 }
+
+/*
+export default {AbstractChart, ChronoMap};*/

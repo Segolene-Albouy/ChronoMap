@@ -1,10 +1,10 @@
-import * as am4core from "@amcharts/amcharts4/core";
+/*import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import AbstractChart from "ChronoMap";*/
 
-class Scrollbar {
+class Scrollbar extends AbstractChart {
     constructor(chronoMap){
-        this.chronoMap = chronoMap;
-        this.config = chronoMap.config;
+        super(chronoMap);
 
         this.map = chronoMap.map.amMap;
         this.timeline = chronoMap.time.amTime;
@@ -16,7 +16,7 @@ class Scrollbar {
     }
 
     generate(){
-        this.timeline.amHeatmap.scrollbarX = this.amScrollbar;
+        this.timeline.amTime.scrollbarX = this.amScrollbar;
 
         for (let i = this.config.series.length -1; i >= 0; i--) {
             this.amScrollbar.series.push(this.timeline.series[i]);
@@ -27,8 +27,8 @@ class Scrollbar {
             let cursorMax = this.amScrollbar.range.end;
 
             // Conversion of the min and max range value into date (parseInt to get rid of the floating values)
-            let dateMinRange = parseInt((cursorMin / this.timeline.yearRange) + this.timeline.minDate);
-            let dateMaxRange = parseInt((cursorMax / this.timeline.yearRange) + this.timeline.minDate);
+            let dateMinRange = (cursorMin / this.timeline.yearRange) + this.timeline.minDate;
+            let dateMaxRange = (cursorMax / this.timeline.yearRange) + this.timeline.minDate;
             // Show the timerange selected
             this.timeframeLabel.text = `${dateMinRange} — ${dateMaxRange}`;
 

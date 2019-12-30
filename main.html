@@ -5,13 +5,30 @@
     <title>ChronoMap</title>
 </head>
 <body>
-
+    <div id="chronoMap"></div>
 </body>
+<!--<script src="@amcharts/amcharts4/core.js"></script>
+<script src="@amcharts/amcharts4/charts.js"></script>
+<script src="@amcharts/amcharts4/maps.js"></script>
+<script src="@amcharts/geodata/worldLow.js"></script>-->
+<script src="http://www.amcharts.com/lib/4/core.js"></script>
+<script src="http://www.amcharts.com/lib/4/charts.js"></script>
+<script src="http://www.amcharts.com/lib/4/maps.js"></script>
+<script src="http://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+<script src="https://www.amcharts.com/lib/4/plugins/bullets.js"></script>
+
+<script src="utils.js"></script>
+
 <script src="ChronoMap.js"></script>
+<script src="Series.js"></script>
+<script src="Config.js"></script>
+<script src="Scrollbar.js"></script>
+<script src="Timeline.js"></script>
+<script src="Map.js"></script>
 <script>
     const data = [
         {
-            entity: "europe",
+            series: "europe",
             title: "Depart : stop pendant une heure et demie",
             minDate: 2000,
             maxDate: 2001,
@@ -20,7 +37,7 @@
             long: 52,
             id: 1
         },{
-            entity: "russie",
+            series: "russie",
             title: "Transsibérien : pas grand chose d'autre que de la vodka à boire",
             minDate: 2002,
             maxDate: 2008,
@@ -29,7 +46,7 @@
             long: -12,
             id: 2
         },{
-            entity: "chine",
+            series: "chine",
             title: "Rizière : super sauf tomber dans la boue",
             minDate: 2008,
             maxDate: 2012,
@@ -38,7 +55,7 @@
             long: 30,
             id: 3
         },{
-            entity: "asie",
+            series: "asie",
             title: "Bangkok : boire des buckets d'alcool pas bons",
             minDate: 2013,
             maxDate: 2015,
@@ -49,7 +66,7 @@
         }
     ];
 
-    chronoMap = new ChronoMap();
+    chronoMap = new ChronoMap(data);
 
 </script>
 </html>
