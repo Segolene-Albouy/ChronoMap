@@ -1,7 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 /**
  * --------------------------------------------------------
  * This demo was created using amCharts V4 preview release.
@@ -175,15 +171,15 @@ nodeTemplate.propertyFields.fill = "color";
 nodeTemplate.tooltipText = "{name}'s kisses: {total}";
 
 // when rolled over the node, make all the links rolled-over
-nodeTemplate.events.on("over", (event)=>{    
+nodeTemplate.events.on("over", function (event) {    
     var node = event.target;
-    node.outgoingDataItems.each((dataItem)=>{
+    node.outgoingDataItems.each(function (dataItem) {
         if(dataItem.toNode){
             dataItem.link.isHover = true;
             dataItem.toNode.label.isHover = true;
         }
     })
-    node.incomingDataItems.each((dataItem)=>{
+    node.incomingDataItems.each(function (dataItem) {
         if(dataItem.fromNode){
             dataItem.link.isHover = true;
             dataItem.fromNode.label.isHover = true;
@@ -194,15 +190,15 @@ nodeTemplate.events.on("over", (event)=>{
 })
 
 // when rolled out from the node, make all the links rolled-out
-nodeTemplate.events.on("out", (event)=>{
+nodeTemplate.events.on("out", function (event) {
     var node = event.target;
-    node.outgoingDataItems.each((dataItem)=>{        
+    node.outgoingDataItems.each(function (dataItem) {        
         if(dataItem.toNode){
             dataItem.link.isHover = false;                
             dataItem.toNode.label.isHover = false;
         }
     })
-    node.incomingDataItems.each((dataItem)=>{
+    node.incomingDataItems.each(function (dataItem) {
         if(dataItem.fromNode){
             dataItem.link.isHover = false;
            dataItem.fromNode.label.isHover = false;
@@ -216,16 +212,16 @@ var label = nodeTemplate.label;
 label.relativeRotation = 90;
 
 label.fillOpacity = 0.25;
-let labelHS = label.states.create("hover");
+var labelHS = label.states.create("hover");
 labelHS.properties.fillOpacity = 1;
 
 nodeTemplate.cursorOverStyle = am4core.MouseCursorStyle.pointer;
 // this adapter makes non-main character nodes to be filled with color of the main character which he/she kissed most
-nodeTemplate.adapter.add("fill", (fill, target)=>{
-    let node = target;
-    let counters = {};
-    let mainChar = false;
-    node.incomingDataItems.each((dataItem)=>{
+nodeTemplate.adapter.add("fill", function (fill, target) {
+    var node = target;
+    var counters = {};
+    var mainChar = false;
+    node.incomingDataItems.each(function (dataItem) {
         if(colors[dataItem.toName]){
             mainChar = true;
         }
@@ -241,10 +237,10 @@ nodeTemplate.adapter.add("fill", (fill, target)=>{
         return fill;
     }
 
-    let count = 0;
-    let color;
-    let biggest = 0;
-    let biggestName;
+    var count = 0;
+    var color;
+    var biggest = 0;
+    var biggestName;
 
     for(var name in counters){
         if(counters[name] > biggest){

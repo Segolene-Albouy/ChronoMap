@@ -1,13 +1,14 @@
-/*import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import AbstractChart from "ChronoMap";*/
+/*import * as am4core from "./@amcharts/amcharts4/core.js";
+import * as am4charts from "./@amcharts/amcharts4/charts.js";
+import {AbstractChart} from "./ChronoMap.js";
+import {unique} from "./utils.js";*/
 
 class Scrollbar extends AbstractChart {
     constructor(chronoMap){
         super(chronoMap);
 
         this.map = chronoMap.map.amMap;
-        this.timeline = chronoMap.time.amTime;
+        this.timeline = chronoMap.timeline.amTime;
 
         this.amScrollbar = new am4charts.XYChartScrollbar();
         this.timeframeLabel = this.createBoxLabel(this.map, 480);
@@ -57,16 +58,16 @@ class Scrollbar extends AbstractChart {
                 let place = this.map.data[latlong];
 
                 // for each series that is displayed on the map
-                for (let l = this.config.series.length -1; l >= 0; l--) {
+                for (let l = Object.keys(this.chronoMap.series).length -1; l >= 0; l--) {
                     // retrieve all ids that are both in the timeframe selected (timerangeIds)
-                    // and in the current place (place.ids[entityName])
-                    let entityName = this.config.series[l].entity;
-                    if (place.ids[entityName].length !== 0){
+                    // and in the current place (place.ids[seriesName])
+                    let seriesName = Object.keys(this.chronoMap.series)[l];
+                    if (place.ids[seriesName].length !== 0){
                         // add to the ids property the ids currently visible (intersection of time and place)
-                        this.map.mapPins[entityName][latlong].properties.dummyData.ids =
-                            timerangeIds.filter(value => place.ids[entityName].includes(value));
+                        this.map.mapPins[seriesName][latlong].properties.dummyData.ids =
+                            timerangeIds.filter(value => place.ids[seriesName].includes(value));
                         // change the radius and the tooltip of the pin
-                        this.map.definePinAppearance(this.map.mapPins[entityName][latlong], this.chronoMap.entity[entityName].name);
+                        this.map.definePinAppearance(this.map.mapPins[seriesName][latlong], this.chronoMap.series[seriesName].name);
                     }
                 }
             }
@@ -94,3 +95,5 @@ class Scrollbar extends AbstractChart {
         return boxLabel;
     }
 }
+
+/*export {Scrollbar};*/

@@ -1,11 +1,7 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
 // create chart
-let chart = am4core.create("chartdiv", am4charts.TreeMap);
+var chart = am4core.create("chartdiv", am4charts.TreeMap);
 
 
 chart.data = [{
@@ -112,8 +108,8 @@ chart.dataFields.children = "children";
 chart.zoomable = false;
 
 // level 0 series template
-let level0SeriesTemplate = chart.seriesTemplates.create("0");
-let level0ColumnTemplate = level0SeriesTemplate.columns.template;
+var level0SeriesTemplate = chart.seriesTemplates.create("0");
+var level0ColumnTemplate = level0SeriesTemplate.columns.template;
 
 level0ColumnTemplate.column.cornerRadius(10, 10, 10, 10);
 level0ColumnTemplate.fillOpacity = 0;
@@ -121,8 +117,8 @@ level0ColumnTemplate.strokeWidth = 4;
 level0ColumnTemplate.strokeOpacity = 0;
 
 // level 1 series template
-let level1SeriesTemplate = chart.seriesTemplates.create("1");
-let level1ColumnTemplate = level1SeriesTemplate.columns.template;
+var level1SeriesTemplate = chart.seriesTemplates.create("1");
+var level1ColumnTemplate = level1SeriesTemplate.columns.template;
 
 level1SeriesTemplate.tooltip.animationDuration = 0;
 level1SeriesTemplate.strokeOpacity = 1;
@@ -132,7 +128,7 @@ level1ColumnTemplate.fillOpacity = 1;
 level1ColumnTemplate.strokeWidth = 4;
 level1ColumnTemplate.stroke = am4core.color("#ffffff");
 
-let bullet1 = level1SeriesTemplate.bullets.push(new am4charts.LabelBullet());
+var bullet1 = level1SeriesTemplate.bullets.push(new am4charts.LabelBullet());
 bullet1.locationY = 0.5;
 bullet1.locationX = 0.5;
 bullet1.label.text = "{name}";

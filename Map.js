@@ -1,8 +1,10 @@
-/*import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import * as am4geodata_worldLow from "@amcharts/geodata/worldLow";
-import AbstractChart from "ChronoMap";*/
+/*import * as am4core from "./@amcharts/amcharts4/core.js";
+import * as am4charts from "./@amcharts/amcharts4/charts.js";
+import * as am4maps from "./@amcharts/amcharts4/maps.js";
+import * as am4geodata_worldLow from "./@amcharts/geodata/worldLow.js";
+import * as am4plugins_bullets from "./@amcharts/amcharts4/plugins/bullets.js";
+import {AbstractChart} from "./ChronoMap.js";
+import {ucFirst, getDates} from "./utils.js";*/
 
 class Map extends AbstractChart {
 
@@ -34,7 +36,7 @@ class Map extends AbstractChart {
 
         // Create map polygon series containing delineation of the countries
         let polygonSeries = this.amMap.series.push(new am4maps.MapPolygonSeries());
-        // Exclude Antartica
+        // Exclude Antarctica
         polygonSeries.exclude = ["AQ"];
         // Load data (like country names and polygon shapes) from GeoJSON
         polygonSeries.useGeodata = true;
@@ -209,3 +211,5 @@ class Map extends AbstractChart {
         }
     }
 }
+
+/*export {Map};*/

@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 chart.data = [{
   "x": 10,
@@ -45,31 +41,31 @@ chart.data = [{
 
 chart.padding(40, 40, 40, 40);
 
-let valueAxisX = chart.xAxes.push(new am4charts.ValueAxis());
+var valueAxisX = chart.xAxes.push(new am4charts.ValueAxis());
 
-let valueAxisY = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxisY = chart.yAxes.push(new am4charts.ValueAxis());
 
-let series = chart.series.push(new am4charts.LineSeries());
+var series = chart.series.push(new am4charts.LineSeries());
 series.dataFields.valueX = "x";
 series.dataFields.valueY = "y";
 series.strokeOpacity = 0;
 
-let errorBulletY = series.bullets.create(am4charts.ErrorBullet);
+var errorBulletY = series.bullets.create(am4charts.ErrorBullet);
 errorBulletY.isDynamic = true;
 errorBulletY.strokeWidth = 2;
 errorBulletY.tooltipText = "x: {valueX.value} y: {valueY.value} error x:{errorX}, error y:{errorY}";
 
 // adapter adjusts height of a bullet
-errorBulletY.adapter.add("pixelHeight", (pixelHeight, target) => {
-  let dataItem = target.dataItem;
+errorBulletY.adapter.add("pixelHeight", function (pixelHeight, target) {
+  var dataItem = target.dataItem;
 
   if (dataItem) {
-    let value = dataItem.valueY;
-    let errorTopValue = value + dataItem.dataContext.errorY / 2;
-    let errorTopY = valueAxisY.valueToPoint(errorTopValue).y;
+    var value = dataItem.valueY;
+    var errorTopValue = value + dataItem.dataContext.errorY / 2;
+    var errorTopY = valueAxisY.valueToPoint(errorTopValue).y;
 
-    let errorBottomValue = value - dataItem.dataContext.errorY / 2;
-    let errorBottomY = valueAxisY.valueToPoint(errorBottomValue).y;
+    var errorBottomValue = value - dataItem.dataContext.errorY / 2;
+    var errorBottomY = valueAxisY.valueToPoint(errorBottomValue).y;
 
     return Math.abs(errorTopY - errorBottomY);
   }
@@ -77,27 +73,27 @@ errorBulletY.adapter.add("pixelHeight", (pixelHeight, target) => {
 })
 
 
-let errorBulletX = series.bullets.create(am4charts.ErrorBullet);
+var errorBulletX = series.bullets.create(am4charts.ErrorBullet);
 errorBulletX.tooltipText = "x: {valueX.value} y: {valueY.value} error x:{errorX}, error y:{errorY}";
 errorBulletX.isDynamic = true;
 errorBulletX.strokeWidth = 2;
 errorBulletX.rotation = 90; // need to rotate, as error bullet is vertical
 
-let circle = errorBulletX.createChild(am4core.Circle);
+var circle = errorBulletX.createChild(am4core.Circle);
 circle.radius = 5;
 circle.fill = am4core.color("#ffffff");
 
 // adapter adjusts height of a bullet
-errorBulletX.adapter.add("pixelHeight", (pixelHeight, target) => {
-  let dataItem = target.dataItem;
+errorBulletX.adapter.add("pixelHeight", function (pixelHeight, target) {
+  var dataItem = target.dataItem;
 
   if (dataItem) {
-    let value = dataItem.valueY;
-    let errorTopValue = value + dataItem.dataContext.errorX / 2;
-    let errorTopX = valueAxisX.valueToPoint(errorTopValue).x;
+    var value = dataItem.valueY;
+    var errorTopValue = value + dataItem.dataContext.errorX / 2;
+    var errorTopX = valueAxisX.valueToPoint(errorTopValue).x;
 
-    let errorBottomValue = value - dataItem.dataContext.errorX / 2;
-    let errorBottomX = valueAxisX.valueToPoint(errorBottomValue).x;
+    var errorBottomValue = value - dataItem.dataContext.errorX / 2;
+    var errorBottomX = valueAxisX.valueToPoint(errorBottomValue).x;
 
     return Math.abs(errorTopX - errorBottomX);
   }

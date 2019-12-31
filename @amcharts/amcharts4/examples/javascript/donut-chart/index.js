@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.PieChart);
+var chart = am4core.create("chartdiv", am4charts.PieChart);
 
 
 chart.data = [{
@@ -29,7 +25,7 @@ chart.data = [{
 
 chart.innerRadius = am4core.percent(50);
 
-let series = chart.series.push(new am4charts.PieSeries());
+var series = chart.series.push(new am4charts.PieSeries());
 series.dataFields.value = "value";
 series.dataFields.category = "country";
 
@@ -44,11 +40,11 @@ series.labels.template.radius = 4;
 series.slices.template.states.getKey("hover").properties.scale = 1.1;
 series.labels.template.states.create("hover").properties.fill = am4core.color("#fff");
 
-series.slices.template.events.on("over", (event)=>{
+series.slices.template.events.on("over", function (event) {
     event.target.dataItem.label.isHover = true;
 })
 
-series.slices.template.events.on("out", (event)=>{
+series.slices.template.events.on("out", function (event) {
     event.target.dataItem.label.isHover = false;
 })
 

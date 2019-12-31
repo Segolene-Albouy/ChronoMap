@@ -1,11 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-import am4plugins_bullets from "@amcharts/amcharts4/plugins/bullets";
-
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
@@ -17,7 +9,7 @@ container.height = am4core.percent(100);
 container.tooltipContainer.fontSize = 10;
 container.fontSize = 10;
 
-let interfaceColors = new am4core.InterfaceColorSet();
+var interfaceColors = new am4core.InterfaceColorSet();
 var colorSet = new am4core.ColorSet();
 
 var chart = container.createChild(am4plugins_timeline.CurveChart);
@@ -81,7 +73,7 @@ dateAxis.tooltip.background.cornerRadius = 5;
 dateAxis.tooltip.label.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
 dateAxis.tooltip.label.paddingTop = 7;
 
-let labelTemplate = dateAxis.renderer.labels.template;
+var labelTemplate = dateAxis.renderer.labels.template;
 labelTemplate.verticalCenter = "middle";
 labelTemplate.fillOpacity = 0.4;
 labelTemplate.background.fill = interfaceColors.getFor("background");
@@ -99,18 +91,18 @@ series.columns.template.propertyFields.fill = "color"; // get color from data
 series.columns.template.propertyFields.stroke = "color";
 series.columns.template.strokeOpacity = 0;
 
-series.columns.template.adapter.add("fill", (fill, target) => {
+series.columns.template.adapter.add("fill", function (fill, target) {
    return chart.colors.getIndex(target.dataItem.index * 3);
 })
 
-let flagBullet1 = new am4plugins_bullets.FlagBullet();
+var flagBullet1 = new am4plugins_bullets.FlagBullet();
 series.bullets.push(flagBullet1);
 flagBullet1.disabled = true;
 flagBullet1.propertyFields.disabled = "bulletf1";
 flagBullet1.locationX = 1;
 flagBullet1.label.text = "start";
 
-let flagBullet2 = new am4plugins_bullets.FlagBullet();
+var flagBullet2 = new am4plugins_bullets.FlagBullet();
 series.bullets.push(flagBullet2);
 flagBullet2.disabled = true;
 flagBullet2.propertyFields.disabled = "bulletf2";
@@ -118,24 +110,24 @@ flagBullet2.locationX = 0;
 flagBullet2.background.fill = interfaceColors.getFor("background");
 flagBullet2.label.text = "end";
 
-let bullet = new am4charts.CircleBullet();
+var bullet = new am4charts.CircleBullet();
 series.bullets.push(bullet);
 bullet.circle.radius = 3;
 bullet.circle.strokeOpacity = 0;
 bullet.locationX = 0;
 
-bullet.adapter.add("fill", (fill, target) => {
+bullet.adapter.add("fill", function (fill, target) {
    return chart.colors.getIndex(target.dataItem.index * 3);
 })
 
-let bullet2 = new am4charts.CircleBullet();
+var bullet2 = new am4charts.CircleBullet();
 series.bullets.push(bullet2);
 bullet2.circle.radius = 3;
 bullet2.circle.strokeOpacity = 0;
 bullet2.propertyFields.fill = "color";
 bullet2.locationX = 1;
 
-bullet2.adapter.add("fill", (fill, target) => {
+bullet2.adapter.add("fill", function (fill, target) {
    return chart.colors.getIndex(target.dataItem.index * 3);
 })
 
@@ -146,7 +138,7 @@ chart.scrollbarX.parent = chart.bottomAxesContainer;
 chart.scrollbarX.dy = - 90;
 chart.scrollbarX.opacity = 0.4;
 
-let cursor = new am4plugins_timeline.CurveCursor();
+var cursor = new am4plugins_timeline.CurveCursor();
 chart.cursor = cursor;
 cursor.xAxis = dateAxis;
 cursor.yAxis = categoryAxis;
@@ -159,7 +151,7 @@ categoryAxis.cursorTooltipEnabled = false;
 
 
 /// clock
-let clock = container.createChild(am4charts.GaugeChart);
+var clock = container.createChild(am4charts.GaugeChart);
 clock.toBack();
 
 clock.radius = 120;
@@ -167,7 +159,7 @@ clock.dy = -100;
 clock.startAngle = -90;
 clock.endAngle = 270;
 
-let axis = clock.xAxes.push(new am4charts.ValueAxis());
+var axis = clock.xAxes.push(new am4charts.ValueAxis());
 axis.min = 0;
 axis.max = 12;
 axis.strictMinMax = true;
@@ -183,17 +175,17 @@ axis.renderer.ticks.template.length = 12;
 axis.renderer.ticks.template.strokeOpacity = 1;
 
 // serves as a clock face fill
-let range = axis.axisRanges.create();
+var range = axis.axisRanges.create();
 range.value = 0;
 range.endValue = 12;
 range.grid.visible = false;
 range.tick.visible = false;
 range.label.visible = false;
 
-let axisFill = range.axisFill;
+var axisFill = range.axisFill;
 
 // hands
-let hourHand = clock.hands.push(new am4charts.ClockHand());
+var hourHand = clock.hands.push(new am4charts.ClockHand());
 hourHand.radius = am4core.percent(60);
 hourHand.startWidth = 5;
 hourHand.endWidth = 5;
@@ -201,18 +193,18 @@ hourHand.rotationDirection = "clockWise";
 hourHand.pin.radius = 8;
 hourHand.zIndex = 1;
 
-let minutesHand = clock.hands.push(new am4charts.ClockHand());
+var minutesHand = clock.hands.push(new am4charts.ClockHand());
 minutesHand.rotationDirection = "clockWise";
 minutesHand.startWidth = 3;
 minutesHand.endWidth = 3;
 minutesHand.radius = am4core.percent(78);
 minutesHand.zIndex = 2;
 
-chart.cursor.events.on("cursorpositionchanged", (event)=>{
-   let value = dateAxis.positionToValue(event.target.xPosition)
-   let date = new Date(value);
-   let hours = date.getHours();
-   let minutes = date.getMinutes();
+chart.cursor.events.on("cursorpositionchanged", function (event) {
+   var value = dateAxis.positionToValue(event.target.xPosition)
+   var date = new Date(value);
+   var hours = date.getHours();
+   var minutes = date.getMinutes();
    // set hours
    hourHand.showValue(hours + minutes / 60, 0);
    // set minutes

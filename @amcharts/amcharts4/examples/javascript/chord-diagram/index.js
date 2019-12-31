@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.ChordDiagram);
+var chart = am4core.create("chartdiv", am4charts.ChordDiagram);
 
 
 chart.data = [
@@ -24,6 +20,6 @@ chart.dataFields.toName = "to";
 chart.dataFields.value = "value";
 
 // make nodes draggable
-let nodeTemplate = chart.nodes.template;
+var nodeTemplate = chart.nodes.template;
 nodeTemplate.readerTitle = "Click to show/hide or drag to rearrange";
 nodeTemplate.showSystemTooltip = true;

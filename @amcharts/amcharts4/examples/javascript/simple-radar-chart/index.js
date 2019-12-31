@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.RadarChart);
+var chart = am4core.create("chartdiv", am4charts.RadarChart);
 
 
 chart.data = [{
@@ -35,14 +31,14 @@ chart.data = [{
 
 chart.padding(10, 10, 10, 10);
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.dataFields.category = "direction";
 categoryAxis.renderer.minGridDistance = 60;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-let series = chart.series.push(new am4charts.RadarSeries());
+var series = chart.series.push(new am4charts.RadarSeries());
 series.dataFields.categoryX = "direction";
 series.dataFields.valueY = "value";
 series.tooltipText = "{valueY.value}"

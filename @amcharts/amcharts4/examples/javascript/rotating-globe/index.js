@@ -5,11 +5,6 @@
  * @see {@link https://www.amcharts.com/docs/v4/chart-types/map/}
  */
 
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4geodata_continentsLow from "@amcharts/geodata/continentsLow";
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 // Themes end
@@ -48,6 +43,6 @@ polygonSeries.calculateVisualCenter = true;
 polygonSeries.mapPolygons.template.fill = am4core.color("#47c78a");
 polygonSeries.mapPolygons.template.stroke = am4core.color("#47c78a");
 
-let graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
 graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
 graticuleSeries.fitExtent = false;

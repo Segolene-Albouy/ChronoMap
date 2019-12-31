@@ -22,6 +22,7 @@ for you.
 |Directory|Description|
 |---------|-----------|
 |/|Root directory containing library files and related files|
+|/deps/|3rd party libraries and other dependencies|
 |/examples/|Collection of working examples|
 |/lang/|Translation files / locales|
 |/themes/|Theme files|
@@ -38,6 +39,18 @@ as class reference visit [V4 documentation website](https://www.amcharts.com/doc
 * [NPM package](https://www.npmjs.com/package/@amcharts/amcharts4)
 * [GitHub repository](https://github.com/amcharts/amcharts4)
 * [ZIP download & CDN info](https://www.amcharts.com/download/)
+
+
+### CDN
+
+Copy of the contents of this package is available as a free CDN service,
+accessible via URL `https://www.amcharts.com/lib/4/...`, e.g.:
+
+```
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+```
 
 
 ### Related packages
@@ -69,7 +82,7 @@ Please refer to [this tutorial](https://www.amcharts.com/docs/v4/tutorials/creat
 
 ### Changelog
 
-* [amCharts 4 Changelog](https://github.com/amcharts/amcharts4/blob/master/dist/es2015/CHANGELOG.md)
+* [amCharts 4 Changelog](https://github.com/amcharts/amcharts4/blob/master/dist/script/CHANGELOG.md)
 * [Documentation Changelog](https://www.amcharts.com/docs/v4/changelog/)
 
 

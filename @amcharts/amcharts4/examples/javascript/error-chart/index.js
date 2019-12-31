@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 chart.data = [{
   "country": "USA",
@@ -38,37 +34,37 @@ chart.data = [{
 
 chart.padding(40, 40, 40, 40);
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.dataFields.category = "country";
 categoryAxis.renderer.minGridDistance = 60;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-let series = chart.series.push(new am4charts.LineSeries());
+var series = chart.series.push(new am4charts.LineSeries());
 series.dataFields.categoryX = "country";
 series.dataFields.valueY = "visits";
 series.tooltipText = "{valueY.value} error:{error}"
 
-let errorBullet = series.bullets.create(am4charts.ErrorBullet);
+var errorBullet = series.bullets.create(am4charts.ErrorBullet);
 errorBullet.isDynamic = true;
 errorBullet.strokeWidth = 2;
 
-let circle = errorBullet.createChild(am4core.Circle);
+var circle = errorBullet.createChild(am4core.Circle);
 circle.radius = 3;
 circle.fill = am4core.color("#ffffff");
 
 // adapter adjusts height of a bullet
-errorBullet.adapter.add("pixelHeight", (pixelHeight, target)=>{
-  let dataItem = target.dataItem;
+errorBullet.adapter.add("pixelHeight", function (pixelHeight, target) {
+  var dataItem = target.dataItem;
 
   if(dataItem){
-    let value = dataItem.valueY;
-    let errorTopValue = value + dataItem.dataContext.error / 2;
-    let errorTopY = valueAxis.valueToPoint(errorTopValue).y;
+    var value = dataItem.valueY;
+    var errorTopValue = value + dataItem.dataContext.error / 2;
+    var errorTopY = valueAxis.valueToPoint(errorTopValue).y;
 
-    let errorBottomValue = value - dataItem.dataContext.error / 2;
-    let errorBottomY = valueAxis.valueToPoint(errorBottomValue).y;
+    var errorBottomValue = value - dataItem.dataContext.error / 2;
+    var errorBottomY = valueAxis.valueToPoint(errorBottomValue).y;
 
     return Math.abs(errorTopY - errorBottomY);
    }

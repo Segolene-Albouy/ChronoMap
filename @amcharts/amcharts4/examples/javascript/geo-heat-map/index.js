@@ -1,11 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4geodata_worldLow from "@amcharts/geodata/worldLow";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4maps.MapChart);
+var chart = am4core.create("chartdiv", am4maps.MapChart);
 
 
 try {
@@ -18,21 +13,21 @@ catch (e) {
 
 chart.projection = new am4maps.projections.Miller();
 
-let title = chart.chartContainer.createChild(am4core.Label);
+var title = chart.chartContainer.createChild(am4core.Label);
 title.text = "Life expectancy in the World";
 title.fontSize = 20;
 title.paddingTop = 30;
 title.align = "center";
 
-let polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
-let polygonTemplate = polygonSeries.mapPolygons.template;
+var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+var polygonTemplate = polygonSeries.mapPolygons.template;
 polygonTemplate.tooltipText = "{name}: {value.value}";
 polygonSeries.useGeodata = true;
 polygonSeries.heatRules.push({ property: "fill", target: polygonSeries.mapPolygons.template, min: am4core.color("#ffffff"), max: am4core.color("#AAAA00") });
 
 
 // add heat legend
-let heatLegend = chart.chartContainer.createChild(am4maps.HeatLegend);
+var heatLegend = chart.chartContainer.createChild(am4maps.HeatLegend);
 heatLegend.valign = "bottom";
 heatLegend.series = polygonSeries;
 heatLegend.width = am4core.percent(100);
@@ -41,11 +36,11 @@ heatLegend.padding(30, 30, 30, 30);
 heatLegend.valueAxis.renderer.labels.template.fontSize = 10;
 heatLegend.valueAxis.renderer.minGridDistance = 40;
 
-polygonSeries.mapPolygons.template.events.on("over", (event) => {
+polygonSeries.mapPolygons.template.events.on("over", function (event) {
   handleHover(event.target);
 })
 
-polygonSeries.mapPolygons.template.events.on("hit", (event) => {
+polygonSeries.mapPolygons.template.events.on("hit", function (event) {
   handleHover(event.target);
 })
 
@@ -58,7 +53,7 @@ function handleHover(mapPolygon) {
   }
 }
 
-polygonSeries.mapPolygons.template.events.on("out", (event) => {
+polygonSeries.mapPolygons.template.events.on("out", function (event) {
   heatLegend.valueAxis.hideTooltip();
 })
 

@@ -1,12 +1,8 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 // chart design inspired by Nicolas Rapp: https://nicolasrapp.com/studio/portfolio/cash-hoarders/
 
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+var chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
 
 
 chart.data = [
@@ -64,7 +60,7 @@ chart.dataFields.toName = "to";
 chart.dataFields.value = "value";
 chart.dataFields.color = "color";
 
-let linkTemplate = chart.links.template;
+var linkTemplate = chart.links.template;
 linkTemplate.colorMode = "gradient";
 linkTemplate.fillOpacity = 1;
 linkTemplate.strokeOpacity = 1;
@@ -83,12 +79,12 @@ chart.nodes.template.inert = true;
 chart.nodes.template.togglable = false;
 
 // making links draggable
-linkTemplate.events.on("down", (event) => {
-    let fromNode = event.target.dataItem.fromNode;
-    let toNode = event.target.dataItem.toNode;
+linkTemplate.events.on("down", function (event) {
+    var fromNode = event.target.dataItem.fromNode;
+    var toNode = event.target.dataItem.toNode;
 
-    let distanceToFromNode = am4core.math.getDistance(event.pointer.point, { x: fromNode.pixelX, y: fromNode.pixelY });
-    let distanceToToNode = Infinity;
+    var distanceToFromNode = am4core.math.getDistance(event.pointer.point, { x: fromNode.pixelX, y: fromNode.pixelY });
+    var distanceToToNode = Infinity;
     if (toNode) {
         distanceToToNode = am4core.math.getDistance(event.pointer.point, { x: toNode.pixelX, y: toNode.pixelY });
     }
@@ -103,7 +99,7 @@ linkTemplate.events.on("down", (event) => {
 
 
 // add labels
-let labelBullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
+var labelBullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
 labelBullet.label.propertyFields.text = "labelText";
 labelBullet.propertyFields.locationX = "labelLocation";
 labelBullet.propertyFields.rotation = "labelRotation";
@@ -112,17 +108,17 @@ labelBullet.label.textAlign = "start";
 labelBullet.label.dx = -50;
 
 // add labels which will animate
-let bullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
+var bullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
 bullet.label.text = "${value}";
 bullet.label.fill = am4core.color("#ffffff");
 bullet.label.isMeasured = false;
 bullet.isMeasured = false;
 
 // create animations
-chart.events.on("ready", () => {
-    for (let i = 0; i < chart.links.length; i++) {
-        let link = chart.links.getIndex(i);
-        let bullet = link.bullets.getIndex(1);
+chart.events.on("ready", function () {
+    for (var i = 0; i < chart.links.length; i++) {
+        var link = chart.links.getIndex(i);
+        var bullet = link.bullets.getIndex(1);
         bullet.opacity = 0;
 
         if (link.dataItem.toNode && link.dataItem.value > 10) {
@@ -137,17 +133,17 @@ chart.events.on("ready", () => {
 })
 
 function firstHalfAnimation(bullet) {
-    let duration = 6000 * Math.random() + 3000;
-    let animation = bullet.animate([{ property: "locationX", from: 0.2, to: 0.5 }, { property: "opacity", from: 0, to: 0.3 }], duration)
-    animation.events.on("animationended", (event) => {
+    var duration = 6000 * Math.random() + 3000;
+    var animation = bullet.animate([{ property: "locationX", from: 0.2, to: 0.5 }, { property: "opacity", from: 0, to: 0.3 }], duration)
+    animation.events.on("animationended", function (event) {
         secondHalfAnimation(event.target.object, duration);
     })
 }
 
 function secondHalfAnimation(bullet, duration) {
-    let animation = bullet.animate([{ property: "locationX", from: 0.5, to: 0.8 }, { property: "opacity", from: 0.3, to: 0 }], duration)
-    animation.events.on("animationended", (event) => {
-        setTimeout(() => {
+    var animation = bullet.animate([{ property: "locationX", from: 0.5, to: 0.8 }, { property: "opacity", from: 0.3, to: 0 }], duration)
+    animation.events.on("animationended", function (event) {
+        setTimeout(function () {
             firstHalfAnimation(event.target.object)
         }, Math.random() * 5000);
     })

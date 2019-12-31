@@ -1,11 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.SlicedChart);
+var chart = am4core.create("chartdiv", am4charts.SlicedChart);
 
 
 chart.data = [{
@@ -31,7 +26,7 @@ chart.data = [{
     "value": 7
 }].reverse();
 
-let series = chart.series.push(new am4charts.PyramidSeries());
+var series = chart.series.push(new am4charts.PyramidSeries());
 series.colors.step = 2;
 series.dataFields.value = "value";
 series.dataFields.category = "name";

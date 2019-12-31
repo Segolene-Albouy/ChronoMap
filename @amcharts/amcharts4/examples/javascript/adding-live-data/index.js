@@ -1,8 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-
 am4core.useTheme(am4themes_animated);
 //am4core.useTheme(am4themes_dark);
 
@@ -48,7 +43,7 @@ series.interpolationDuration = 500;
 series.defaultState.transitionDuration = 0;
 series.tensionX = 0.8;
 
-chart.events.on("datavalidated", () => {
+chart.events.on("datavalidated", function () {
     dateAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
 });
 
@@ -85,27 +80,27 @@ startInterval();
 // all the below is optional, makes some fancy effects
 // gradient fill of the series
 series.fillOpacity = 1;
-let gradient = new am4core.LinearGradient();
+var gradient = new am4core.LinearGradient();
 gradient.addColor(chart.colors.getIndex(0), 0.2);
 gradient.addColor(chart.colors.getIndex(0), 0);
 series.fill = gradient;
 
 // this makes date axis labels to fade out
-dateAxis.renderer.labels.template.adapter.add("fillOpacity", (fillOpacity, target) => {
-    let dataItem = target.dataItem;
+dateAxis.renderer.labels.template.adapter.add("fillOpacity", function (fillOpacity, target) {
+    var dataItem = target.dataItem;
     return dataItem.position;
 })
 
 // need to set this, otherwise fillOpacity is not changed and not set
-dateAxis.events.on("validated", () => {
-    am4core.iter.each(dateAxis.renderer.labels.iterator(), (label) => {
+dateAxis.events.on("validated", function () {
+    am4core.iter.each(dateAxis.renderer.labels.iterator(), function (label) {
         label.fillOpacity = label.fillOpacity;
     })
 })
 
 // this makes date axis labels which are at equal minutes to be rotated
-dateAxis.renderer.labels.template.adapter.add("rotation", (rotation, target) => {
-    let dataItem = target.dataItem;
+dateAxis.renderer.labels.template.adapter.add("rotation", function (rotation, target) {
+    var dataItem = target.dataItem;
     if (dataItem.date && dataItem.date.getTime() == am4core.time.round(new Date(dataItem.date.getTime()), "minute").getTime()) {
         target.horizontalCenter = "left";
         target.verticalCenter = "middle";

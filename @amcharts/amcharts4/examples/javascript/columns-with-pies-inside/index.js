@@ -1,7 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
 var data = [{
@@ -54,11 +50,11 @@ var chart = am4core.create("chartdiv", am4charts.XYChart);
 chart.data = data;
 
 // Create axes
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "country";
 categoryAxis.renderer.grid.template.location = 0;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.title.text = "Units sold (M)";
 valueAxis.min = 0;
 
@@ -69,7 +65,7 @@ series.dataFields.categoryX = "country";
 series.tooltip.pointerOrientation = "vertical";
 
 
-let columnTemplate = series.columns.template;
+var columnTemplate = series.columns.template;
 // add tooltip on column, not template, so that slices could also have tooltip
 columnTemplate.column.tooltipText = "Series: {name}\nCategory: {categoryX}\nValue: {valueY}";
 columnTemplate.column.tooltipY = 0;
@@ -79,9 +75,9 @@ columnTemplate.strokeOpacity = 0;
 
 
 // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
-columnTemplate.adapter.add("fill", (fill, target) => {
-	let gradient = new am4core.LinearGradient();
-	let color = chart.colors.getIndex(target.dataItem.index * 2);
+columnTemplate.adapter.add("fill", function (fill, target) {
+	var gradient = new am4core.LinearGradient();
+	var color = chart.colors.getIndex(target.dataItem.index * 2);
 	gradient.addColor(color, 0);
 	gradient.addColor(color, 1);
 	gradient.rotation = -90;

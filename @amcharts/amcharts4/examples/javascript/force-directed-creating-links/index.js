@@ -1,18 +1,11 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import * as am4plugins_forceDirected from "@amcharts/amcharts4/plugins/forceDirected";
-
-
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
 
-let chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
-let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
+var chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
+var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
 
-let data = []
-for(let i = 0; i < 15; i++){
+var data = []
+for(var i = 0; i < 15; i++){
   data.push({name: "Node " + i, value:Math.random() * 50 + 10});
 }
 
@@ -30,10 +23,10 @@ networkSeries.dataFields.linkWith = "linkWith";
 networkSeries.nodes.template.label.text = "{name}"
 networkSeries.fontSize = 10;
 
-let selectedNode;
+var selectedNode;
 
-networkSeries.nodes.template.events.on("up", (event) => {
-  let node = event.target;
+networkSeries.nodes.template.events.on("up", function (event) {
+  var node = event.target;
   if (!selectedNode) {
     node.outerCircle.disabled = false;
     node.outerCircle.strokeDasharray = "3,3";
@@ -45,9 +38,9 @@ networkSeries.nodes.template.events.on("up", (event) => {
     selectedNode = undefined;
   }
   else {
-    let node = event.target;
+    var node = event.target;
 
-    let link = node.linksWith.getKey(selectedNode.uid);
+    var link = node.linksWith.getKey(selectedNode.uid);
 
     if (link) {
       node.unlinkWith(selectedNode);

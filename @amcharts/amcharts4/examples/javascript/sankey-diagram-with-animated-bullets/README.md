@@ -1,6 +1,4 @@
 Steps to use
 ============
 
-1. Run `yarn`
-
-2. Run `yarn start`
+1. Open `index.html` in a browser

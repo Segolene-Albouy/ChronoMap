@@ -1,11 +1,7 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
 // create chart
-let chart = am4core.create("chartdiv", am4charts.GaugeChart);
+var chart = am4core.create("chartdiv", am4charts.GaugeChart);
 
 
 chart.exporting.menu = new am4core.ExportMenu();
@@ -13,7 +9,7 @@ chart.exporting.menu = new am4core.ExportMenu();
 chart.startAngle = -90;
 chart.endAngle = 270;
 
-let axis = chart.xAxes.push(new am4charts.ValueAxis());
+var axis = chart.xAxes.push(new am4charts.ValueAxis());
 axis.min = 0;
 axis.max = 12;
 axis.strictMinMax = true;
@@ -28,20 +24,20 @@ axis.renderer.ticks.template.length = 12;
 axis.renderer.ticks.template.strokeOpacity = 1;
 
 // serves as a clock face fill
-let range = axis.axisRanges.create();
+var range = axis.axisRanges.create();
 range.value = 0;
 range.endValue = 12;
 range.grid.visible = false;
 range.tick.visible = false;
 range.label.visible = false;
 
-let axisFill = range.axisFill;
+var axisFill = range.axisFill;
 axisFill.fillOpacity = 0.8;
 axisFill.disabled = false;
 axisFill.fill = am4core.color("#FFFFFF");
 
 // hands
-let hourHand = chart.hands.push(new am4charts.ClockHand());
+var hourHand = chart.hands.push(new am4charts.ClockHand());
 hourHand.radius = am4core.percent(60);
 hourHand.startWidth = 10;
 hourHand.endWidth = 10;
@@ -49,14 +45,14 @@ hourHand.rotationDirection = "clockWise";
 hourHand.pin.radius = 8;
 hourHand.zIndex = 1;
 
-let minutesHand = chart.hands.push(new am4charts.ClockHand());
+var minutesHand = chart.hands.push(new am4charts.ClockHand());
 minutesHand.rotationDirection = "clockWise";
 minutesHand.startWidth = 7;
 minutesHand.endWidth = 7;
 minutesHand.radius = am4core.percent(78);
 minutesHand.zIndex = 2;
 
-let secondsHand = chart.hands.push(new am4charts.ClockHand());
+var secondsHand = chart.hands.push(new am4charts.ClockHand());
 secondsHand.fill = am4core.color("#DD0000");
 secondsHand.stroke = am4core.color("#DD0000");
 secondsHand.radius = am4core.percent(85);
@@ -66,7 +62,7 @@ secondsHand.startWidth = 1;
 
 updateHands();
 
-setInterval(() => {
+setInterval(function () {
 	updateHands();
 }, 1000)
 

@@ -1,11 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 chart.data = [{
     "date": "2018-01-01",
@@ -105,7 +100,7 @@ chart.data = [{
 chart.dateFormatter.inputDateFormat = "YYYY-MM-dd";
 chart.zoomOutButton.disabled = true;
 
-let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
 dateAxis.renderer.grid.template.strokeOpacity = 0;
 dateAxis.renderer.minGridDistance = 10;
 dateAxis.dateFormats.setKey("day", "d");
@@ -113,11 +108,11 @@ dateAxis.tooltip.hiddenState.properties.opacity = 1;
 dateAxis.tooltip.hiddenState.properties.visible = true;
 
 
-dateAxis.tooltip.adapter.add("x", (x, target) => {
+dateAxis.tooltip.adapter.add("x", function (x, target) {
     return am4core.utils.spritePointToSvg({ x: chart.plotContainer.pixelX, y: 0 }, chart.plotContainer).x + chart.plotContainer.pixelWidth / 2;
 })
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.renderer.inside = true;
 valueAxis.renderer.labels.template.fillOpacity = 0.3;
 valueAxis.renderer.grid.template.strokeOpacity = 0;
@@ -125,7 +120,7 @@ valueAxis.min = 0;
 valueAxis.cursorTooltipEnabled = false;
 
 // goal guides
-let axisRange = valueAxis.axisRanges.create();
+var axisRange = valueAxis.axisRanges.create();
 axisRange.value = 6000;
 axisRange.grid.strokeOpacity = 0.1;
 axisRange.label.text = "Goal";
@@ -135,7 +130,7 @@ axisRange.label.fillOpacity = 0.8;
 
 valueAxis.renderer.gridContainer.zIndex = 1;
 
-let axisRange2 = valueAxis.axisRanges.create();
+var axisRange2 = valueAxis.axisRanges.create();
 axisRange2.value = 12000;
 axisRange2.grid.strokeOpacity = 0.1;
 axisRange2.label.text = "2x goal";
@@ -143,25 +138,25 @@ axisRange2.label.align = "right";
 axisRange2.label.verticalCenter = "bottom";
 axisRange2.label.fillOpacity = 0.8;
 
-let series = chart.series.push(new am4charts.ColumnSeries);
+var series = chart.series.push(new am4charts.ColumnSeries);
 series.dataFields.valueY = "steps";
 series.dataFields.dateX = "date";
 series.tooltipText = "{valueY.value}";
 series.tooltip.pointerOrientation = "vertical";
 series.tooltip.hiddenState.properties.opacity = 1;
 series.tooltip.hiddenState.properties.visible = true;
-series.tooltip.adapter.add("x", (x, target) => {
+series.tooltip.adapter.add("x", function (x, target) {
     return am4core.utils.spritePointToSvg({ x: chart.plotContainer.pixelX, y: 0 }, chart.plotContainer).x + chart.plotContainer.pixelWidth / 2;
 })
 
-let columnTemplate = series.columns.template;
+var columnTemplate = series.columns.template;
 columnTemplate.width = 30;
 columnTemplate.column.cornerRadiusTopLeft = 20;
 columnTemplate.column.cornerRadiusTopRight = 20;
 columnTemplate.strokeOpacity = 0;
 
-columnTemplate.adapter.add("fill", (fill, target) => {
-    let dataItem = target.dataItem;
+columnTemplate.adapter.add("fill", function (fill, target) {
+    var dataItem = target.dataItem;
     if (dataItem.valueY > 6000) {
         return am4core.color("#78b711");
     }
@@ -170,22 +165,22 @@ columnTemplate.adapter.add("fill", (fill, target) => {
     }
 })
 
-let cursor = new am4charts.XYCursor();
+var cursor = new am4charts.XYCursor();
 cursor.behavior = "panX";
 chart.cursor = cursor;
 cursor.lineX.disabled = true;
 
-chart.events.on("datavalidated", () => {
+chart.events.on("datavalidated", function () {
     dateAxis.zoomToDates(new Date(2018, 0, 21), new Date(2018, 1, 1));
 });
 
-let middleLine = chart.plotContainer.createChild(am4core.Line);
+var middleLine = chart.plotContainer.createChild(am4core.Line);
 middleLine.strokeOpacity = 1;
 middleLine.stroke = am4core.color("#000000");
 middleLine.strokeDasharray = "2,2";
 middleLine.align = "center";
 middleLine.zIndex = 1;
-middleLine.adapter.add("y2", (y2, target) => {
+middleLine.adapter.add("y2", function (y2, target) {
     return target.parent.pixelHeight;
 })
 
@@ -199,7 +194,7 @@ function updateTooltip() {
 }
 
 
-let label = chart.plotContainer.createChild(am4core.Label);
+var label = chart.plotContainer.createChild(am4core.Label);
 label.text = "Pan chart to change date";
 label.x = 90;
 label.y = 50;

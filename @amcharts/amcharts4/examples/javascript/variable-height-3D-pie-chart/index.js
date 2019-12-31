@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.PieChart3D);
+var chart = am4core.create("chartdiv", am4charts.PieChart3D);
 
 
 chart.data = [{
@@ -33,7 +29,7 @@ chart.depth = 90;
 chart.legend = new am4charts.Legend();
 chart.legend.position = "right";
 
-let series = chart.series.push(new am4charts.PieSeries3D());
+var series = chart.series.push(new am4charts.PieSeries3D());
 series.dataFields.value = "litres";
 series.dataFields.depthValue = "litres";
 series.dataFields.category = "country";

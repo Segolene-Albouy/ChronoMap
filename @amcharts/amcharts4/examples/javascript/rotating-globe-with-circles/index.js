@@ -1,11 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4geodata_worldLow from "@amcharts/geodata/worldLow";
-import am4geodata_continentsLow from "@amcharts/geodata/continentsLow";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 // Themes end
@@ -22,7 +14,7 @@ catch (e) {
 }
 
 
-let label = chart.createChild(am4core.Label)
+var label = chart.createChild(am4core.Label)
 label.text = "12 months rolling measles\nincidence per 1'000'000 total population. \n Bullet size uses logarithmic scale. \n Data: World Health Organization";
 label.fontSize = 12;
 label.align = "left";
@@ -95,7 +87,7 @@ polygonSeries.calculateVisualCenter = true;
 polygonSeries.tooltip.background.fillOpacity = 0.2;
 polygonSeries.tooltip.background.cornerRadius = 20;
 
-let template = polygonSeries.mapPolygons.template;
+var template = polygonSeries.mapPolygons.template;
 template.nonScalingStroke = true;
 template.fill = am4core.color("#f9e3ce");
 template.stroke = am4core.color("#e2c9b0");
@@ -105,37 +97,37 @@ template.propertyFields.id = "id";
 template.tooltipPosition = "fixed";
 template.fillOpacity = 1;
 
-template.events.on("over", (event) => {
+template.events.on("over", function (event) {
   if (event.target.dummyData) {
     event.target.dummyData.isHover = true;
   }
 })
-template.events.on("out", (event) => {
+template.events.on("out", function (event) {
   if (event.target.dummyData) {
     event.target.dummyData.isHover = false;
   }
 })
 
-let hs = polygonSeries.mapPolygons.template.states.create("hover");
+var hs = polygonSeries.mapPolygons.template.states.create("hover");
 hs.properties.fillOpacity = 1;
 hs.properties.fill = am4core.color("#deb7ad");
 
 
-let graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
 graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
 graticuleSeries.fitExtent = false;
 graticuleSeries.mapLines.template.strokeOpacity = 0.2;
 graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
 
 
-let measelsSeries = chart.series.push(new am4maps.MapPolygonSeries())
+var measelsSeries = chart.series.push(new am4maps.MapPolygonSeries())
 measelsSeries.tooltip.background.fillOpacity = 0;
 measelsSeries.tooltip.background.cornerRadius = 20;
 measelsSeries.tooltip.autoTextColor = false;
 measelsSeries.tooltip.label.fill = am4core.color("#000");
 measelsSeries.tooltip.dy = -5;
 
-let measelTemplate = measelsSeries.mapPolygons.template;
+var measelTemplate = measelsSeries.mapPolygons.template;
 measelTemplate.fill = am4core.color("#bf7569");
 measelTemplate.strokeOpacity = 0;
 measelTemplate.fillOpacity = 0.75;
@@ -143,23 +135,23 @@ measelTemplate.tooltipPosition = "fixed";
 
 
 
-let hs2 = measelsSeries.mapPolygons.template.states.create("hover");
+var hs2 = measelsSeries.mapPolygons.template.states.create("hover");
 hs2.properties.fillOpacity = 1;
 hs2.properties.fill = am4core.color("#86240c");
 
-polygonSeries.events.on("inited", () => {
-  polygonSeries.mapPolygons.each((mapPolygon) => {
-    let count = data[mapPolygon.id];
+polygonSeries.events.on("inited", function () {
+  polygonSeries.mapPolygons.each(function (mapPolygon) {
+    var count = data[mapPolygon.id];
 
     if (count > 0) {
-      let polygon = measelsSeries.mapPolygons.create();
+      var polygon = measelsSeries.mapPolygons.create();
       polygon.multiPolygon = am4maps.getCircle(mapPolygon.visualLongitude, mapPolygon.visualLatitude, Math.max(0.2, Math.log(count) * Math.LN10 / 10));
       polygon.tooltipText = mapPolygon.dataItem.dataContext.name + ": " + count;
       mapPolygon.dummyData = polygon;
-      polygon.events.on("over", () => {
+      polygon.events.on("over", function () {
         mapPolygon.isHover = true;
       })
-      polygon.events.on("out", () => {
+      polygon.events.on("out", function () {
         mapPolygon.isHover = false;
       })
     }
@@ -172,7 +164,7 @@ polygonSeries.events.on("inited", () => {
 })
 
 
-let data = {
+var data = {
   "AL": 504.38,
   "AM": 6.5,
   "AO": 2.98,

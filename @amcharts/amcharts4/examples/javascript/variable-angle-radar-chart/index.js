@@ -1,11 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.RadarChart);
+var chart = am4core.create("chartdiv", am4charts.RadarChart);
 
 chart.data = [{
   "category": "One",
@@ -66,14 +61,14 @@ chart.endAngle = 360.5;
 
 chart.innerRadius = am4core.percent(60);
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "category";
 categoryAxis.renderer.minGridDistance = 60;
 categoryAxis.renderer.labels.template.location = 0.5;
 categoryAxis.renderer.grid.template.location = 1;
 categoryAxis.interactionsEnabled = false;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.tooltip.disabled = true;
 valueAxis.renderer.minGridDistance = 20;
 valueAxis.renderer.grid.template.strokeOpacity = 0.05
@@ -83,7 +78,7 @@ valueAxis.renderer.axisAngle = 260;
 //valueAxis.renderer.gridType = "polygons";
 valueAxis.min = 0;
 
-let series1 = chart.series.push(new am4charts.RadarColumnSeries());
+var series1 = chart.series.push(new am4charts.RadarColumnSeries());
 series1.columns.template.width = am4core.percent(80);
 series1.name = "Series 1";
 series1.dataFields.categoryX = "category";
@@ -91,7 +86,7 @@ series1.columns.template.tooltipText = "{name}: {valueY.value}";
 series1.dataFields.valueY = "value2";
 series1.stacked = true;
 
-let series2 = chart.series.push(new am4charts.RadarColumnSeries());
+var series2 = chart.series.push(new am4charts.RadarColumnSeries());
 series2.columns.template.width = am4core.percent(80);
 series2.columns.template.tooltipText = "{name}: {valueY.value}";
 series2.name = "Series 2";
@@ -99,7 +94,7 @@ series2.dataFields.categoryX = "category";
 series2.dataFields.valueY = "value2";
 series2.stacked = true;
 
-let series3 = chart.series.push(new am4charts.RadarColumnSeries());
+var series3 = chart.series.push(new am4charts.RadarColumnSeries());
 series3.columns.template.width = am4core.percent(80);
 series3.columns.template.tooltipText = "{name}: {valueY.value}";
 series3.name = "Series 3";
@@ -107,7 +102,7 @@ series3.dataFields.categoryX = "category";
 series3.dataFields.valueY = "value3";
 series3.stacked = true;
 
-let series4 = chart.series.push(new am4charts.RadarColumnSeries());
+var series4 = chart.series.push(new am4charts.RadarColumnSeries());
 series4.columns.template.width = am4core.percent(80);
 series4.columns.template.tooltipText = "{name}: {valueY.value}";
 series4.name = "Series 4";
@@ -117,11 +112,11 @@ series4.stacked = true;
 
 chart.seriesContainer.zIndex = -1;
 
-let slider = chart.createChild(am4core.Slider);
+var slider = chart.createChild(am4core.Slider);
 slider.start = 0.5;
-slider.events.on("rangechanged", () => {
+slider.events.on("rangechanged", function () {
 
-  let start = slider.start;
+  var start = slider.start;
 
   chart.startAngle = 270 - start * 179 - 1;
   chart.endAngle = 270 + start * 179 + 1;

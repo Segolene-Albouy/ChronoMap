@@ -1,10 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-
-
 /**
  * ---------------------------------------
  * This demo was created using amCharts 4.
@@ -141,7 +134,7 @@ dateAxis.tooltip.background.cornerRadius = 5;
 dateAxis.tooltip.label.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
 dateAxis.tooltip.label.paddingTop = 7;
 
-let labelTemplate = dateAxis.renderer.labels.template;
+var labelTemplate = dateAxis.renderer.labels.template;
 labelTemplate.verticalCenter = "middle";
 labelTemplate.fillOpacity = 0.4;
 labelTemplate.background.fill = am4core.color("#000");
@@ -159,7 +152,7 @@ series1.columns.template.propertyFields.fill = "color"; // get color from data
 series1.columns.template.propertyFields.stroke = "color";
 series1.columns.template.strokeOpacity = 0;
 
-let bullet = new am4charts.CircleBullet();
+var bullet = new am4charts.CircleBullet();
 series1.bullets.push(bullet);
 bullet.circle.radius = 3;
 bullet.circle.strokeOpacity = 0;
@@ -167,7 +160,7 @@ bullet.propertyFields.fill = "color";
 bullet.locationX = 0;
 
 
-let bullet2 = new am4charts.CircleBullet();
+var bullet2 = new am4charts.CircleBullet();
 series1.bullets.push(bullet2);
 bullet2.circle.radius = 3;
 bullet2.circle.strokeOpacity = 0;
@@ -178,7 +171,7 @@ chart.scrollbarX = new am4core.Scrollbar();
 chart.scrollbarX.align = "center"
 chart.scrollbarX.width = am4core.percent(70);
 
-let cursor = new am4plugins_timeline.CurveCursor();
+var cursor = new am4plugins_timeline.CurveCursor();
 chart.cursor = cursor;
 cursor.xAxis = dateAxis;
 cursor.yAxis = categoryAxis;

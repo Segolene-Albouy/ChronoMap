@@ -1,13 +1,9 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 
-let data = [];
+var data = [];
 
 chart.data = [{
     "year": "2014",
@@ -37,7 +33,7 @@ chart.data = [{
     "opacity": 0.5
 }];
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.renderer.ticks.template.disabled = true;
 categoryAxis.renderer.line.opacity = 0;
@@ -46,13 +42,13 @@ categoryAxis.renderer.minGridDistance = 40;
 categoryAxis.dataFields.category = "year";
 
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.tooltip.disabled = true;
 valueAxis.renderer.line.opacity = 0;
 valueAxis.renderer.ticks.template.disabled = true;
 valueAxis.min = 0;
 
-let columnSeries = chart.series.push(new am4charts.ColumnSeries());
+var columnSeries = chart.series.push(new am4charts.ColumnSeries());
 columnSeries.dataFields.categoryX = "year";
 columnSeries.dataFields.valueY = "expenses";
 columnSeries.tooltipText = "expenses: {valueY.value}";
@@ -60,14 +56,14 @@ columnSeries.sequencedInterpolation = true;
 columnSeries.defaultState.transitionDuration = 1500;
 columnSeries.fill = chart.colors.getIndex(4);
 
-let columnTemplate = columnSeries.columns.template;
+var columnTemplate = columnSeries.columns.template;
 columnTemplate.column.cornerRadiusTopLeft = 10;
 columnTemplate.column.cornerRadiusTopRight = 10;
 columnTemplate.strokeWidth = 1;
 columnTemplate.strokeOpacity = 1;
 columnTemplate.stroke = columnSeries.fill;
 
-let desaturateFilter = new am4core.DesaturateFilter();
+var desaturateFilter = new am4core.DesaturateFilter();
 desaturateFilter.saturation = 0.5;
 
 columnTemplate.filters.push(desaturateFilter);
@@ -77,14 +73,14 @@ columnTemplate.propertyFields.strokeDasharray = "stroke";
 columnTemplate.propertyFields.fillOpacity = "opacity";
 
 // add some cool saturation effect on hover
-let desaturateFilterHover = new am4core.DesaturateFilter();
+var desaturateFilterHover = new am4core.DesaturateFilter();
 desaturateFilterHover.saturation = 1;
 
-let hoverState = columnTemplate.states.create("hover");
+var hoverState = columnTemplate.states.create("hover");
 hoverState.transitionDuration = 2000;
 hoverState.filters.push(desaturateFilterHover);
 
-let lineSeries = chart.series.push(new am4charts.LineSeries());
+var lineSeries = chart.series.push(new am4charts.LineSeries());
 lineSeries.dataFields.categoryX = "year";
 lineSeries.dataFields.valueY = "income";
 lineSeries.tooltipText = "income: {valueY.value}";
@@ -95,13 +91,13 @@ lineSeries.fill = lineSeries.stroke;
 lineSeries.strokeWidth = 2;
 
 // second way - add axis range.
-let lineSeriesRange = categoryAxis.createSeriesRange(lineSeries);
+var lineSeriesRange = categoryAxis.createSeriesRange(lineSeries);
 lineSeriesRange.category = "2018";
 lineSeriesRange.endCategory = "2019";
 lineSeriesRange.contents.strokeDasharray = "3,3";
 lineSeriesRange.locations.category = 0.5;
 
-let bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
+var bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
 bullet.fill = lineSeries.stroke;
 bullet.circle.radius = 4;
 

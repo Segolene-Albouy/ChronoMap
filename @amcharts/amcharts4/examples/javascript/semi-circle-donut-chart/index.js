@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.PieChart);
+var chart = am4core.create("chartdiv", am4charts.PieChart);
 
 
 chart.data = [{
@@ -32,14 +28,14 @@ chart.startAngle = 180;
 chart.endAngle = 360;
 chart.radius = am4core.percent(70);
 
-let series = chart.series.push(new am4charts.PieSeries());
+var series = chart.series.push(new am4charts.PieSeries());
 series.dataFields.value = "value";
 series.dataFields.category = "country";
 
 series.slices.template.cornerRadius = 10;
 series.slices.template.innerCornerRadius = 7;
 
-let fillModifier = new am4core.RadialGradientModifier();
+var fillModifier = new am4core.RadialGradientModifier();
 fillModifier.brightnesses.push(-0.2, -0.2, 0, -0.3);
 series.slices.template.fillModifier = fillModifier;
 

@@ -1,21 +1,17 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 chart.paddingRight = 20;
 
-let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
 dateAxis.renderer.grid.template.location = 0;
 dateAxis.groupData = true;
 //dateAxis.skipEmptyPeriods = true;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.tooltip.disabled = true;
 
-let series = chart.series.push(new am4charts.CandlestickSeries());
+var series = chart.series.push(new am4charts.CandlestickSeries());
 series.dataFields.dateX = "date";
 series.dataFields.valueY = "close";
 series.dataFields.openValueY = "open";
@@ -37,7 +33,7 @@ chart.cursor = new am4charts.XYCursor();
 chart.cursor.behavior = "panX";
 
 // a separate series for scrollbar
-let lineSeries = chart.series.push(new am4charts.LineSeries());
+var lineSeries = chart.series.push(new am4charts.LineSeries());
 lineSeries.dataFields.dateX = "date";
 lineSeries.dataFields.valueY = "close";
 // need to set on default state, as initially series is "show"
@@ -48,7 +44,7 @@ lineSeries.hiddenInLegend = true;
 lineSeries.fillOpacity = 0.5;
 lineSeries.strokeOpacity = 0.5;
 
-let scrollbarX = new am4charts.XYChartScrollbar();
+var scrollbarX = new am4charts.XYChartScrollbar();
 scrollbarX.series.push(lineSeries);
 chart.scrollbarX = scrollbarX;
 

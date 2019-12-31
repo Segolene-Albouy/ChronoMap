@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+var chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
 
 
 chart.data = [
@@ -29,17 +25,17 @@ chart.dataFields.value = "value";
 chart.paddingRight = 30;
 
 // make nodes draggable
-let nodeTemplate = chart.nodes.template;
+var nodeTemplate = chart.nodes.template;
 nodeTemplate.draggable = true;
 nodeTemplate.inert = true;
 nodeTemplate.readerTitle = "Drag to rearrange or click to show&hide";
 nodeTemplate.showSystemTooltip = true;
 nodeTemplate.width = 30;
 
-let defaultState = nodeTemplate.background.defaultState;
-let defaultDropShadow = defaultState.filters.push(new am4core.DropShadowFilter());
+var defaultState = nodeTemplate.background.defaultState;
+var defaultDropShadow = defaultState.filters.push(new am4core.DropShadowFilter());
 defaultDropShadow.opacity = 0;
 
-let hoverState = nodeTemplate.background.states.create("hover");
-let hoverDropShadow = hoverState.filters.push(new am4core.DropShadowFilter());
+var hoverState = nodeTemplate.background.states.create("hover");
+var hoverDropShadow = hoverState.filters.push(new am4core.DropShadowFilter());
 hoverDropShadow.dy = 0;

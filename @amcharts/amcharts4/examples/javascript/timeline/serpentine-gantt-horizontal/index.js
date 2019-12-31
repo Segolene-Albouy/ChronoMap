@@ -1,10 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 /**
  * ---------------------------------------
  * This demo was created using amCharts 4.
@@ -139,17 +132,17 @@ dateAxis.tooltip.background.cornerRadius = 5;
 dateAxis.tooltip.label.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
 dateAxis.tooltip.label.paddingTop = 7;
 
-let labelTemplate = dateAxis.renderer.labels.template;
+var labelTemplate = dateAxis.renderer.labels.template;
 labelTemplate.verticalCenter = "middle";
 labelTemplate.fillOpacity = 0.4;
 labelTemplate.background.fill = am4core.color("#000");
 labelTemplate.background.fillOpacity = 1;
 labelTemplate.padding(7,7,7,7);
 
-let categoryAxisLabelTemplate = categoryAxis.renderer.labels.template;
+var categoryAxisLabelTemplate = categoryAxis.renderer.labels.template;
 categoryAxisLabelTemplate.horizontalCenter = "left";
-categoryAxisLabelTemplate.adapter.add("rotation", (rotation, target) => {
-  let position = dateAxis.valueToPosition(dateAxis.min);
+categoryAxisLabelTemplate.adapter.add("rotation", function (rotation, target) {
+  var position = dateAxis.valueToPosition(dateAxis.min);
   return dateAxis.renderer.positionToAngle(position) + 90;
 })
 
@@ -164,7 +157,7 @@ series1.columns.template.propertyFields.fill = "color"; // get color from data
 series1.columns.template.propertyFields.stroke = "color";
 series1.columns.template.strokeOpacity = 0;
 
-let bullet = new am4charts.CircleBullet();
+var bullet = new am4charts.CircleBullet();
 series1.bullets.push(bullet);
 bullet.circle.radius = 3;
 bullet.circle.strokeOpacity = 0;
@@ -172,7 +165,7 @@ bullet.propertyFields.fill = "color";
 bullet.locationX = 0;
 
 
-let bullet2 = new am4charts.CircleBullet();
+var bullet2 = new am4charts.CircleBullet();
 series1.bullets.push(bullet2);
 bullet2.circle.radius = 3;
 bullet2.circle.strokeOpacity = 0;
@@ -182,7 +175,7 @@ bullet2.locationX = 1;
 chart.scrollbarX = new am4core.Scrollbar();
 chart.scrollbarX.align = "center"
 
-let cursor = new am4plugins_timeline.CurveCursor();
+var cursor = new am4plugins_timeline.CurveCursor();
 chart.cursor = cursor;
 cursor.xAxis = dateAxis;
 cursor.yAxis = categoryAxis;

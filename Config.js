@@ -1,3 +1,5 @@
+/*import {getMiddleValue} from "./utils.js";*/
+
 const timeUnits = {
     "10y": "year",
     "1y": "year",
@@ -59,3 +61,5 @@ class Config {
         }*/
     }
 }
+
+/*export {Config};*/

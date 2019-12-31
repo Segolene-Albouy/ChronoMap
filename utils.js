@@ -166,7 +166,7 @@ const getDates = (minDate, maxDate) => {
 const ucFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
- * Callback Test that can be given as parameter of the filter methos in order to returns an array of unique values
+ * Callback Test that can be given as parameter of the filter methods in order to returns an array of unique values
  * This test is perform on each value of an array and will returns false if the index of the current value isn't equal
  * to the index of the first time the value is in the array
  *
@@ -186,29 +186,6 @@ const unique = (value, index, self) => {
 };
 
 /**
- * Callback Test that can be given as parameter of the filter method in order to returns an array of unique values
- * This test is perform on each value of an array and will returns true is the current value is identical to another in the array,
- * therefore filtering out the value of the array
- *
- * Value correspond to the current value
- * Index correspond to the index of the current value
- * Self correspond to the array being filtered
- *
- * @param value
- * @param index
- * @param self
- * @return {boolean}
- */
-const uniqueObject = (value, index, self) => {
-    for (var i = 0; i < index; i++) { // i < index in order to not perform the test twice on each value, therefore removing all values that appear twice
-        if (isEqual(value, self[i])){
-            return false;
-        }
-    }
-    return true;
-};
-
-/**
  * This function returns the middle value given an array of numerical values
  * @param arrayOfValues
  * @return {number}
@@ -216,3 +193,5 @@ const uniqueObject = (value, index, self) => {
 const getMiddleValue = (arrayOfValues) => {
     return Math.min(...arrayOfValues) + ((Math.max(...arrayOfValues) - Math.min(...arrayOfValues))/2);
 };
+
+/*export {getMinValueInArray, getMaxValueInArray, isDefined, sortArrayOfObjectsByKey, sortArrayByObjectProperty, getArrayOfKeyValue, getDates, ucFirst, unique, getMiddleValue}*/

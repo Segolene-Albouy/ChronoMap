@@ -1,8 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4geodata_worldHigh from "@amcharts/geodata/worldHigh";
-
 am4core.useTheme(am4themes_animated);
 
 var countryCodes = ["AF", "AO", "AR", "AM", "AU", "AT", "AZ", "BD", "BY", "BE", "BO", "BA", "BW", "BR", "BG", "KH", "CM", "CA", "CF", "TD", "CL", "CN", "CO", "CG", "CD", "CR", "CI", "HR", "CU", "CY", "CZ", "DK", "EC", "EG", "ER", "EE", "ET", "FI", "FR", "GE", "DE", "GR", "GL", "GP", "GT", "GN", "GW", "GY", "HT", "HN", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IL", "IT", "JM", "JP", "JO", "KZ", "KE", "KP", "KR", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LT", "LU", "MK", "MG", "MY", "ML", "MT", "MR", "MX", "MD", "MN", "ME", "MA", "MZ", "MM", "NA", "NP", "NL", "NZ", "NI", "NE", "NG", "NO", "OM", "PK", "PA", "PG", "PY", "PE", "PH", "PL", "PT", "RO", "RU", "SA", "SN", "RS", "SK", "SI", "SO", "ZA", "SS", "ES", "SD", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TN", "TR", "TM", "UA", "AE", "GB", "US", "UY", "UZ", "VE", "VN", "YE", "ZM", "ZW"];
@@ -56,7 +51,7 @@ slider.valign = "bottom";
 var currentIndex = -1;
 var colorset = new am4core.ColorSet();
 
-setInterval(() => {
+setInterval(function () {
 	var next = slider.start + 1 / countryCodes.length;
 	if (next >= 1) {
 		next = 0;
@@ -64,7 +59,7 @@ setInterval(() => {
 	slider.animate({ property: "start", to: next }, 300);
 }, 2000)
 
-slider.events.on("rangechanged", () => {
+slider.events.on("rangechanged", function () {
 	changeCountry();
 })
 
@@ -80,7 +75,7 @@ function changeCountry() {
 
 		currentIndex = countryIndex;
 
-		polygonSeries1.events.on("validated", () => {
+		polygonSeries1.events.on("validated", function () {
 
 			morphToPolygon = polygonSeries1.mapPolygons.getIndex(0);
 			if(morphToPolygon){
@@ -93,7 +88,7 @@ function changeCountry() {
 
 				var animation = label.animate({ property: "y", to: 1000 }, 300);
 
-				animation.events.on("animationended", () => {
+				animation.events.on("animationended", function () {
 					label.text = morphToPolygon.dataItem.dataContext["name"];
 					label.y = -50;
 					label.animate({ property: "y", to: 200 }, 300, am4core.ease.quadOut);

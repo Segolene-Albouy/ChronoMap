@@ -1,9 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
@@ -36,11 +30,11 @@ categoryAxis.renderer.radius = 80;
 categoryAxis.cursorTooltipEnabled = false;
 
 
-let categoryAxisLabelTemplate = categoryAxis.renderer.labels.template;
+var categoryAxisLabelTemplate = categoryAxis.renderer.labels.template;
 categoryAxisLabelTemplate.paddingLeft = 20;
 categoryAxisLabelTemplate.horizontalCenter = "left";
-categoryAxisLabelTemplate.adapter.add("rotation", (rotation, target) => {
-  let position = valueAxis.valueToPosition(valueAxis.min);
+categoryAxisLabelTemplate.adapter.add("rotation", function (rotation, target) {
+  var position = valueAxis.valueToPosition(valueAxis.min);
   return valueAxis.renderer.positionToAngle(position) + 90;
 })
 
@@ -53,7 +47,7 @@ valueAxis.renderer.line.strokeOpacity = 0.5;
 valueAxis.cursorTooltipEnabled = false;
 valueAxis.min = 0;
 
-let labelTemplate = valueAxis.renderer.labels.template;
+var labelTemplate = valueAxis.renderer.labels.template;
 labelTemplate.verticalCenter = "middle";
 labelTemplate.fillOpacity = 0.4;
 
@@ -65,15 +59,15 @@ var series = chart.series.push(new am4plugins_timeline.CurveColumnSeries());
 series.dataFields.valueX = "value";
 series.dataFields.categoryY = "category";
 
-let columnTemplate = series.columns.template;
+var columnTemplate = series.columns.template;
 series.tooltipText = "{categoryY}: {valueX} kisses";
-columnTemplate.adapter.add("fill", (fill, target) => {
+columnTemplate.adapter.add("fill", function (fill, target) {
   return chart.colors.getIndex(target.dataItem.index * 2);
 })
 columnTemplate.strokeOpacity = 0;
 columnTemplate.fillOpacity = 0.5;
 
-let hoverState = columnTemplate.states.create("hover")
+var hoverState = columnTemplate.states.create("hover")
 hoverState.properties.fillOpacity = 1;
 
 
@@ -81,7 +75,7 @@ chart.scrollbarX = new am4core.Scrollbar();
 chart.scrollbarX.align = "center"
 chart.scrollbarX.width = am4core.percent(70);
 
-let cursor = new am4plugins_timeline.CurveCursor();
+var cursor = new am4plugins_timeline.CurveCursor();
 chart.cursor = cursor;
 cursor.xAxis = valueAxis;
 cursor.yAxis = categoryAxis;
@@ -89,7 +83,7 @@ cursor.lineY.disabled = true;
 cursor.lineX.strokeDasharray = "1,4";
 cursor.lineX.strokeOpacity = 1;
 
-let label = chart.plotContainer.createChild(am4core.Label);
+var label = chart.plotContainer.createChild(am4core.Label);
 label.text = "Biggest kissers in Friends"
 label.fontSize = 15;
 label.x = am4core.percent(80);

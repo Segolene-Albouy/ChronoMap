@@ -1,11 +1,7 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
 // chart design inspired by Nicolas Rapp: https://nicolasrapp.com/studio/portfolio/cash-hoarders/
-let chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+var chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
 
 
 chart.data = [
@@ -64,7 +60,7 @@ chart.sortBy = "none";
 
 chart.nodes.template.clickable = false;
 
-let linkTemplate = chart.links.template;
+var linkTemplate = chart.links.template;
 linkTemplate.colorMode = "gradient";
 linkTemplate.fillOpacity = 0.95;
 
@@ -76,12 +72,12 @@ linkTemplate.propertyFields.zIndex = "zIndex";
 linkTemplate.tension = 0.6;
 
 //dragging
-chart.links.template.events.on("down", (event) => {
-  let fromNode = event.target.dataItem.fromNode;
-  let toNode = event.target.dataItem.toNode;
+chart.links.template.events.on("down", function (event) {
+  var fromNode = event.target.dataItem.fromNode;
+  var toNode = event.target.dataItem.toNode;
 
-  let distanceToFromNode = am4core.math.getDistance(event.pointer.point, { x: fromNode.pixelX, y: fromNode.pixelY });
-  let distanceToToNode = Infinity;
+  var distanceToFromNode = am4core.math.getDistance(event.pointer.point, { x: fromNode.pixelX, y: fromNode.pixelY });
+  var distanceToToNode = Infinity;
   if (toNode) {
     distanceToToNode = am4core.math.getDistance(event.pointer.point, { x: toNode.pixelX, y: toNode.pixelY });
   }
@@ -100,7 +96,7 @@ chart.nodes.template.width = 0;
 chart.nodes.template.height = 0;
 chart.nodes.template.nameLabel.disabled = true;
 
-let labelBullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
+var labelBullet = chart.links.template.bullets.push(new am4charts.LabelBullet());
 labelBullet.label.propertyFields.text = "labelText";
 labelBullet.propertyFields.locationX = "labelLocation";
 labelBullet.propertyFields.rotation = "labelRotation";

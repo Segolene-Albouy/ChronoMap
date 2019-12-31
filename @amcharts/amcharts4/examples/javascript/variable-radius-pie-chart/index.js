@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.PieChart);
+var chart = am4core.create("chartdiv", am4charts.PieChart);
 
 
 chart.data = [{
@@ -28,7 +24,7 @@ chart.data = [{
 }];
 
 
-let series = chart.series.push(new am4charts.PieSeries());
+var series = chart.series.push(new am4charts.PieSeries());
 series.dataFields.value = "value";
 series.dataFields.radiusValue = "value";
 series.dataFields.category = "country";

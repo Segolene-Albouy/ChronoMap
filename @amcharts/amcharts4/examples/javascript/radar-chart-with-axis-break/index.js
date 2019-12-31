@@ -1,7 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 // Themes end
@@ -106,11 +102,11 @@ series.columns.template.strokeOpacity = 0;
 chart.seriesContainer.zIndex = -1;
 
 // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
-series.columns.template.adapter.add("fill", (fill, target) => {
+series.columns.template.adapter.add("fill", function (fill, target) {
   return chart.colors.getIndex(target.dataItem.index);
 });
 
-let cursor = new am4charts.RadarCursor();
+var cursor = new am4charts.RadarCursor();
 cursor.innerRadius = am4core.percent(50);
 cursor.lineY.disabled = true;
 

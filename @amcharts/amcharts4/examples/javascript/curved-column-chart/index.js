@@ -1,7 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
 var chart = am4core.create("chartdiv", am4charts.XYChart);
@@ -69,7 +65,7 @@ chart.cursor = new am4charts.XYCursor();
 chart.cursor.behavior = "panX";
 
 // Add distinctive colors for each column using adapter
-series.columns.template.adapter.add("fill", (fill, target) => {
+series.columns.template.adapter.add("fill", function (fill, target) {
   return chart.colors.getIndex(target.dataItem.index);
 });
 

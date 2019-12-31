@@ -1,6 +1,7 @@
-/*import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import AbstractChart from "ChronoMap";*/
+/*import * as am4core from "./@amcharts/amcharts4/core.js";
+import * as am4charts from "./@amcharts/amcharts4/charts.js";
+import {AbstractChart} from "./ChronoMap.js";
+import {getMinValueInArray, getMaxValueInArray, getArrayOfKeyValue} from "./utils.js";*/
 
 class Timeline extends AbstractChart {
     constructor(chronoMap){
@@ -139,3 +140,5 @@ class Timeline extends AbstractChart {
         return series;
     }
 }
+
+/*export {Timeline};*/

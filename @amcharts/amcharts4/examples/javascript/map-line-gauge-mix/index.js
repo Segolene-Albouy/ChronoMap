@@ -1,30 +1,22 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4geodata_continentsLow from "@amcharts/geodata/continentsLow";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
 
 // times of events
-let startTime = new Date(2018, 0, 13, 6).getTime();
-let endTime = new Date(2018, 0, 13, 11, 59).getTime();
-let launchTime = new Date(2018, 0, 13, 7, 0).getTime();
-let alertTime = new Date(2018, 0, 13, 8, 7).getTime();
-let cancelTime = new Date(2018, 0, 13, 8, 45).getTime();
+var startTime = new Date(2018, 0, 13, 6).getTime();
+var endTime = new Date(2018, 0, 13, 11, 59).getTime();
+var launchTime = new Date(2018, 0, 13, 7, 0).getTime();
+var alertTime = new Date(2018, 0, 13, 8, 7).getTime();
+var cancelTime = new Date(2018, 0, 13, 8, 45).getTime();
 
-let colorSet = new am4core.ColorSet();
-let currentTime;
+var colorSet = new am4core.ColorSet();
+var currentTime;
 
-let container = am4core.create("chartdiv", am4core.Container);
+var container = am4core.create("chartdiv", am4core.Container);
 container.width = am4core.percent(100);
 container.height = am4core.percent(100);
 
 // map chart ////////////////////////////////////////////////////////
-let mapChart = container.createChild(am4maps.MapChart);
+var mapChart = container.createChild(am4maps.MapChart);
 
 try {
     mapChart.geodata = am4geodata_continentsLow;
@@ -37,17 +29,17 @@ mapChart.projection = new am4maps.projections.Miller();
 mapChart.deltaLongitude = 145;
 mapChart.seriesContainer.draggable = false;
 
-let polygonSeries = mapChart.series.push(new am4maps.MapPolygonSeries());
+var polygonSeries = mapChart.series.push(new am4maps.MapPolygonSeries());
 polygonSeries.useGeodata = true;
 polygonSeries.exclude = ["Antarctica"];
 
-let mapImageSeries = mapChart.series.push(new am4maps.MapImageSeries());
-let pyongyang = mapImageSeries.mapImages.create();
+var mapImageSeries = mapChart.series.push(new am4maps.MapImageSeries());
+var pyongyang = mapImageSeries.mapImages.create();
 pyongyang.longitude = 125.739708;
 pyongyang.latitude = 39.034333;
 pyongyang.nonScaling = true;
 
-let pyongyangCircle = pyongyang.createChild(am4core.Circle);
+var pyongyangCircle = pyongyang.createChild(am4core.Circle);
 pyongyangCircle.fill = colorSet.getIndex(5);
 pyongyangCircle.stroke = pyongyangCircle.fill;
 pyongyangCircle.radius = 4;
@@ -60,7 +52,7 @@ pyongyangCircle.tooltip.background.strokeOpacity = 0;
 pyongyangCircle.tooltipY = -5;
 
 
-let koreaText = pyongyang.createChild(am4core.Label);
+var koreaText = pyongyang.createChild(am4core.Label);
 koreaText.text = "North Korea";
 koreaText.fillOpacity = 0.2;
 koreaText.fontSize = 20;
@@ -68,13 +60,13 @@ koreaText.verticalCenter = "middle";
 koreaText.horizontalCenter = "right";
 koreaText.paddingRight = 15;
 
-let bomb = mapImageSeries.mapImages.create();
+var bomb = mapImageSeries.mapImages.create();
 bomb.longitude = 125.739708;
 bomb.latitude = 39.034333;
 bomb.nonScaling = true;
 bomb.opacity = 0;
 
-let bombImage = bomb.createChild(am4core.Image);
+var bombImage = bomb.createChild(am4core.Image);
 bombImage.width = 32;
 bombImage.height = 32;
 bombImage.href = "rocket.svg";
@@ -82,22 +74,22 @@ bombImage.verticalCenter = "middle";
 bombImage.horizontalCenter = "middle";
 
 
-let honolulu = mapImageSeries.mapImages.create();
+var honolulu = mapImageSeries.mapImages.create();
 honolulu.longitude = -157.887841;
 honolulu.latitude = 21.368213;
 honolulu.nonScaling = true;
 
 
-let bulletAlertCircle = honolulu.createChild(am4core.Circle);
+var bulletAlertCircle = honolulu.createChild(am4core.Circle);
 bulletAlertCircle.fill = am4core.color();
 bulletAlertCircle.stroke = colorSet.getIndex(2);
 bulletAlertCircle.strokeOpacity = 1;
 bulletAlertCircle.radius = 5;
 bulletAlertCircle.strokeWidth = 2;
 bulletAlertCircle.visible = false;
-let bulletAlertAnimation = bulletAlertCircle.animate([{ property: "radius", to: 50 }, { property: "strokeOpacity", to: 0, from: 1 }], 600).loop().pause();
+var bulletAlertAnimation = bulletAlertCircle.animate([{ property: "radius", to: 50 }, { property: "strokeOpacity", to: 0, from: 1 }], 600).loop().pause();
 
-let honoluluCircle = honolulu.createChild(am4core.Circle);
+var honoluluCircle = honolulu.createChild(am4core.Circle);
 honoluluCircle.fill = colorSet.getIndex(2);
 honoluluCircle.stroke = honoluluCircle.fill;
 honoluluCircle.radius = 4;
@@ -110,7 +102,7 @@ honoluluCircle.tooltip.label.padding(15, 20, 15, 20);
 honoluluCircle.tooltip.background.strokeOpacity = 0;
 
 
-let hawaiiText = honolulu.createChild(am4core.Label);
+var hawaiiText = honolulu.createChild(am4core.Label);
 hawaiiText.text = "Hawaii, USA";
 hawaiiText.fillOpacity = 0.1;
 hawaiiText.fontSize = 35;
@@ -118,11 +110,11 @@ hawaiiText.verticalCenter = "middle";
 hawaiiText.paddingLeft = 30;
 
 
-let bang = mapImageSeries.mapImages.create();
+var bang = mapImageSeries.mapImages.create();
 bang.longitude = -177;
 bang.latitude = 24;
 bang.nonScaling = true;
-let bangImage = bang.createChild(am4core.Image);
+var bangImage = bang.createChild(am4core.Image);
 bangImage.width = 50;
 bangImage.height = 50;
 bangImage.verticalCenter = "middle";
@@ -130,8 +122,8 @@ bangImage.horizontalCenter = "middle";
 bangImage.href = "bang.png";
 bang.opacity = 0;
 
-let mapLineSeries = mapChart.series.push(new am4maps.MapLineSeries());
-let line = mapLineSeries.mapLines.create();
+var mapLineSeries = mapChart.series.push(new am4maps.MapLineSeries());
+var line = mapLineSeries.mapLines.create();
 line.imagesToConnect = [pyongyang, bang];
 line.line.strokeOpacity = 0; // it's invisible, we use it for a bomb image to follow it
 
@@ -139,7 +131,7 @@ mapChart.homeGeoPoint = { longitude: -175, latitude: 15 };
 mapChart.homeZoomLevel = 2.2;
 
 // clock chart //////////////////////////////////////////////////////////////////
-let clock = mapChart.chartContainer.createChild(am4charts.GaugeChart);
+var clock = mapChart.chartContainer.createChild(am4charts.GaugeChart);
 clock.align = "right";
 clock.width = 250;
 clock.height = 250;
@@ -149,7 +141,7 @@ clock.zIndex = 10;
 clock.startAngle = -90;
 clock.endAngle = 270;
 
-let axis = clock.xAxes.push(new am4charts.ValueAxis());
+var axis = clock.xAxes.push(new am4charts.ValueAxis());
 axis.min = 0;
 axis.max = 12;
 axis.strictMinMax = true;
@@ -165,7 +157,7 @@ axis.renderer.ticks.template.length = 4;
 axis.renderer.ticks.template.strokeOpacity = 0.2;
 
 // clock hands
-let hourHand = clock.hands.push(new am4charts.ClockHand());
+var hourHand = clock.hands.push(new am4charts.ClockHand());
 hourHand.radius = am4core.percent(60);
 hourHand.startWidth = 5;
 hourHand.endWidth = 5;
@@ -173,7 +165,7 @@ hourHand.rotationDirection = "clockWise";
 hourHand.pin.radius = 5;
 hourHand.zIndex = 0;
 
-let minutesHand = clock.hands.push(new am4charts.ClockHand());
+var minutesHand = clock.hands.push(new am4charts.ClockHand());
 minutesHand.rotationDirection = "clockWise";
 minutesHand.startWidth = 2;
 minutesHand.endWidth = 2;
@@ -194,9 +186,9 @@ function updateHands(date) {
 
 /// end of clock
 
-let exploded = false;
+var exploded = false;
 
-let honoluluTexts = [
+var honoluluTexts = [
     { time: new Date(2018, 0, 13, 6, 7).getTime(), text: "I wonder what's on youtube..." },
     { time: new Date(2018, 0, 13, 6, 30).getTime(), text: "... oooh a kitty video ..." },
     { time: new Date(2018, 0, 13, 7, 10).getTime(), text: "... LOL funny ..." },
@@ -207,7 +199,7 @@ let honoluluTexts = [
     { time: new Date(2018, 0, 13, 9, 20).getTime(), text: "" }
 ];
 
-let pyongyangTexts = [
+var pyongyangTexts = [
     { time: new Date(2018, 0, 13, 6, 5).getTime(), text: "Great comrade..." },
     { time: new Date(2018, 0, 13, 6, 20).getTime(), text: "WHAT!?" },
     { time: new Date(2018, 0, 13, 6, 40).getTime(), text: "Please, push this button..." },
@@ -217,15 +209,15 @@ let pyongyangTexts = [
 
 // updates all elements
 function setTime() {
-    let time = new Date(startTime + (endTime - startTime) * slider.start).getTime();;
-    let roundedTime = am4core.time.round(new Date(time), "minute").getTime();
+    var time = new Date(startTime + (endTime - startTime) * slider.start).getTime();;
+    var roundedTime = am4core.time.round(new Date(time), "minute").getTime();
 
     if (roundedTime != currentTime) {
         currentTime = roundedTime;
-        let count = lineSeries.dataItems.length;
+        var count = lineSeries.dataItems.length;
         if (slider) {
-            for (let i = 0; i < count; i++) {
-                let dataItem = lineSeries.dataItems.getIndex(i);
+            for (var i = 0; i < count; i++) {
+                var dataItem = lineSeries.dataItems.getIndex(i);
 
                 if (i < slider.start * count) {
                     dataItem.show(500, 0, ["valueY"]);
@@ -240,13 +232,13 @@ function setTime() {
     // add some drama by zooming the map
     updateHands(new Date(time));
 
-    let bombFlyDuration = cancelTime - launchTime;
-    let bombPosition = (time - launchTime) / bombFlyDuration;
+    var bombFlyDuration = cancelTime - launchTime;
+    var bombPosition = (time - launchTime) / bombFlyDuration;
     bombPosition = Math.min(1, bombPosition);
     bombPosition = Math.max(0, bombPosition);
 
-    let oPoint = line.positionToPoint(bombPosition);
-    let geoPoint = mapChart.seriesPointToGeo(oPoint);
+    var oPoint = line.positionToPoint(bombPosition);
+    var geoPoint = mapChart.seriesPointToGeo(oPoint);
     bomb.latitude = geoPoint.latitude;
     bomb.longitude = geoPoint.longitude;
     bomb.rotation = oPoint.angle + 90;
@@ -282,8 +274,8 @@ function setTime() {
         bulletAlertCircle.visible = false;
     }
 
-    for (let i = 0; i < honoluluTexts.length; i++) {
-        let honoluluText = honoluluTexts[i];
+    for (var i = 0; i < honoluluTexts.length; i++) {
+        var honoluluText = honoluluTexts[i];
         if (time > honoluluText.time) {
             honoluluCircle.tooltipText = honoluluText.text;
         }
@@ -296,8 +288,8 @@ function setTime() {
         honoluluCircle.hideTooltip();
     }
 
-    for (let i = 0; i < pyongyangTexts.length; i++) {
-        let pyongyangText = pyongyangTexts[i];
+    for (var i = 0; i < pyongyangTexts.length; i++) {
+        var pyongyangText = pyongyangTexts[i];
         if (time > pyongyangText.time) {
             pyongyangCircle.tooltipText = pyongyangText.text;
         }
@@ -312,9 +304,9 @@ function setTime() {
 }
 
 
-let chart = container.createChild(am4charts.XYChart);
+var chart = container.createChild(am4charts.XYChart);
 chart.padding(0, 50, 50, 50);
-let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
 dateAxis.tooltip.background.pointerLength = 4;
 dateAxis.tooltip.background.fillOpacity = 1;
 dateAxis.tooltip.background.fill = am4core.color("#666666");
@@ -324,7 +316,7 @@ dateAxis.tooltip.background.stroke = dateAxis.tooltip.background.fill;
 chart.height = 300;
 chart.valign = "bottom";
 
-let gradientFill = new am4core.LinearGradient();
+var gradientFill = new am4core.LinearGradient();
 gradientFill.addColor(am4core.color("#000000"), 0, 0);
 gradientFill.addColor(am4core.color("#000000"), 1, 1);
 gradientFill.rotation = 90;
@@ -341,7 +333,7 @@ dateAxis.renderer.inside = false;
 dateAxis.renderer.labels.template.fillOpacity = 0.4;
 dateAxis.renderer.minLabelPosition = 0.03;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.renderer.ticks.template.disabled = true;
 valueAxis.min = -90;
 valueAxis.max = 90;
@@ -353,7 +345,7 @@ valueAxis.strictMinMax = true;
 valueAxis.renderer.labels.template.fillOpacity = 0.4;
 valueAxis.renderer.inside = true;
 
-let lineSeries = chart.series.push(new am4charts.LineSeries());
+var lineSeries = chart.series.push(new am4charts.LineSeries());
 lineSeries.dataFields.valueY = "value";
 lineSeries.dataFields.dateX = "time";
 lineSeries.tooltipText = "{valueY.workingValue}%";
@@ -366,7 +358,7 @@ lineSeries.tooltip.pointerOrientation = "vertical";
 lineSeries.strokeWidth = 2;
 lineSeries.tensionX = 0.7;
 
-let negativeRange = valueAxis.createSeriesRange(lineSeries);
+var negativeRange = valueAxis.createSeriesRange(lineSeries);
 negativeRange.value = 0;
 negativeRange.endValue = - 100;
 negativeRange.contents.stroke = am4core.color("#84279a");
@@ -379,13 +371,13 @@ chart.cursor.behavior = "none";
 chart.cursor.xAxis = dateAxis;
 chart.cursor.lineX.strokeOpacity = 0;
 
-chart.events.on("ready", () => {
+chart.events.on("ready", function () {
     createSlider();
 })
 
-let slider;
+var slider;
 
-let alertStart = dateAxis.axisRanges.create();
+var alertStart = dateAxis.axisRanges.create();
 alertStart.date = new Date(alertTime);
 alertStart.grid.stroke = am4core.color("#ffffff");
 alertStart.grid.strokeWidth = 1;
@@ -396,7 +388,7 @@ alertStart.label.horizontalCenter = "right";
 alertStart.label.fillOpacity = 0.7;
 alertStart.label.dy = -215;
 
-let alertCanceled = dateAxis.axisRanges.create();
+var alertCanceled = dateAxis.axisRanges.create();
 alertCanceled.date = new Date(cancelTime);
 alertCanceled.grid.stroke = am4core.color("#ffffff");
 alertCanceled.grid.strokeOpacity = 0.5;
@@ -406,10 +398,10 @@ alertCanceled.label.dy = -215;
 alertCanceled.label.fillOpacity = 0.7;
 alertCanceled.label.horizontalCenter = "left";
 
-let playButton;
+var playButton;
 
 function createSlider() {
-    let sliderContainer = container.createChild(am4core.Container);
+    var sliderContainer = container.createChild(am4core.Container);
 
     sliderContainer.width = am4core.percent(100);
     sliderContainer.valign = "bottom";
@@ -420,7 +412,7 @@ function createSlider() {
 
     playButton = sliderContainer.createChild(am4core.PlayButton);
     playButton.valign = "middle";
-    playButton.events.on("toggled", (event) => {
+    playButton.events.on("toggled", function (event) {
         if (event.target.isActive) {
             play();
         }
@@ -434,17 +426,17 @@ function createSlider() {
     slider.margin(0, 0, 0, 0);
     slider.marginLeft = 30;
     slider.height = 15;
-    slider.events.on("rangechanged", () => {
+    slider.events.on("rangechanged", function () {
         setTime();
     });
 
-    slider.startGrip.events.on("drag", () => {
+    slider.startGrip.events.on("drag", function () {
         stop();
         sliderAnimation.setProgress(slider.start);
     });
 
     sliderAnimation = slider.animate({ property: "start", to: 1 }, 50000, am4core.ease.linear).pause();
-    sliderAnimation.events.on("animationended", () => {
+    sliderAnimation.events.on("animationended", function () {
         playButton.isActive = false;
     })
 }
@@ -468,11 +460,11 @@ function stop() {
     playButton.isActive = false;
 }
 
-setTimeout(() => {
+setTimeout(function () {
     play()
 }, 2000);
 
-let label = container.createChild(am4core.Label);
+var label = container.createChild(am4core.Label);
 label.text = "Website traffic in Hawaii during January 13, 2018 false ballistic missile alert";
 label.valign = "bottom";
 label.padding(0, 50, 10, 0);

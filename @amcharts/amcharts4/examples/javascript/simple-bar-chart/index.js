@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 
 chart.colors.saturation = 0.4;
@@ -48,15 +44,15 @@ chart.data = [{
 }];
 
 
-let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.dataFields.category = "country";
 categoryAxis.renderer.minGridDistance = 20;
 
-let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
 valueAxis.renderer.maxLabelPosition = 0.98;
 
-let series = chart.series.push(new am4charts.ColumnSeries());
+var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.categoryY = "country";
 series.dataFields.valueX = "visits";
 series.tooltipText = "{valueX.value}";
@@ -70,6 +66,6 @@ chart.cursor.behavior = "panY";
 
 
 // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
-series.columns.template.adapter.add("fill", (fill, target) => {
+series.columns.template.adapter.add("fill", function (fill, target) {
 	return chart.colors.getIndex(target.dataItem.index);
 });

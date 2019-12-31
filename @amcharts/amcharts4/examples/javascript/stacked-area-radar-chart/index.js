@@ -1,14 +1,10 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 /**
  * Chart design inspired by Nicolas Rapp: https://nicolasrapp.com/studio/
  */
 
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.RadarChart);
+var chart = am4core.create("chartdiv", am4charts.RadarChart);
 
 chart.data = [
   {
@@ -143,12 +139,12 @@ chart.zoomOutButton.margin(20, 20, 20, 20);
 chart.zoomOutButton.background.cornerRadius(40, 40, 40, 40);
 chart.zoomOutButton.valign = "bottom";
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "company";
 categoryAxis.renderer.labels.template.location = 0.5;
 categoryAxis.interactionsEnabled = false;
 
-let categoryAxisRenderer = categoryAxis.renderer;
+var categoryAxisRenderer = categoryAxis.renderer;
 categoryAxisRenderer.cellStartLocation = 0;
 categoryAxisRenderer.tooltipLocation = 0.5;
 
@@ -161,19 +157,19 @@ categoryAxisRenderer.tooltip.disabled = true;
 categoryAxisRenderer.grid.template.disabled = true;
 categoryAxis.renderer.labels.template.disabled = true;
 
-categoryAxis.adapter.add("maxZoomFactor", (maxZoomFactor, target) => {
+categoryAxis.adapter.add("maxZoomFactor", function (maxZoomFactor, target) {
   return target.dataItems.length / 5;
 })
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-let valueAxisRenderer = valueAxis.renderer;
+var valueAxisRenderer = valueAxis.renderer;
 valueAxisRenderer.grid.template.disabled = true;
 valueAxisRenderer.line.disabled = true;
 valueAxis.min = 0;
 valueAxis.renderer.tooltip.disabled = true;
 
-let series1 = chart.series.push(new am4charts.RadarSeries());
+var series1 = chart.series.push(new am4charts.RadarSeries());
 series1.name = "CASH HELD OUTSIDE THE U.S.";
 series1.dataFields.categoryX = "company";
 series1.dataFields.valueY = "value1";
@@ -185,7 +181,7 @@ series1.dataItems.template.locations.categoryX = 0.5;
 series1.sequencedInterpolation = true;
 series1.sequencedInterpolationDelay = 50;
 
-let series2 = chart.series.push(new am4charts.RadarSeries());
+var series2 = chart.series.push(new am4charts.RadarSeries());
 series2.name = "TOTAL CASH PILE";
 series2.dataFields.categoryX = "company";
 series2.dataFields.valueY = "value2";
@@ -225,13 +221,13 @@ chart.cursor.innerRadius = am4core.percent(30);
 chart.cursor.radius = am4core.percent(50);
 chart.cursor.selection.fill = am4core.color("#62b5ce");
 
-let bullet = series2.bullets.create();
+var bullet = series2.bullets.create();
 bullet.fill = am4core.color("#000000");
 bullet.strokeOpacity = 0;
 bullet.locationX = 0.5;
 
 
-let line = bullet.createChild(am4core.Line);
+var line = bullet.createChild(am4core.Line);
 line.x2 = -100;
 line.x1 = 0;
 line.y1 = 0;
@@ -243,13 +239,13 @@ line.strokeDasharray = "2,3";
 line.strokeOpacity = 0.4;
 
 
-let bulletValueLabel = bullet.createChild(am4core.Label);
+var bulletValueLabel = bullet.createChild(am4core.Label);
 bulletValueLabel.text = "{valueY.total.formatNumber('$#.0')}";
 bulletValueLabel.verticalCenter = "middle";
 bulletValueLabel.horizontalCenter = "right";
 bulletValueLabel.dy = -3;
 
-let label = bullet.createChild(am4core.Label);
+var label = bullet.createChild(am4core.Label);
 label.text = "{categoryX}";
 label.verticalCenter = "middle";
 label.paddingLeft = 20;
@@ -269,10 +265,10 @@ chart.legend.dy = 20;
 chart.legend.dx = -9;
 
 chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-let itemHoverState = chart.legend.itemContainers.template.states.create("hover");
+var itemHoverState = chart.legend.itemContainers.template.states.create("hover");
 itemHoverState.properties.dx = 5;
 
-let title = chart.radarContainer.createChild(am4core.Label);
+var title = chart.radarContainer.createChild(am4core.Label);
 title.text = "COMPANIES WITH\nTHE MOST CASH\nHELD OVERSEAS"
 title.fontSize = "1.2em";
 title.verticalCenter = "bottom";
@@ -282,49 +278,49 @@ title.fontWeight = "800";
 
 chart.maskBullets = false;
 
-let circle = bullet.createChild(am4core.Circle);
+var circle = bullet.createChild(am4core.Circle);
 circle.radius = 2;
-let hoverState = circle.states.create("hover");
+var hoverState = circle.states.create("hover");
 
 hoverState.properties.scale = 5;
 
-bullet.events.on("positionchanged", (event) => {
+bullet.events.on("positionchanged", function (event) {
   event.target.children.getIndex(0).invalidate();
   event.target.children.getIndex(1).invalidatePosition();
 })
 
 
-bullet.adapter.add("dx", (dx, target) => {
-  let angle = categoryAxis.getAngle(target.dataItem, "categoryX", 0.5);
+bullet.adapter.add("dx", function (dx, target) {
+  var angle = categoryAxis.getAngle(target.dataItem, "categoryX", 0.5);
   return 20 * am4core.math.cos(angle);
 })
 
-bullet.adapter.add("dy", (dy, target) => {
-  let angle = categoryAxis.getAngle(target.dataItem, "categoryX", 0.5);
+bullet.adapter.add("dy", function (dy, target) {
+  var angle = categoryAxis.getAngle(target.dataItem, "categoryX", 0.5);
   return 20 * am4core.math.sin(angle);
 })
 
-bullet.adapter.add("rotation", (dy, target) => {
-  let angle = Math.min(chart.endAngle, Math.max(chart.startAngle, categoryAxis.getAngle(target.dataItem, "categoryX", 0.5)));
+bullet.adapter.add("rotation", function (dy, target) {
+  var angle = Math.min(chart.endAngle, Math.max(chart.startAngle, categoryAxis.getAngle(target.dataItem, "categoryX", 0.5)));
   return angle;
 })
 
 
-line.adapter.add("x2", (x2, target) => {
-  let dataItem = target.dataItem;
+line.adapter.add("x2", function (x2, target) {
+  var dataItem = target.dataItem;
   if (dataItem) {
-    let position = valueAxis.valueToPosition(dataItem.values.valueY.value + dataItem.values.valueY.stack);
+    var position = valueAxis.valueToPosition(dataItem.values.valueY.value + dataItem.values.valueY.stack);
     return -(position * valueAxis.axisFullLength + 35);
   }
   return 0;
 })
 
 
-bulletValueLabel.adapter.add("dx", (dx, target) => {
-  let dataItem = target.dataItem;
+bulletValueLabel.adapter.add("dx", function (dx, target) {
+  var dataItem = target.dataItem;
 
   if (dataItem) {
-    let position = valueAxis.valueToPosition(dataItem.values.valueY.value + dataItem.values.valueY.stack);
+    var position = valueAxis.valueToPosition(dataItem.values.valueY.value + dataItem.values.valueY.stack);
     return -(position * valueAxis.axisFullLength + 40);
   }
   return 0;
@@ -338,34 +334,34 @@ valueAxis.zIndex = 12;
 chart.radarContainer.zIndex = 20;
 
 
-let previousBullets = [];
-series2.events.on("tooltipshownat", (event) => {
-  let dataItem = event.dataItem;
+var previousBullets = [];
+series2.events.on("tooltipshownat", function (event) {
+  var dataItem = event.dataItem;
 
-  for (let i = 0; i < previousBullets.length; i++) {
+  for (var i = 0; i < previousBullets.length; i++) {
     previousBullets[i].isHover = false;
   }
 
   previousBullets = [];
 
-  let itemBullet = dataItem.bullets.getKey(bullet.uid);
+  var itemBullet = dataItem.bullets.getKey(bullet.uid);
 
-  for (let i = 0; i < itemBullet.children.length; i++) {
-    let sprite = itemBullet.children.getIndex(i);
+  for (var i = 0; i < itemBullet.children.length; i++) {
+    var sprite = itemBullet.children.getIndex(i);
     sprite.isHover = true;
     previousBullets.push(sprite);
   }
 })
 
-series2.tooltip.events.on("visibilitychanged", () => {
+series2.tooltip.events.on("visibilitychanged", function () {
   if (!series2.tooltip.visible) {
-    for (let i = 0; i < previousBullets.length; i++) {
+    for (var i = 0; i < previousBullets.length; i++) {
       previousBullets[i].isHover = false;
     }
   }
 })
 
-chart.events.on("maxsizechanged", () => {
+chart.events.on("maxsizechanged", function () {
   if (chart.pixelInnerRadius < 200) {
     title.disabled = true;
     chart.legend.verticalCenter = "middle";

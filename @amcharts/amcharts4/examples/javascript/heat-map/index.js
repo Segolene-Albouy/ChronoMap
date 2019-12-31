@@ -1,13 +1,9 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
-let xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-let yAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+var xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var yAxis = chart.yAxes.push(new am4charts.CategoryAxis());
 
 xAxis.dataFields.category = "weekday";
 yAxis.dataFields.category = "hour";
@@ -19,13 +15,13 @@ yAxis.renderer.grid.template.disabled = true;
 yAxis.renderer.inversed = true;
 yAxis.renderer.minGridDistance = 30;
 
-let series = chart.series.push(new am4charts.ColumnSeries());
+var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.categoryX = "weekday";
 series.dataFields.categoryY = "hour";
 series.dataFields.value = "value";
 series.sequencedInterpolation = true;
 
-let columnTemplate = series.columns.template;
+var columnTemplate = series.columns.template;
 columnTemplate.strokeWidth = 2;
 columnTemplate.strokeOpacity = 1;
 columnTemplate.stroke = am4core.color("#ffffff");
@@ -38,18 +34,18 @@ columnTemplate.hiddenState.properties.opacity = 0;
 series.heatRules.push({ target: columnTemplate, property: "fill", min: am4core.color("#ffffff"), max: am4core.color("#692155") });
 
 // heat legend
-let heatLegend = chart.bottomAxesContainer.createChild(am4charts.HeatLegend);
+var heatLegend = chart.bottomAxesContainer.createChild(am4charts.HeatLegend);
 heatLegend.width = am4core.percent(100);
 heatLegend.series = series;
 heatLegend.valueAxis.renderer.labels.template.fontSize = 9;
 heatLegend.valueAxis.renderer.minGridDistance = 30;
 
 // heat legend behavior
-series.columns.template.events.on("over", (event) => {
+series.columns.template.events.on("over", function (event) {
 	handleHover(event.target);
 })
 
-series.columns.template.events.on("hit", (event) => {
+series.columns.template.events.on("hit", function (event) {
 	handleHover(event.target);
 })
 
@@ -62,7 +58,7 @@ function handleHover(column) {
 	}
 }
 
-series.columns.template.events.on("out", (event) => {
+series.columns.template.events.on("out", function (event) {
 	heatLegend.valueAxis.hideTooltip();
 })
 

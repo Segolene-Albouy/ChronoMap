@@ -1,10 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
@@ -14,7 +7,7 @@ var chart = am4core.create("chartdiv", am4plugins_timeline.CurveChart);
 chart.curveContainer.padding(50,20,50,20);
 
 chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-let interfaceColors = new am4core.InterfaceColorSet();
+var interfaceColors = new am4core.InterfaceColorSet();
 
 var colorSet = new am4core.ColorSet();
 colorSet.step = 3;
@@ -83,7 +76,7 @@ dateAxis.tooltip.label.paddingTop = 7;
 dateAxis.startLocation = -0.5;
 
 
-let labelTemplate = dateAxis.renderer.labels.template;
+var labelTemplate = dateAxis.renderer.labels.template;
 labelTemplate.disabled = true;
 
 var series1 = chart.series.push(new am4plugins_timeline.CurveStepLineSeries());
@@ -92,7 +85,7 @@ series1.dataFields.dateX = "date";
 series1.dataFields.valueY = "value";
 series1.propertyFields.stroke = "color";
 
-let bullet = new am4charts.CircleBullet();
+var bullet = new am4charts.CircleBullet();
 series1.bullets.push(bullet);
 bullet.circle.radius = 13;
 bullet.circle.strokeOpacity = 1;
@@ -103,7 +96,7 @@ bullet.propertyFields.disabled = "disabled";
 bullet.propertyFields.fill = "color";
 bullet.locationX = 1;
 
-let label = bullet.createChild(am4core.Label);
+var label = bullet.createChild(am4core.Label);
 label.fill = interfaceColors.getFor("background");
 label.propertyFields.text = "label";
 label.strokeOpacity = 0;
@@ -123,11 +116,11 @@ chart.events.once("inited", function(){
 })
 
 function zoomIn(){
-  let animation = dateAxis.animate([{property:"start", to:0.5}, {property:"end", to:1}], 10000, am4core.ease.sinInOut);
+  var animation = dateAxis.animate([{property:"start", to:0.5}, {property:"end", to:1}], 10000, am4core.ease.sinInOut);
   animation.events.on("animationended", zoomOut)
 }
 
 function zoomOut(){
-  let animation = dateAxis.animate([{property:"start", to:0}, {property:"end", to:0.5}], 10000, am4core.ease.sinInOut);
+  var animation = dateAxis.animate([{property:"start", to:0}, {property:"end", to:0.5}], 10000, am4core.ease.sinInOut);
   animation.events.on("animationended", zoomIn)
 }

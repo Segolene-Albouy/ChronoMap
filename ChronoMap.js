@@ -1,7 +1,10 @@
 /* Build chronological map to visualize time and space using the charting library AmCharts V4 */
-/*import * as am4core from "@amcharts/amcharts4/core";
-import * as Map from "Map";
-import * as Timeline from "Timeline";*/
+/*import * as am4core from "./@amcharts/amcharts4/core.js";
+import {Config} from "./Config.js";
+import {Series} from "./Series.js";
+import {Map} from "./Map.js";
+import {Timeline} from "./Timeline.js";
+import {Scrollbar} from "./Scrollbar.js";*/
 
 
 // Possibilité de définir la granularité de la frise chronologique : tous les ans ou tous les dix ans
@@ -46,6 +49,7 @@ class ChronoMap {
         this.container = this.generateContainer();
         this.map = new Map(this);
         this.timeline = new Timeline(this);
+        this.scrollbar = new Scrollbar(this);
     }
 
     generateContainer() {
@@ -118,7 +122,7 @@ class ChronoMap {
         const seriesNumber = Object.keys(series).length;
 
         for (let i = seriesNumber - 1; i >= 0; i--) {
-            Object.values(series)[i].angle = angle[seriesNumber][i];
+            Object.values(series)[i].angle = angle[seriesNumber-1][i];
         }
 
         return series;
@@ -294,5 +298,4 @@ class AbstractChart {
     _generateConfig(){}
 }
 
-/*
-export default {AbstractChart, ChronoMap};*/
+/*export {ChronoMap, AbstractChart};*/

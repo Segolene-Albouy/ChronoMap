@@ -1,13 +1,7 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-
-
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart);
+var chart = am4core.create("chartdiv", am4charts.XYChart);
 
 // using math in the data instead of final values just to illustrate the idea of Waterfall chart
 // a separate data field for step series is added because we don't need last step (notice, the last data item doesn't have stepValue)
@@ -20,12 +14,12 @@ chart.data = [
     { category: "Operating income", value: 8786 - 2786 - 1786 - 453 + 1465, open: 0, color:chart.colors.getIndex(17), displayValue:8786 - 2786 - 1786 - 453 + 1465}
 ];
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "category";
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-let columnSeries = chart.series.push(new am4charts.ColumnSeries());
+var columnSeries = chart.series.push(new am4charts.ColumnSeries());
 columnSeries.dataFields.categoryX = "category";
 columnSeries.dataFields.valueY = "value";
 columnSeries.dataFields.openValueY = "open";
@@ -33,17 +27,17 @@ columnSeries.fillOpacity = 0.8;
 columnSeries.sequencedInterpolation = true;
 columnSeries.interpolationDuration = 1500;
 
-let columnTemplate = columnSeries.columns.template;
+var columnTemplate = columnSeries.columns.template;
 columnTemplate.strokeOpacity = 0;
 columnTemplate.propertyFields.fill = "color";
 
-let label = columnTemplate.createChild(am4core.Label);
+var label = columnTemplate.createChild(am4core.Label);
 label.text = "{displayValue.formatNumber('$#,## a')}";
 label.align = "center";
 label.valign = "middle";
 
 
-let stepSeries = chart.series.push(new am4charts.StepLineSeries());
+var stepSeries = chart.series.push(new am4charts.StepLineSeries());
 stepSeries.dataFields.categoryX = "category";
 stepSeries.dataFields.valueY = "stepValue";
 stepSeries.noRisers = true;

@@ -1,8 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4plugins_sunburst from "@amcharts/amcharts4/plugins/sunburst";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 // Themes begin
 am4core.useTheme(am4themes_animated);
 // Themes end
@@ -89,7 +84,7 @@ chart.seriesTemplates.setKey("0", level0SeriesTemplate)
 level0SeriesTemplate.labels.template.truncate = true;
 level0SeriesTemplate.labels.template.hideOversized = true;
 
-level0SeriesTemplate.labels.template.adapter.add("rotation", (rotation, target) => {
+level0SeriesTemplate.labels.template.adapter.add("rotation", function (rotation, target) {
   target.maxWidth = target.dataItem.slice.radius - target.dataItem.slice.innerRadius - 10;
   target.maxHeight = Math.abs(target.dataItem.slice.arc * (target.dataItem.slice.innerRadius + target.dataItem.slice.radius) / 2 * am4core.math.RADIANS);
 

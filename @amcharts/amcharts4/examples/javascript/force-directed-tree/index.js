@@ -1,13 +1,7 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import * as am4plugins_forceDirected from "@amcharts/amcharts4/plugins/forceDirected";
-
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
-let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
+var chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
+var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
 
 chart.data = [
   {

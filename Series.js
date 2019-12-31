@@ -60,3 +60,5 @@ class Series {
         this.prefix = index;
     }
 }
+
+/*export {Series};*/

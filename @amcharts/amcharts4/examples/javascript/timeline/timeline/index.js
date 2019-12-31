@@ -1,10 +1,3 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4plugins_timeline from "@amcharts/amcharts4/plugins/timeline";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4plugins_bullets from "@amcharts/amcharts4/plugins/bullets";
-
 /**
  * ---------------------------------------
  * This demo was created using amCharts 4.
@@ -173,7 +166,7 @@ dateAxis.tooltip.label.paddingTop = 7;
 dateAxis.endLocation = 0;
 dateAxis.startLocation = -0.5;
 
-let labelTemplate = dateAxis.renderer.labels.template;
+var labelTemplate = dateAxis.renderer.labels.template;
 labelTemplate.verticalCenter = "middle";
 labelTemplate.fillOpacity = 0.4;
 labelTemplate.background.fill = am4core.color("#000");
@@ -192,7 +185,7 @@ series.columns.template.propertyFields.stroke = "color";
 series.columns.template.strokeOpacity = 0;
 series.columns.template.fillOpacity = 0.6;
 
-let imageBullet1 = series.bullets.push(new am4plugins_bullets.PinBullet());
+var imageBullet1 = series.bullets.push(new am4plugins_bullets.PinBullet());
 imageBullet1.locationX = 1;
 imageBullet1.propertyFields.stroke = "color";
 imageBullet1.background.propertyFields.fill = "color";
@@ -203,7 +196,7 @@ imageBullet1.circle.radius = am4core.percent(100);
 imageBullet1.dy = -5;
 
 
-let textBullet = series.bullets.push(new am4charts.LabelBullet());
+var textBullet = series.bullets.push(new am4charts.LabelBullet());
 textBullet.label.propertyFields.text = "text";
 textBullet.disabled = true;
 textBullet.propertyFields.disabled = "textDisabled";
@@ -217,7 +210,7 @@ chart.scrollbarX.align = "center"
 chart.scrollbarX.width = am4core.percent(75);
 chart.scrollbarX.opacity = 0.5;
 
-let cursor = new am4plugins_timeline.CurveCursor();
+var cursor = new am4plugins_timeline.CurveCursor();
 chart.cursor = cursor;
 cursor.xAxis = dateAxis;
 cursor.yAxis = categoryAxis;
@@ -229,7 +222,7 @@ dateAxis.renderer.tooltipLocation2 = 0;
 categoryAxis.cursorTooltipEnabled = false;
 
 
-let label = chart.createChild(am4core.Label);
+var label = chart.createChild(am4core.Label);
 label.text = "Another unlucky day in the office."
 label.isMeasured = false;
 label.y = am4core.percent(35);

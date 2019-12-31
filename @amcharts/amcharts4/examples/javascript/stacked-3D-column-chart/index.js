@@ -1,10 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
 am4core.useTheme(am4themes_animated);
 
-let chart = am4core.create("chartdiv", am4charts.XYChart3D);
+var chart = am4core.create("chartdiv", am4charts.XYChart3D);
 
 
 chart.data = [{
@@ -56,13 +52,13 @@ chart.legend = new am4charts.Legend();
 
 chart.colors.step = 2;
 
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "category";
 categoryAxis.renderer.minGridDistance = 60;
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.interactionsEnabled = false;
 
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.tooltip.disabled = true;
 valueAxis.renderer.grid.template.strokeOpacity = 0.05;
 valueAxis.renderer.minGridDistance = 20;
@@ -70,7 +66,7 @@ valueAxis.interactionsEnabled = false;
 valueAxis.min = 0;
 valueAxis.renderer.minWidth = 35;
 
-let series1 = chart.series.push(new am4charts.ColumnSeries3D());
+var series1 = chart.series.push(new am4charts.ColumnSeries3D());
 series1.columns.template.width = am4core.percent(80);
 series1.columns.template.tooltipText = "{name}: {valueY.value}";
 series1.name = "Series 1";
@@ -78,7 +74,7 @@ series1.dataFields.categoryX = "category";
 series1.dataFields.valueY = "value1";
 series1.stacked = true;
 
-let series2 = chart.series.push(new am4charts.ColumnSeries3D());
+var series2 = chart.series.push(new am4charts.ColumnSeries3D());
 series2.columns.template.width = am4core.percent(80);
 series2.columns.template.tooltipText = "{name}: {valueY.value}";
 series2.name = "Series 2";
@@ -86,7 +82,7 @@ series2.dataFields.categoryX = "category";
 series2.dataFields.valueY = "value2";
 series2.stacked = true;
 
-let series3 = chart.series.push(new am4charts.ColumnSeries3D());
+var series3 = chart.series.push(new am4charts.ColumnSeries3D());
 series3.columns.template.width = am4core.percent(80);
 series3.columns.template.tooltipText = "{name}: {valueY.value}";
 series3.name = "Series 3";
@@ -94,7 +90,7 @@ series3.dataFields.categoryX = "category";
 series3.dataFields.valueY = "value3";
 series3.stacked = true;
 
-let series4 = chart.series.push(new am4charts.ColumnSeries3D());
+var series4 = chart.series.push(new am4charts.ColumnSeries3D());
 series4.columns.template.width = am4core.percent(80);
 series4.columns.template.tooltipText = "{name}: {valueY.value}";
 series4.name = "Series 4";
