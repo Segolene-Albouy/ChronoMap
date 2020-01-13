@@ -186,8 +186,9 @@ class ChronoMap {
 
             for (date; date <= maxDate; date += 1) {
                 if (typeof timeData[parseInt(date)] === 'undefined'){
-                    timeData[parseInt(date)] = JSON.parse(JSON.stringify(template));//{...template};//Object.assign({}, object)
-                    timeData[parseInt(date)]["date"] = date;
+                    timeData[parseInt(date)] = {...template};/*JSON.parse(JSON.stringify(template));*///{...template};//Object.assign({}, object)
+                    timeData[parseInt(date)].date = date;
+                    timeData[parseInt(date)].ids = [];
                 }
                 timeData[parseInt(date)][data[i].series] += 1;
                 timeData[parseInt(date)].ids.push(`${this.series[data[i].series].prefix}${data[i].id}`);
@@ -202,7 +203,8 @@ class ChronoMap {
         for (minDate; minDate <= maxDate; minDate++) {
             if (typeof timeData[minDate] === 'undefined'){
                 timeData[minDate] = JSON.parse(JSON.stringify(template));
-                timeData[minDate]["date"] = minDate;
+                timeData[minDate].date = minDate;
+                timeData[minDate].ids = [];
             }
         }
 
