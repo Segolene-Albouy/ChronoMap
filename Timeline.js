@@ -56,11 +56,12 @@ class Timeline extends AbstractChart {
             });
             let tooltips = "";
             let number = 0;
-            for (let j = this.config.series.length -1; j >= 0; j--) {
-                let entityName = this.config.series[j].entity;
-                let s = yearData[entityName] > 1 ? "s" : "";
-                if (yearData[entityName] > 0){number ++;}
-                tooltips = tooltips + `\n${this.chronoMap.entity[entityName].heatmapTooltip}${s} : [bold]${yearData[entityName]}[/]`;
+            for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
+                let seriesName = Object.values(this.chronoMap.series)[j].name;
+                let s = yearData[seriesName] > 1 ? "s" : "";
+                if (yearData[seriesName] > 0){number ++;}
+
+                tooltips = tooltips + `\n${seriesName}${s} : [bold]${yearData[seriesName]}[/]`; /*this.chronoMap.series[seriesName].heatmapTooltip*/
             }
 
             return `[bold]${date} — ${parseInt(date)+10}[/]${tooltips}${number === 0 ? "" : "\nClick to see more"}`;

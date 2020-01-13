@@ -49,7 +49,7 @@ class ChronoMap {
         this.container = this.generateContainer();
         this.map = new Map(this);
         this.timeline = new Timeline(this);
-        this.scrollbar = new Scrollbar(this);
+        //this.scrollbar = new Scrollbar(this);
     }
 
     generateContainer() {
@@ -181,12 +181,12 @@ class ChronoMap {
         Object.keys(this.series).map(e => {template[e] = 0});
 
         for (let i = data.length - 1; i >= 0; i--) {
-            let date = typeof data[i].minDate !== "undefined" ? data[i].minDate : 0;
-            let maxDate = typeof data[i].maxDate !== "undefined" ? data[i].maxDate : 0;
+            let date = data[i].minDate !== null ? data[i].minDate : 0;
+            let maxDate = data[i].maxDate !== null ? data[i].maxDate : 0;
 
             for (date; date <= maxDate; date += 1) {
                 if (typeof timeData[parseInt(date)] === 'undefined'){
-                    timeData[parseInt(date)] = JSON.parse(JSON.stringify(template));
+                    timeData[parseInt(date)] = JSON.parse(JSON.stringify(template));//{...template};//Object.assign({}, object)
                     timeData[parseInt(date)]["date"] = date;
                 }
                 timeData[parseInt(date)][data[i].series] += 1;
@@ -265,7 +265,7 @@ class ChronoMap {
                     "lat": data[i].lat,
                     "long": data[i].long,
                     "place": data[i].placeName,
-                    "ids": JSON.parse(JSON.stringify(ids))
+                    "ids": JSON.parse(JSON.stringify(ids)) // {...ids}
                 };
             }
             mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].prefix}${data[i].id}`);
