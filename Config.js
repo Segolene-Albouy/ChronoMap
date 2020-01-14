@@ -45,6 +45,7 @@ class Config {
         this.timeframeLabelY = this.chartHeight*(3.4/5);
         this.timeChartY = this.chartHeight*(3.6/5);
         this.timeChartHeight = this.chartHeight*(2.5/7);
+        this.timeChartTooltipY = -(this.timeChartHeight/2.3);
         document.getElementById(this.elementId).style.height = `${height}px`;
 
         this.homeZoomLevel = 2.1;

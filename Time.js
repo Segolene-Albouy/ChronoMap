@@ -44,7 +44,7 @@ class Time extends AbstractChart {
         xAxes.tooltip.background.strokeWidth = 0;
         xAxes.tooltip.background.cornerRadius = 3;
         xAxes.tooltip.background.pointerLength = 0;
-        xAxes.tooltip.dy = -80;
+        xAxes.tooltip.dy = this.config.timeChartTooltipY;/*-80*/
         xAxes.tooltip.dx = -65;
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
