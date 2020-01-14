@@ -7,20 +7,23 @@ class Scrollbar extends AbstractChart {
     constructor(chronoMap){
         super(chronoMap);
 
-        this.map = chronoMap.map.amMap;
-        this.timeline = chronoMap.timeline.amTime;
+        this.map = chronoMap.map;
+        this.time = chronoMap.time;
+
+        this.mapData = chronoMap.data.map;
+        this.timeData = chronoMap.data.time;
 
         this.amScrollbar = new am4charts.XYChartScrollbar();
-        this.timeframeLabel = this.createBoxLabel(this.map, 480);
+        this.timeframeLabel = this.createBoxLabel(this.map.amMap, this.config.timeframeLabelY);
 
         this.generate();
     }
 
     generate(){
-        this.timeline.amTime.scrollbarX = this.amScrollbar;
+        this.time.amTime.scrollbarX = this.amScrollbar;
 
-        for (let i = this.config.series.length -1; i >= 0; i--) {
-            this.amScrollbar.series.push(this.timeline.series[i]);
+        for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
+            this.amScrollbar.series.push(this.time.series[i]);
         }
 
         this.amScrollbar.events.on("rangechanged", function() {
@@ -28,34 +31,32 @@ class Scrollbar extends AbstractChart {
             let cursorMax = this.amScrollbar.range.end;
 
             // Conversion of the min and max range value into date (parseInt to get rid of the floating values)
-            let dateMinRange = (cursorMin / this.timeline.yearRange) + this.timeline.minDate;
-            let dateMaxRange = (cursorMax / this.timeline.yearRange) + this.timeline.minDate;
+            let dateMinRange = (cursorMin / this.time.dateRange) + this.time.minDate;
+            let dateMaxRange = (cursorMax / this.time.dateRange) + this.time.minDate;
             // Show the timerange selected
-            this.timeframeLabel.text = `${dateMinRange} — ${dateMaxRange}`;
+            this.timeframeLabel.text = `${parseInt(dateMinRange)} — ${parseInt(dateMaxRange)}`;
 
-            // remove the record boxes appearing when the user moves a cursor of the scrollbar
-            $(`#${this.chronoMap.config.elementId.box}`).empty();
+            /*!// remove the record boxes appearing when the user moves a cursor of the scrollbar
+            $(`#${this.chronoMap.config.elementId.box}`).empty();*/
             // set the Unknown place label to be transparent
             this.map.unknownPlaceLabel.fillOpacity = 0;
 
-            const timeData = this.chronoMap.data.time;
-
             // Get the index of th first and last object in the dataset corresponding to the selected timerange
-            const start = Math.floor(cursorMin * timeData.time.length);
-            const end = Math.ceil(cursorMax * timeData.time.length);
+            const start = Math.floor(cursorMin * this.timeData.length);
+            const end = Math.ceil(cursorMax * this.timeData.length);
 
             // retrieve the sub-dataset containing all the data for the selected timerange
-            const timerangeData = timeData.time.slice(start,end);
+            const timerangeData = this.timeData.slice(start,end);
             let timerangeIds = [];
             // add to timerangeIds all the ids of the items that are present between the date min and date max
-            timerangeData.map(yearData => {if (typeof yearData.ids !== "undefined") timerangeIds.push(...yearData.ids)});
+            timerangeData.map(dateData => {if (typeof dateData.ids !== "undefined") timerangeIds.push(...dateData.ids)});
             // remove all duplicate ids
             timerangeIds = timerangeIds.filter(unique);
 
             // for each place in the map dataset
-            for (let i = Object.keys(this.map.data).length - 1; i >= 0; i--) {
-                let latlong = Object.keys(this.map.data)[i];
-                let place = this.map.data[latlong];
+            for (let i = Object.keys(this.mapData).length - 1; i >= 0; i--) {
+                let latlong = Object.keys(this.mapData)[i];
+                let place = this.mapData[latlong];
 
                 // for each series that is displayed on the map
                 for (let l = Object.keys(this.chronoMap.series).length -1; l >= 0; l--) {

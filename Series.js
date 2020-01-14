@@ -4,8 +4,8 @@ const colorScheme = {
         "#509EAA",
         "#E0A93C",
         "#DB4646",
-        "#B4C63F",
-        "#9580f7"
+        "#aac63b",
+        "#997ff7"
     ],
     oslo: [
         "#F77220",

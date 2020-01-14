@@ -48,8 +48,8 @@ class ChronoMap {
 
         this.container = this.generateContainer();
         this.map = new Map(this);
-        this.timeline = new Timeline(this);
-        //this.scrollbar = new Scrollbar(this);
+        this.time = new Time(this);
+        this.scrollbar = new Scrollbar(this);
     }
 
     generateContainer() {
@@ -174,7 +174,6 @@ class ChronoMap {
 
         let template = {
             date: 0,
-            ids: [],
             i: "i"
         };
 
@@ -186,7 +185,7 @@ class ChronoMap {
 
             for (date; date <= maxDate; date += 1) {
                 if (typeof timeData[parseInt(date)] === 'undefined'){
-                    timeData[parseInt(date)] = {...template};/*JSON.parse(JSON.stringify(template));*///{...template};//Object.assign({}, object)
+                    timeData[parseInt(date)] = {...template};
                     timeData[parseInt(date)].date = date;
                     timeData[parseInt(date)].ids = [];
                 }
@@ -202,7 +201,7 @@ class ChronoMap {
 
         for (minDate; minDate <= maxDate; minDate++) {
             if (typeof timeData[minDate] === 'undefined'){
-                timeData[minDate] = JSON.parse(JSON.stringify(template));
+                timeData[minDate] = {...template};
                 timeData[minDate].date = minDate;
                 timeData[minDate].ids = [];
             }

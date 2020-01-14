@@ -10,12 +10,12 @@ const timeUnits = {
 };
 
 const timeSpans = {
-    "10y": 20,
-    "1y": 2,
-    "1M": 2,
-    "10d": 20,
-    "1d": 2,
-    "1h": 2
+    "10y": 10,
+    "1y": 1,
+    "1M": 1,
+    "10d": 10,
+    "1d": 1,
+    "1h": 1
 };
 
 /**
@@ -30,7 +30,7 @@ const timeSpans = {
  * a color and an angle in order to create map pins and heat map stripes accordingly
  */
 class Config {
-    constructor(timeRange = "1y", theme = "primary", isClickable= true, timeChart= "heatmap", height= "40em", elementId="chronoMap"){
+    constructor(timeRange = "1y", theme = "primary", isClickable= true, timeChart= "heatmap", height= "650", elementId="chronoMap"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timespan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
@@ -41,9 +41,11 @@ class Config {
         this.baseColors = colorScheme[theme];
         this.elementId = elementId;
 
-        document.getElementById(this.elementId).style.height = height;
-
-
+        this.chartHeight = height;
+        this.timeframeLabelY = this.chartHeight*(3.4/5);
+        this.timeChartY = this.chartHeight*(3.6/5);
+        this.timeChartHeight = this.chartHeight*(2.5/7);
+        document.getElementById(this.elementId).style.height = `${height}px`;
 
         this.homeZoomLevel = 2.1;
         this.homeGeoPoint = {latitude:30, longitude: 60};

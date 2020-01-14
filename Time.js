@@ -3,15 +3,15 @@ import * as am4charts from "./@amcharts/amcharts4/charts.js";
 import {AbstractChart} from "./ChronoMap.js";
 import {getMinValueInArray, getMaxValueInArray, getArrayOfKeyValue} from "./utils.js";*/
 
-class Timeline extends AbstractChart {
+class Time extends AbstractChart {
     constructor(chronoMap){
         super(chronoMap);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
         this.series = [];
-        this.minDate = getMinValueInArray(getArrayOfKeyValue(this.data.time, "year"));
-        this.maxDate = getMaxValueInArray(getArrayOfKeyValue(this.data.time, "year"));
-        this.yearRange = 1 / (this.maxDate - this.minDate);
+        this.minDate = Math.min.apply(null, getArrayOfKeyValue(this.data.time, "date"));
+        this.maxDate = Math.max.apply(null, getArrayOfKeyValue(this.data.time, "date"));
+        this.dateRange = 1 / (this.maxDate - this.minDate);
 
         this.generate();
     }
@@ -23,14 +23,14 @@ class Timeline extends AbstractChart {
 
     _generateConfig(){
         this.amTime.toFront();
-        this.amTime.height = 240;
-        this.amTime.y = 510;
+        this.amTime.height = this.config.timeChartHeight;
+        this.amTime.y = this.config.timeChartY;
         this.amTime.x = -10;
         this.amTime.data = this.data.time;
 
         // Create axes
         let xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
-        xAxes.dataFields.category = "year";
+        xAxes.dataFields.category = "date";
         let yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
         yAxes.dataFields.category = "i";
 
@@ -47,24 +47,23 @@ class Timeline extends AbstractChart {
         xAxes.tooltip.dy = -80;
         xAxes.tooltip.dx = -65;
 
-        // An adapter can modify the "normal" behavior of any amCharts object
-        // Here it changes how the tooltip text is displayed when the user is hovering the heat map
+        // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
         xAxes.adapter.add("getTooltipText", (date) => {
-            let yearData = this.data.time.find(function (element) {
+            let dateData = this.data.time.find(function (element) {
                 // retrieve the information associated with the date currently being hovered
-                return element.year === date;
+                return element.date === date;
             });
             let tooltips = "";
             let number = 0;
             for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
                 let seriesName = Object.values(this.chronoMap.series)[j].name;
-                let s = yearData[seriesName] > 1 ? "s" : "";
-                if (yearData[seriesName] > 0){number ++;}
+                let s = dateData[seriesName] > 1 ? "s" : "";
+                if (dateData[seriesName] > 0){number ++;}
 
-                tooltips = tooltips + `\n${seriesName}${s} : [bold]${yearData[seriesName]}[/]`; /*this.chronoMap.series[seriesName].heatmapTooltip*/
+                tooltips = tooltips + `\n${seriesName}${s} : [bold]${dateData[seriesName]}[/]`; /*this.chronoMap.series[seriesName].heatmapTooltip*/
             }
 
-            return `[bold]${date} — ${parseInt(date)+10}[/]${tooltips}${number === 0 ? "" : "\nClick to see more"}`;
+            return `[bold]${date} — ${parseInt(date)+this.config.timespan}[/]${tooltips}${number === 0 ? "" : "\nClick to see more"}`;
         });
 
         // Configuration of the background grid
@@ -83,8 +82,8 @@ class Timeline extends AbstractChart {
 
     _generateSeries(config){
         let series = this.amTime.series.push(new am4charts.ColumnSeries());
-        series.dataFields.value = config.series;
-        series.dataFields.categoryX = "year";
+        series.dataFields.value = config.name;
+        series.dataFields.categoryX = "date";
         series.dataFields.categoryY = "i";
         series.columns.template.fill = am4core.color(config.color);
         series.columns.template.width = am4core.percent(100);
@@ -93,38 +92,39 @@ class Timeline extends AbstractChart {
         // in order to show boxes that are associated with a date when clicking on a heat map stripe
         series.columns.template.events.on("hit", function(ev) {
             let clickedDate = ev.target.dataItem.dataContext.year;
-            let yearData = this.data.time.find(function (element) {
+            let dateData = this.data.time.find(function (element) {
                 // retrieve the information associated with the date that has been clicked
-                return element.year === clickedDate;
+                return element.date === clickedDate;
             });
-            if (typeof yearData.ids !== "undefined" || yearData.ids.length === 0){
-                this.chronoMap.idsClicked = yearData.ids; // set the property idsClicked
-                let s = yearData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+            if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
+                this.chronoMap.idsClicked = dateData.ids; // set the property idsClicked
+                let s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+
                 // define a title
-                let timeRange = `Record${s} created in the decade of ${clickedDate}-${parseInt(clickedDate)+10}`;
+                let timeRange = `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`;
                 // generate boxes
-                this.chronoMap.generateBoxes(yearData.ids, timeRange, this.chronoMap.data.main);
+                this.chronoMap.generateBoxes(dateData.ids, timeRange, this.chronoMap.data.main);
             }
         }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
 
         // in order to change the cursor appearance when hovering heatmap series
         series.columns.template.events.on("over", function(ev) {
             ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-            let hoverDate = ev.target.dataItem.dataContext.year;
+            let hoverDate = ev.target.dataItem.dataContext.date;
             // retrieve the information associated with the date that has been hovered
-            let yearData = this.data.time.find(element => element.year === hoverDate);
+            let dateData = this.data.time.find(element => element.date === hoverDate);
 
-            function isYearEmpty(yearData, series){
+            function isYearEmpty(dateData, series){
                 let empty = true;
                 for (let i = series.length - 1; i >= 0; i--) {
-                    // if all the series in year data are not empty
-                    if (yearData[series[i].name] > 0) {empty = false;}
+                    // if all the series in dateData are not empty
+                    if (dateData[series[i].name] > 0) {empty = false;}
                 }
                 return empty;
             }
 
             // if the is an item created at this date, change the cursor to be a pointer
-            if (! isYearEmpty(yearData, Object.keys(this.chronoMap.series))){
+            if (! isYearEmpty(dateData, Object.keys(this.chronoMap.series))){
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             } else {
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
