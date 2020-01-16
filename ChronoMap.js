@@ -7,14 +7,7 @@ import {Timeline} from "./Timeline.js";
 import {Scrollbar} from "./Scrollbar.js";*/
 
 
-// Possibilité de définir la granularité de la frise chronologique : tous les ans ou tous les dix ans
-// Possibilité de mettre des années ou des dates plus précises : voir parser des dates
-// possibilité de mettre différent types de graphes en dessous : heatmap, diagramme linéaire, ou points
 // mettre machin pour choisir la couleur en fonction de l'entité
-// pour un voyage : un truc plus stacked bar
-// possibilité de mettre ou non des box en dessous :
-// genre mettre une condition : si y a un id dans le dataset donné
-// bah on ajouter mets true l'attribue clickable => affichage de box
 
 const angle = [
     [90], // only one series displayed on the map
@@ -75,11 +68,6 @@ class ChronoMap {
         this.data.time = this.generateTimeDataset();
         this.data.map = this.generateMapDataset();
 
-        /*this.data = {
-            main: this.generateMainDataset(dataset),
-            time: this.generateTimeDataset(),
-            map: this.generateMapDataset()
-        };*/
         this.updateChronoMap();
         // add method to update chronomap according to the dataset
     }
@@ -116,7 +104,7 @@ class ChronoMap {
 
         for (let i = dataset.length - 1; i >= 0; i--) {
             if (typeof series[dataset[i].series] === "undefined")
-                series[dataset[i].series] = new Series(i, dataset[i].series);
+                series[dataset[i].series] = new Series(Object.keys(series).length, dataset[i].series);
         }
 
         const seriesNumber = Object.keys(series).length;
@@ -272,7 +260,7 @@ class ChronoMap {
             mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].prefix}${data[i].id}`);
         }
 
-        return mapData/*Object.values(mapData)*/;
+        return mapData;
     }
 
     updateChronoMap() {

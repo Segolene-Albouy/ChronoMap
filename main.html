@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>ChronoMap</title>
+    <style>
+        body {
+            font-family: Nunito;
+        }
+    </style>
 </head>
 <body>
     <div id="chronoMap"></div>
 </body>
-<script src="amcharts4-minified/core.js"></script>
-<script src="amcharts4-minified/charts.js"></script>
-<script src="amcharts4-minified/maps.js"></script>
-<script src="amcharts4-minified/worldLow.js"></script>
-<script src="amcharts4-minified/bullets.js"></script>
+<script src="@amcharts4/core.js"></script>
+<script src="@amcharts4/charts.js"></script>
+<script src="@amcharts4/maps.js"></script>
+<script src="@amcharts4/worldLow.js"></script>
+<script src="@amcharts4/bullets.js"></script>
 
 <script src="utils.js"></script>
 <script src="ChronoMap.js"></script>
@@ -31,7 +36,7 @@
             maxDate: 2001,
             placeName: "Paris",
             lat: 48,
-            long: 52,
+            long: 2,
             id: 1
         },{
             series: "russie",
@@ -39,8 +44,8 @@
             minDate: 2002,
             maxDate: 2008,
             placeName: "Russie",
-            lat: 56,
-            long: -12,
+            lat: 55,
+            long: 37,
             id: 2
         },{
             series: "chine",
@@ -48,8 +53,8 @@
             minDate: 2008,
             maxDate: 2012,
             placeName: "Chine",
-            lat: 30,
-            long: 30,
+            lat: 23,
+            long: 102,
             id: 3
         },{
             series: "asie",
@@ -57,9 +62,27 @@
             minDate: 2013,
             maxDate: 2015,
             placeName: "Thailande",
-            lat: 23,
-            long: -9,
+            lat: 13,
+            long: 100,
             id: 4
+        },{
+            series: "asie",
+            title: "Inde : se prendre des pigments dans les bronches",
+            minDate: 2014,
+            maxDate: 2016,
+            placeName: "Inde",
+            lat: 13,
+            long: 80,
+            id: 5
+        },{
+            series: "asie",
+            title: "Cambodge : salir ses pieds dans le jus de marché",
+            minDate: 2012,
+            maxDate: 2014,
+            placeName: "Cambodge",
+            lat: 11,
+            long: 104,
+            id: 6
         }
     ];
 
