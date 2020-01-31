@@ -26,24 +26,6 @@ const isIterable = (variable) => {
 };
 
 /**
- * Get minimal value in an array
- * @param a
- * @return {number}
- */
-const getMinValueInArray = (a) => {
-    return Math.min.apply(null, a);
-};
-
-/**
- * Get maximal value in an array
- * @param a
- * @return {number}
- */
-const getMaxValueInArray = (a) => {
-    return Math.max.apply(null, a);
-};
-
-/**
  * This function returns an array of objects ordered by the value (alphabetically and numerically)
  * of the node in each object associated with the key given as parameter
  *

@@ -261,19 +261,16 @@ class ChronoMap {
     }
 
     bindSeriesInLegend() {
-        // TODO : loop on this.series values
-        // TODO : create map and time properties Series : object that we can access and map easily
+        for (let i = Object.values(this.series).length - 1; i >= 0; i--) {
+            const mapSeries = Object.values(this.series)[i].map;
+            const timeSeries = Object.values(this.series)[i].time;
 
-        for (let i = this.map.amMap.series.length - 1; i >= 0; i--) {
-            const series = this.map.amMap.series.getIndex(i);
-            series.events.on("hidden", (ev) => {
-                const index = this.map.amMap.series.indexOf(ev.target);
-                this.time.amTime.series.getIndex(index).hide();
+            mapSeries.events.on("hidden", () => {
+                timeSeries.hide();
             });
 
-            series.events.on("shown", (ev) => {
-                const index = this.map.amMap.series.indexOf(ev.target);
-                this.time.amTime.series.getIndex(index).show();
+            mapSeries.events.on("shown", () => {
+                timeSeries.show();
             });
         }
     }

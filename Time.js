@@ -8,8 +8,8 @@ class Time extends AbstractChart {
         super(chronoMap);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
-        this.minDate = Math.min.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
-        this.maxDate = Math.max.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
+        this.minDate = Math.min.apply(null, Object.keys(this.data.time));
+        this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
 
         this.generate();
