@@ -23,7 +23,7 @@ class Scrollbar extends AbstractChart {
         this.time.amTime.scrollbarX = this.amScrollbar;
 
         for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
-            this.amScrollbar.series.push(this.time.series[i]);
+            this.amScrollbar.series.push(Object.values(this.chronoMap.series)[i].time);
         }
 
         this.amScrollbar.events.on("rangechanged", () => {

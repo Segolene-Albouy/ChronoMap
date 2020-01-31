@@ -9,7 +9,7 @@ const colorScheme = {
     ],
     oslo: [
         "#F77220",
-        "#214654",
+        "#295566",
         "#0F8B8D",
         "#EC9A29",
         "#A8201A"
@@ -30,7 +30,7 @@ const colorScheme = {
     ],
     kiev: [
         "#6BBAAA",
-        "#231942",
+        "#352270",
         "#9D8DF1",
         "#C5D6F7",
         "#1CFEBA"
@@ -52,12 +52,24 @@ class Series {
      */
     constructor(index, name, color = null){
         if (!color)
-            color = colorScheme.primary[index];
+            color = colorScheme.oslo[index];
 
         this.name = name;
         this.color = color;
         this.angle = 0; // series angle will be defined at the chronoMap class level
         this.prefix = index;
+
+        /**
+         * Reference to the time chart series corresponding to the particular series
+         * @type {{}}
+         */
+        this.time = {};
+
+        /**
+         * Reference to the time chart series corresponding to the particular series
+         * @type {{}}
+         */
+        this.map = {};
     }
 }
 

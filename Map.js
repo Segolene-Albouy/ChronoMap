@@ -13,7 +13,6 @@ class Map extends AbstractChart {
         this.amMap = this.chronoMap.container.createChild(am4maps.MapChart);
         this.mapPins = {};
         this.unknownPlaceLabel = {};
-        this.series = [];
 
         this.generate();
     }
@@ -80,7 +79,6 @@ class Map extends AbstractChart {
             // and add to the mapPins property all the map pins created when creating the series
             this.mapPins[Object.keys(this.chronoMap.series)[i]] = this._generateSeries(Object.values(this.chronoMap.series)[i]);
         }
-
     }
 
     /**
@@ -96,26 +94,26 @@ class Map extends AbstractChart {
         mapSeries.fill = am4core.color(config.color);
         mapSeries.name = ucFirst(config.name); // defining a name for the legend
 
-        this.series.push(mapSeries);
+        this.chronoMap.series[config.name].map = mapSeries;
 
         let seriesPins = {};
 
         for (let i = Object.keys(this.data.map).length - 1; i >= 0; i--) {
-            let latlong = Object.keys(this.data.map)[i];
-            let place = this.data.map[latlong];
-            let seriesName = config.name; // series name in camelCase
-            let seriesTitle = ucFirst(config.name); // series name in "Normal case"
+            const latlong = Object.keys(this.data.map)[i];
+            const place = this.data.map[latlong];
+            const seriesName = config.name; // series name in camelCase
+            const seriesTitle = ucFirst(config.name); // series name in "Normal case"
             // if there is item of the current series in the current place
             if (place.ids[seriesName].length !== 0) {
                 // create a map point for each place in the dataset
                 let placePoint = mapSeries.mapImages.create();
                 placePoint.latitude = parseFloat(place.lat);
                 placePoint.longitude = parseFloat(place.long);
-                placePoint.nonScaling = true; // the marker stays at the same size when zooming
+                placePoint.nonScaling = true; // the pin stays at the same size when zooming
 
-                // define marker appearance
-                seriesPins[latlong] = placePoint.createChild(am4plugins_bullets.PinBullet); // creating a marker for each place
-                seriesPins[latlong].circle.radius = am4core.percent(100); // defining the color of the circle to be the same size as the radius
+                // define pin appearance
+                seriesPins[latlong] = placePoint.createChild(am4plugins_bullets.PinBullet); // create a pin for each place
+                seriesPins[latlong].circle.radius = am4core.percent(100); // define colored circle to be as wide as the radius
 
                 seriesPins[latlong].circle.fill = am4core.color(config.color); // set the color of the circle
                 seriesPins[latlong].background.fill = am4core.color("#919191"); // set the color of the pointy end
@@ -139,7 +137,7 @@ class Map extends AbstractChart {
                     // define a title
                     let boxesTitle = `${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`;
                     // generate boxes
-                    this.chronoMap.generateBoxes(idsToDisplay, boxesTitle, this.chronoMap.datasets.box);
+                    this.chronoMap.generateBoxes(idsToDisplay, boxesTitle, this.chronoMap.data.main);
                 }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
             }
         }

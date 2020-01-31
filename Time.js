@@ -8,7 +8,6 @@ class Time extends AbstractChart {
         super(chronoMap);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
-        this.series = [];
         this.minDate = Math.min.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
         this.dateRange = 1 / (this.maxDate - this.minDate);
@@ -77,7 +76,7 @@ class Time extends AbstractChart {
      * @param dateData {object}
      * @returns {boolean}
      */
-    isYearEmpty(dateData){
+    isTimeRangeEmpty(dateData){
         let empty = true;
         for (let i = Object.keys(this.chronoMap.series).length - 1; i >= 0; i--) {
             // if all the series in dateData are not empty
@@ -88,7 +87,7 @@ class Time extends AbstractChart {
 
     _generateAllSeries(){
         for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
-            this.series.push(this._generateSeries(Object.values(this.chronoMap.series)[i]));
+            this.chronoMap.series[Object.keys(this.chronoMap.series)[i]].time = this._generateSeries(Object.values(this.chronoMap.series)[i]);
         }
     }
 
@@ -123,7 +122,7 @@ class Time extends AbstractChart {
             const dateData = this.data.time[hoverDate];
 
             // if the is an item created at this date, change the cursor to be a pointer
-            if (! this.isYearEmpty(dateData)){
+            if (! this.isTimeRangeEmpty(dateData)){
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             } else {
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
