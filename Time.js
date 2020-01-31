@@ -50,10 +50,6 @@ class Time extends AbstractChart {
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
         xAxes.adapter.add("getTooltipText", (date) => {
             const dateData = this.chronoMap.data.time[date];
-            /*let dateData = this.data.time.find(function (element) {
-                // retrieve the information associated with the date currently being hovered
-                return element.date === date;
-            });*/
             let tooltips = "";
             let number = 0;
             for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
@@ -61,10 +57,10 @@ class Time extends AbstractChart {
                 let s = dateData[seriesName] > 1 ? "s" : "";
                 if (dateData[seriesName] > 0){number ++;}
 
-                tooltips = tooltips + `\n${seriesName}${s} : [bold]${dateData[seriesName]}[/]`; /*this.chronoMap.series[seriesName].heatmapTooltip*/
+                tooltips = tooltips + `\n${seriesName}${s} : [bold]${dateData[seriesName]}[/]`;
             }
 
-            return `[bold]${date} — ${parseInt(date)+this.config.timespan}[/]${tooltips}${number === 0 ? "" : "\nClick to see more"}`;
+            return number ? `[bold]${date} — ${parseInt(date)+this.config.timespan}[/]${tooltips}\nClick to see more` : "";
         });
 
         // Configuration of the background grid
@@ -73,6 +69,21 @@ class Time extends AbstractChart {
         yAxes.renderer.grid.template.strokeOpacity = 0;
         xAxes.renderer.labels.template.fill = am4core.color("#636266");
         yAxes.renderer.labels.template.hidden = true;
+    }
+
+    /**
+     * Check in the data object given as parameter defining info for a particular time range
+     * if any of the chart series is present during this time span
+     * @param dateData {object}
+     * @returns {boolean}
+     */
+    isYearEmpty(dateData){
+        let empty = true;
+        for (let i = Object.keys(this.chronoMap.series).length - 1; i >= 0; i--) {
+            // if all the series in dateData are not empty
+            if (dateData[Object.keys(this.chronoMap.series)[i]] > 0) {empty = false;}
+        }
+        return empty;
     }
 
     _generateAllSeries(){
@@ -91,13 +102,9 @@ class Time extends AbstractChart {
         series.columns.template.strokeWidth = 0;
 
         // in order to show boxes that are associated with a date when clicking on a heat map stripe
-        series.columns.template.events.on("hit", function(ev) {
-            const clickedDate = ev.target.dataItem.dataContext.year;
+        series.columns.template.events.on("hit", (ev) => {
+            const clickedDate = ev.target.dataItem.dataContext.date;
             const dateData = this.data.time[clickedDate];
-            /*const dateData = this.data.time.find(function (element) {
-                // retrieve the information associated with the date that has been clicked
-                return element.date === clickedDate; // TODO : change timeData to object to retrieve info more efficiently
-            });*/
             if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
                 this.chronoMap.idsClicked = dateData.ids; // set the property idsClicked
                 const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
@@ -107,32 +114,21 @@ class Time extends AbstractChart {
                 // generate boxes
                 this.chronoMap.generateBoxes(dateData.ids, timeRange, this.chronoMap.data.main);
             }
-        }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
+        });
 
         // in order to change the cursor appearance when hovering heatmap series
-        series.columns.template.events.on("over", function(ev) {
+        series.columns.template.events.on("over", (ev) => {
             ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             const hoverDate = ev.target.dataItem.dataContext.date;
             const dateData = this.data.time[hoverDate];
-            /*// retrieve the information associated with the date that has been hovered
-            const dateData = this.data.time.find(element => element.date === hoverDate);*/
-
-            function isYearEmpty(dateData, series){
-                let empty = true;
-                for (let i = series.length - 1; i >= 0; i--) {
-                    // if all the series in dateData are not empty
-                    if (dateData[series[i].name] > 0) {empty = false;} // TODO : change timeData structure to allow more efficient retrieval
-                }
-                return empty;
-            }
 
             // if the is an item created at this date, change the cursor to be a pointer
-            if (! isYearEmpty(dateData, Object.keys(this.chronoMap.series))){
+            if (! this.isYearEmpty(dateData)){
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             } else {
                 ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
             }
-        }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
+        });
 
         series.heatRules.push({
             target: series.columns.template,
