@@ -13,6 +13,7 @@ class Map extends AbstractChart {
         this.amMap = this.chronoMap.container.createChild(am4maps.MapChart);
         this.mapPins = {};
         this.unknownPlaceLabel = {};
+        this.series = [];
 
         this.generate();
     }
@@ -94,6 +95,8 @@ class Map extends AbstractChart {
         let mapSeries = this.amMap.series.push(new am4maps.MapImageSeries());
         mapSeries.fill = am4core.color(config.color);
         mapSeries.name = ucFirst(config.name); // defining a name for the legend
+
+        this.series.push(mapSeries);
 
         let seriesPins = {};
 

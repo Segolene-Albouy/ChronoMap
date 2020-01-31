@@ -9,8 +9,8 @@ class Time extends AbstractChart {
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
         this.series = [];
-        this.minDate = Math.min.apply(null, getArrayOfKeyValue(this.data.time, "date"));
-        this.maxDate = Math.max.apply(null, getArrayOfKeyValue(this.data.time, "date"));
+        this.minDate = Math.min.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
+        this.maxDate = Math.max.apply(null, Object.keys(this.data.time)/*getArrayOfKeyValue(this.data.time, "date")*/);
         this.dateRange = 1 / (this.maxDate - this.minDate);
 
         this.generate();
@@ -26,7 +26,7 @@ class Time extends AbstractChart {
         this.amTime.height = this.config.timeChartHeight;
         this.amTime.y = this.config.timeChartY;
         this.amTime.x = -10;
-        this.amTime.data = this.data.time;
+        this.amTime.data = Object.values(this.data.time).sort((a, b) => (a["date"] > b["date"]) ? 1 : -1);
 
         // Create axes
         let xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
@@ -91,17 +91,18 @@ class Time extends AbstractChart {
 
         // in order to show boxes that are associated with a date when clicking on a heat map stripe
         series.columns.template.events.on("hit", function(ev) {
-            let clickedDate = ev.target.dataItem.dataContext.year;
-            let dateData = this.data.time.find(function (element) {
+            const clickedDate = ev.target.dataItem.dataContext.year;
+            const dateData = this.data.time[clickedDate];
+            /*const dateData = this.data.time.find(function (element) {
                 // retrieve the information associated with the date that has been clicked
-                return element.date === clickedDate;
-            });
+                return element.date === clickedDate; // TODO : change timeData to object to retrieve info more efficiently
+            });*/
             if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
                 this.chronoMap.idsClicked = dateData.ids; // set the property idsClicked
-                let s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+                const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
 
                 // define a title
-                let timeRange = `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`;
+                const timeRange = `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`;
                 // generate boxes
                 this.chronoMap.generateBoxes(dateData.ids, timeRange, this.chronoMap.data.main);
             }
@@ -110,15 +111,16 @@ class Time extends AbstractChart {
         // in order to change the cursor appearance when hovering heatmap series
         series.columns.template.events.on("over", function(ev) {
             ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-            let hoverDate = ev.target.dataItem.dataContext.date;
-            // retrieve the information associated with the date that has been hovered
-            let dateData = this.data.time.find(element => element.date === hoverDate);
+            const hoverDate = ev.target.dataItem.dataContext.date;
+            const dateData = this.data.time[hoverDate];
+            /*// retrieve the information associated with the date that has been hovered
+            const dateData = this.data.time.find(element => element.date === hoverDate);*/
 
             function isYearEmpty(dateData, series){
                 let empty = true;
                 for (let i = series.length - 1; i >= 0; i--) {
                     // if all the series in dateData are not empty
-                    if (dateData[series[i].name] > 0) {empty = false;}
+                    if (dateData[series[i].name] > 0) {empty = false;} // TODO : change timeData structure to allow more efficient retrieval
                 }
                 return empty;
             }

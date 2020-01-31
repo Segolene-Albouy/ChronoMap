@@ -19,30 +19,20 @@ const angle = [
 
 class ChronoMap {
     constructor(dataset = null, series = null, config = null) {
-        if (config)
-            this.config = config;
-        else
-            this.config = new Config();
 
-        if (series) {
-            this.series = series;
-        } else {
-            if (dataset)
-                this.series = this.generateSeries(dataset);
-            else
-                this.series = [];
-        }
+        this.config = config ? config : new Config();
 
-        this.data = {};
-        if (dataset)
-            this.addDataset(dataset);
-        else
-            this.data = { main: {}, time: [], map: [] };
+        this.series = series ? series : this.generateSeries(dataset);
+
+        this.data = { main: {}, time: {}, map: {} };
+        this.generateDatasets(dataset);
 
         this.container = this.generateContainer();
         this.map = new Map(this);
         this.time = new Time(this);
         this.scrollbar = new Scrollbar(this);
+
+        this.bindSeriesInLegend();
     }
 
     generateContainer() {
@@ -63,13 +53,10 @@ class ChronoMap {
      *   }
      * ];
      */
-    addDataset(dataset) {
+    generateDatasets(dataset) {
         this.data.main = this.generateMainDataset(dataset);
         this.data.time = this.generateTimeDataset();
         this.data.map = this.generateMapDataset();
-
-        this.updateChronoMap();
-        // add method to update chronomap according to the dataset
     }
 
     addData(data) {
@@ -80,7 +67,7 @@ class ChronoMap {
                 map: this.addMapData(data)
             };
         } else {
-            this.data = this.addDataset([data]);
+            this.generateDatasets([data]);
         }
         this.updateChronoMap();
     }
@@ -100,6 +87,9 @@ class ChronoMap {
     }
 
     generateSeries(dataset) {
+        if (! dataset)
+            return {};
+
         let series = {};
 
         for (let i = dataset.length - 1; i >= 0; i--) {
@@ -195,7 +185,7 @@ class ChronoMap {
             }
         }
 
-        return Object.values(timeData).sort((a, b) => (a["date"] > b["date"]) ? 1 : -1);
+        return timeData;
     };
 
     addMapData = (data) => {
@@ -254,7 +244,7 @@ class ChronoMap {
                     "lat": data[i].lat,
                     "long": data[i].long,
                     "place": data[i].placeName,
-                    "ids": JSON.parse(JSON.stringify(ids)) // {...ids}
+                    "ids": JSON.parse(JSON.stringify(ids))
                 };
             }
             mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].prefix}${data[i].id}`);
@@ -265,6 +255,24 @@ class ChronoMap {
 
     updateChronoMap() {
 
+    }
+
+    bindSeriesInLegend() {
+        // TODO : loop on this.series values
+        // TODO : create map and time properties Series : object that we can access and map easily
+
+        for (let i = this.map.amMap.series.length - 1; i >= 0; i--) {
+            const series = this.map.amMap.series.getIndex(i);
+            series.events.on("hidden", (ev) => {
+                const index = this.map.amMap.series.indexOf(ev.target);
+                this.time.amTime.series.getIndex(index).hide();
+            });
+
+            series.events.on("shown", (ev) => {
+                const index = this.map.amMap.series.indexOf(ev.target);
+                this.time.amTime.series.getIndex(index).show();
+            });
+        }
     }
 }
 

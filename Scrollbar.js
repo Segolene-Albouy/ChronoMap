@@ -11,7 +11,7 @@ class Scrollbar extends AbstractChart {
         this.time = chronoMap.time;
 
         this.mapData = chronoMap.data.map;
-        this.timeData = chronoMap.data.time;
+        this.timeData = chronoMap.time.amTime.data/*chronoMap.data.time*/;
 
         this.amScrollbar = new am4charts.XYChartScrollbar();
         this.timeframeLabel = this.createBoxLabel(this.map.amMap, this.config.timeframeLabelY);
@@ -26,13 +26,13 @@ class Scrollbar extends AbstractChart {
             this.amScrollbar.series.push(this.time.series[i]);
         }
 
-        this.amScrollbar.events.on("rangechanged", function() {
-            let cursorMin = this.amScrollbar.range.start;
-            let cursorMax = this.amScrollbar.range.end;
+        this.amScrollbar.events.on("rangechanged", () => {
+            const cursorMin = this.amScrollbar.range.start;
+            const cursorMax = this.amScrollbar.range.end;
 
             // Conversion of the min and max range value into date (parseInt to get rid of the floating values)
-            let dateMinRange = (cursorMin / this.time.dateRange) + this.time.minDate;
-            let dateMaxRange = (cursorMax / this.time.dateRange) + this.time.minDate;
+            const dateMinRange = (cursorMin / this.time.dateRange) + this.time.minDate;
+            const dateMaxRange = (cursorMax / this.time.dateRange) + this.time.minDate;
             // Show the timerange selected
             this.timeframeLabel.text = `${parseInt(dateMinRange)} — ${parseInt(dateMaxRange)}`;
 
@@ -55,14 +55,14 @@ class Scrollbar extends AbstractChart {
 
             // for each place in the map dataset
             for (let i = Object.keys(this.mapData).length - 1; i >= 0; i--) {
-                let latlong = Object.keys(this.mapData)[i];
+                const latlong = Object.keys(this.mapData)[i];
                 let place = this.mapData[latlong];
 
                 // for each series that is displayed on the map
                 for (let l = Object.keys(this.chronoMap.series).length -1; l >= 0; l--) {
                     // retrieve all ids that are both in the timeframe selected (timerangeIds)
                     // and in the current place (place.ids[seriesName])
-                    let seriesName = Object.keys(this.chronoMap.series)[l];
+                    const seriesName = Object.keys(this.chronoMap.series)[l];
                     if (place.ids[seriesName].length !== 0){
                         // add to the ids property the ids currently visible (intersection of time and place)
                         this.map.mapPins[seriesName][latlong].properties.dummyData.ids =
@@ -72,7 +72,7 @@ class Scrollbar extends AbstractChart {
                     }
                 }
             }
-        }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
+        });
     }
 
     /**
