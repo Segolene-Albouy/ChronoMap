@@ -54,6 +54,9 @@ class ChronoMap {
      * ];
      */
     generateDatasets(dataset) {
+        if (! dataset)
+            return;
+
         this.data.main = this.generateMainDataset(dataset);
         this.data.time = this.generateTimeDataset();
         this.data.map = this.generateMapDataset();

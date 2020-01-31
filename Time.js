@@ -49,10 +49,11 @@ class Time extends AbstractChart {
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
         xAxes.adapter.add("getTooltipText", (date) => {
-            let dateData = this.data.time.find(function (element) {
+            const dateData = this.chronoMap.data.time[date];
+            /*let dateData = this.data.time.find(function (element) {
                 // retrieve the information associated with the date currently being hovered
                 return element.date === date;
-            });
+            });*/
             let tooltips = "";
             let number = 0;
             for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
