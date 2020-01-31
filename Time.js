@@ -38,12 +38,12 @@ class Time extends AbstractChart {
         this.amTime.cursor.lineY.disabled = true;
         this.amTime.cursor.behavior = "none";
         yAxes.tooltip.disabled = true;
-        // Configuring the content of tooltip for the year axis
+        // Configuring the content of tooltip for the date axis
         xAxes.tooltip.background.fill = am4core.color("#9b9b9b");
         xAxes.tooltip.background.strokeWidth = 0;
         xAxes.tooltip.background.cornerRadius = 3;
         xAxes.tooltip.background.pointerLength = 0;
-        xAxes.tooltip.dy = this.config.timeChartTooltipY;/*-80*/
+        xAxes.tooltip.dy = this.config.timeChartTooltipY;
         xAxes.tooltip.dx = -65;
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
@@ -111,7 +111,7 @@ class Time extends AbstractChart {
                 // define a title
                 const timeRange = `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`;
                 // generate boxes
-                this.chronoMap.generateBoxes(dateData.ids, timeRange, this.chronoMap.data.main);
+                this.chronoMap.generateTable(dateData.ids, timeRange, this.chronoMap.data.main);
             }
         });
 

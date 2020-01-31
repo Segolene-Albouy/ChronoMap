@@ -46,6 +46,7 @@ class Config {
         this.timeChartY = this.chartHeight*(3.6/5);
         this.timeChartHeight = this.chartHeight*(2.5/7);
         this.timeChartTooltipY = -(this.timeChartHeight/2.3);
+        this.scrollbarHeight = this.timeChartHeight/4;
         document.getElementById(this.elementId).style.height = `${height}px`;
 
         this.homeZoomLevel = 2.1;

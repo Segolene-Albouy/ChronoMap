@@ -21,6 +21,8 @@ class Scrollbar extends AbstractChart {
 
     generate(){
         this.time.amTime.scrollbarX = this.amScrollbar;
+        this.amScrollbar.percentHeight = 25;
+        this.amScrollbar.height = this.config.scrollbarHeight;
 
         for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
             this.amScrollbar.series.push(Object.values(this.chronoMap.series)[i].time);

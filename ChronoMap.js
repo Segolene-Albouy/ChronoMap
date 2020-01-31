@@ -19,17 +19,45 @@ const angle = [
 
 class ChronoMap {
     constructor(dataset = null, series = null, config = null) {
-
+        /**
+         * Config : object containing the information relating to the configuration of the chronomap
+         * e.g. : height, timerange, type of time chart, etc.
+         */
         this.config = config ? config : new Config();
 
+        /**
+         * Series : object containing all the properties concerning the series displayed on the chart (coherent set of data)
+         * e.g. : color, name, angle of the map pin, etc.
+         */
         this.series = series ? series : this.generateSeries(dataset);
 
+        /**
+         * Data : object containing all three data sets used to generate the chronomap
+         * @type {{main: {}, time: {}, map: {}}}
+         */
         this.data = { main: {}, time: {}, map: {} };
         this.generateDatasets(dataset);
 
+        /**
+         * Container : amcharts object containing all the charts composing the chronomap
+         */
         this.container = this.generateContainer();
+
+        /**
+         * Map : map chart object used in the chronomap
+         */
         this.map = new Map(this);
+
+        /**
+         * Time : time chart object used in the chronomap
+         * @type {Time}
+         */
         this.time = new Time(this);
+
+        /**
+         * Scrollbar : scrollbar object used to select a timerange in the chronomap
+         * @type {Scrollbar}
+         */
         this.scrollbar = new Scrollbar(this);
 
         this.bindSeriesInLegend();
@@ -260,6 +288,9 @@ class ChronoMap {
 
     }
 
+    /**
+     * Allows to toggle map and time chart series simultaneously on click on legend items
+     */
     bindSeriesInLegend() {
         for (let i = Object.values(this.series).length - 1; i >= 0; i--) {
             const mapSeries = Object.values(this.series)[i].map;
