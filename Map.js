@@ -4,7 +4,7 @@ import * as am4maps from "./@amcharts/amcharts4/maps.js";
 import * as am4geodata_worldLow from "./@amcharts/geodata/worldLow.js";
 import * as am4plugins_bullets from "./@amcharts/amcharts4/plugins/bullets.js";
 import {AbstractChart} from "./ChronoMap.js";
-import {ucFirst, getDates} from "./utils.js";*/
+import {getDates} from "./utils.js";*/
 
 class Map extends AbstractChart {
 
@@ -92,7 +92,7 @@ class Map extends AbstractChart {
     _generateSeries(config){
         let mapSeries = this.amMap.series.push(new am4maps.MapImageSeries());
         mapSeries.fill = am4core.color(config.color);
-        mapSeries.name = ucFirst(config.name); // defining a name for the legend
+        mapSeries.name = config.name.capitalize(); // defining a name for the legend
 
         this.chronoMap.series[config.name].map = mapSeries;
 
@@ -102,7 +102,7 @@ class Map extends AbstractChart {
             const latlong = Object.keys(this.data.map)[i];
             const place = this.data.map[latlong];
             const seriesName = config.name; // series name in camelCase
-            const seriesTitle = ucFirst(config.name); // series name in "Normal case"
+            const seriesTitle = config.name.capitalize(); // series name in "Normal case"
             // if there is item of the current series in the current place
             if (place.ids[seriesName].length !== 0) {
                 // create a map point for each place in the dataset
@@ -134,10 +134,8 @@ class Map extends AbstractChart {
 
                     // add an "s" if there is multiple records to display
                     let s = idsToDisplay.length > 1 ? "s" : "";
-                    // define a title
-                    let boxesTitle = `${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`;
                     // generate boxes
-                    this.chronoMap.generateBoxes(idsToDisplay, boxesTitle, this.chronoMap.data.main);
+                    this.chronoMap.generateTable(idsToDisplay, `${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`);
                 }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
             }
         }

@@ -51,13 +51,29 @@ class Series {
      * @param color
      */
     constructor(index, name, color = null){
-        if (!color)
-            color = colorScheme.oslo[index];
-
+        /**
+         * Name of series
+         * @type {string}
+         */
         this.name = name;
-        this.color = color;
-        this.angle = 0; // series angle will be defined at the chronoMap class level
-        this.prefix = index;
+
+        /**
+         * Series number ; used as prefix id to identify chart data items
+         * @type {Number}
+         */
+        this.number = index;
+
+        /**
+         * Color of the series
+         */
+        this.color = color ? color : colorScheme.granada[index];
+
+        /**
+         * Angle of the pins representing the series on the map
+         * Will be defined at the chronomap class level
+         * @type {number}
+         */
+        this.angle = 0;
 
         /**
          * Reference to the time chart series corresponding to the particular series

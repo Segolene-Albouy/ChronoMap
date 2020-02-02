@@ -61,6 +61,30 @@ class ChronoMap {
         this.scrollbar = new Scrollbar(this);
 
         this.bindSeriesInLegend();
+
+        /* window.setTimeout(() => {
+            for (let i = this.scrollbar.amScrollbar.scrollbarChart.series.values.length - 1; i >= 0; i--) {
+                let series = this.scrollbar.amScrollbar.scrollbarChart.series.values[i];
+                console.log(series.columns.template.properties);
+                series.columns.template.properties.fill._value = {"r": 150, "g": 0, "b": 0};
+                /!*series.columns.template.realFill._value = {"r": 150, "g": 0, "b": 0};*!/
+                /!*series.dataItems.each(dataItem => {
+                    dataItem.fill = "red";
+                })*!/
+            }
+            /!*console.log(this.scrollbar.amScrollbar.scrollbarChart.dataItems.values);
+            console.log(this.map.amMap.dataItems.values);
+            this.map.amMap.dataItems.each(dataItem => console.log(dataItem));
+            this.scrollbar.amScrollbar.scrollbarChart.dataItems.each(dataItem => {
+                console.log(dataItem);
+            })*!/
+        },1000);
+        window.setTimeout(() => {
+            for (let i = this.scrollbar.amScrollbar.scrollbarChart.series.values.length - 1; i >= 0; i--) {
+                let series = this.scrollbar.amScrollbar.scrollbarChart.series.values[i];
+                series.columns.template.properties.fill._value = {"r": 0, "g": 0, "b": 150};
+            }
+        },2000);*/
     }
 
     generateContainer() {
@@ -144,7 +168,7 @@ class ChronoMap {
     generateMainDataset(dataset) {
         let mainDataset = {};
 
-        dataset.map(data => mainDataset[`${this.series[data.series].prefix}${data.id}`] = data);
+        dataset.map(data => mainDataset[`${this.series[data.series].number}${data.id}`] = data);
 
         return mainDataset;
     }
@@ -199,7 +223,7 @@ class ChronoMap {
                     timeData[parseInt(date)].ids = [];
                 }
                 timeData[parseInt(date)][data[i].series] += 1;
-                timeData[parseInt(date)].ids.push(`${this.series[data[i].series].prefix}${data[i].id}`);
+                timeData[parseInt(date)].ids.push(`${this.series[data[i].series].number}${data[i].id}`);
             }
         }
 
@@ -278,7 +302,7 @@ class ChronoMap {
                     "ids": JSON.parse(JSON.stringify(ids))
                 };
             }
-            mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].prefix}${data[i].id}`);
+            mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].number}${data[i].id}`);
         }
 
         return mapData;
@@ -304,6 +328,10 @@ class ChronoMap {
                 timeSeries.show();
             });
         }
+    }
+
+    generateTable(ids, title){
+
     }
 }
 

@@ -1,3 +1,28 @@
+String.prototype.capitalize = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.truncate = function (length) {
+    return this.length > length ? this.substring(0, length - 1) + '…' : this;
+};
+String.prototype.occurrences = (subString, allowOverlapping= false) => {
+    subString += "";
+    if (subString.length <= 0) return (this.length + 1);
+
+    let n = 0,
+        pos = 0,
+        step = allowOverlapping ? 1 : subString.length;
+
+    while (true) {
+        pos = this.indexOf(subString, pos);
+        if (pos >= 0) {
+            ++n;
+            pos += step;
+        } else break;
+    }
+    return n;
+};
+
+
 /**
  * Check if a variable is an array (is written between [])
  * @param a

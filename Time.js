@@ -1,17 +1,20 @@
 /*import * as am4core from "./@amcharts/amcharts4/core.js";
 import * as am4charts from "./@amcharts/amcharts4/charts.js";
-import {AbstractChart} from "./ChronoMap.js";
-import {getMinValueInArray, getMaxValueInArray, getArrayOfKeyValue} from "./utils.js";*/
+import {AbstractChart} from "./ChronoMap.js";*/
 
 class Time extends AbstractChart {
     constructor(chronoMap){
         super(chronoMap);
 
-        this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
         this.minDate = Math.min.apply(null, Object.keys(this.data.time));
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
 
+        if (this.config.timeChart === "timeline"){
+            this.amTime = this.chronoMap.container.createChild(am4plugins_timeline.CurveChart);
+        } else {
+            this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
+        }
         this.generate();
     }
 
@@ -30,8 +33,17 @@ class Time extends AbstractChart {
         // Create axes
         let xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
         xAxes.dataFields.category = "date";
-        let yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
-        yAxes.dataFields.category = "i";
+
+        let yAxes;
+        if (this.config.timeChart === "heatmap"){
+            yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
+            yAxes.dataFields.category = "i";
+        } else {
+            yAxes = this.amTime.yAxes.push(new am4charts.ValueAxis());
+        }
+
+        /* MARKER : for other type of chart, we must use date as vertical time axis and the series name as value
+        *  MARKER : but i might be necessary to change the whole dataset structure ({"category": "series name","start": "tpq","end": "taq","title": "title to display"})*/
 
         // Creating a cursor for the heatmap
         this.amTime.cursor = new am4charts.XYCursor();
@@ -92,6 +104,27 @@ class Time extends AbstractChart {
     }
 
     _generateSeries(config){
+        if (this.config.timeChart === "timeline"){
+            return this.generateTimelineSeries(config);
+        } else if (this.config.timeChart === "heatmap") {
+            return this.generateHeatmapSeries(config);
+        } else if (this.config.timeChart === "linechart") {
+            return this.generateLineSeries(config);
+        } else {
+            // TODO : throw error message
+        }
+    }
+
+    generateTimelineSeries(config){
+        let series = this.amTime.series.push(new am4charts.CurveColumnSeries());
+        series.dataFields.value = config.name;
+        series.dataFields.categoryX = "date";
+        series.columns.template.fill = am4core.color(config.color);
+
+        return series;
+    }
+
+    generateHeatmapSeries(config){
         let series = this.amTime.series.push(new am4charts.ColumnSeries());
         series.dataFields.value = config.name;
         series.dataFields.categoryX = "date";
@@ -108,10 +141,8 @@ class Time extends AbstractChart {
                 this.chronoMap.idsClicked = dateData.ids; // set the property idsClicked
                 const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
 
-                // define a title
-                const timeRange = `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`;
                 // generate boxes
-                this.chronoMap.generateTable(dateData.ids, timeRange, this.chronoMap.data.main);
+                this.chronoMap.generateTable(dateData.ids, `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`);
             }
         });
 
@@ -138,6 +169,18 @@ class Time extends AbstractChart {
 
         return series;
     }
+
+    generateLineSeries(config){
+        let series = this.amTime.series.push(new am4charts.LineSeries());
+        series.dataFields.valueY = config.name;
+        series.dataFields.categoryX = "date";
+        series.stroke = am4core.color(config.color);
+        series.strokeWidth = 2;
+        series.tensionX = 0.75;
+
+        return series;
+    }
+
 }
 
 /*export {Timeline};*/
