@@ -30,7 +30,7 @@ const timeSpans = {
  * a color and an angle in order to create map pins and heat map stripes accordingly
  */
 class Config {
-    constructor(timeRange = "1y", theme = "primary", isClickable= true, timeChart= "linechart", height= "650", elementId="chronoMap"){
+    constructor(timeRange = "1y", theme = "primary", isClickable= true, timeChart= "timeline", height= "650", elementId="chronoMap"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timespan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange

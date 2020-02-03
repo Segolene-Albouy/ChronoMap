@@ -10,11 +10,7 @@ class Time extends AbstractChart {
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
 
-        if (this.config.timeChart === "timeline"){
-            this.amTime = this.chronoMap.container.createChild(am4plugins_timeline.CurveChart);
-        } else {
-            this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
-        }
+        this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
         this.generate();
     }
 
@@ -35,15 +31,15 @@ class Time extends AbstractChart {
         xAxes.dataFields.category = "date";
 
         let yAxes;
-        if (this.config.timeChart === "heatmap"){
+        if (this.config.timeChart === "linechart"){
+            yAxes = this.amTime.yAxes.push(new am4charts.ValueAxis());
+        } else {
             yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
             yAxes.dataFields.category = "i";
-        } else {
-            yAxes = this.amTime.yAxes.push(new am4charts.ValueAxis());
         }
 
-        /* MARKER : for other type of chart, we must use date as vertical time axis and the series name as value
-        *  MARKER : but i might be necessary to change the whole dataset structure ({"category": "series name","start": "tpq","end": "taq","title": "title to display"})*/
+        /* MARKER : for type of chart on multiple lines it might be necessary to change the whole dataset structure
+             ({"category": "series name","start": "tpq","end": "taq","title": "title to display"})*/
 
         // Creating a cursor for the heatmap
         this.amTime.cursor = new am4charts.XYCursor();
@@ -104,37 +100,17 @@ class Time extends AbstractChart {
     }
 
     _generateSeries(config){
-        if (this.config.timeChart === "timeline"){
-            return this.generateTimelineSeries(config);
-        } else if (this.config.timeChart === "heatmap") {
-            return this.generateHeatmapSeries(config);
-        } else if (this.config.timeChart === "linechart") {
-            return this.generateLineSeries(config);
+        let series, seriesTemplate;
+        if (this.config.timeChart === "linechart") {
+            series = this.generateLineSeries(config);
+            seriesTemplate = series;
         } else {
-            // TODO : throw error message
+            series = this.generateColumnSeries(config);
+            seriesTemplate = series.columns.template;
         }
-    }
-
-    generateTimelineSeries(config){
-        let series = this.amTime.series.push(new am4charts.CurveColumnSeries());
-        series.dataFields.value = config.name;
-        series.dataFields.categoryX = "date";
-        series.columns.template.fill = am4core.color(config.color);
-
-        return series;
-    }
-
-    generateHeatmapSeries(config){
-        let series = this.amTime.series.push(new am4charts.ColumnSeries());
-        series.dataFields.value = config.name;
-        series.dataFields.categoryX = "date";
-        series.dataFields.categoryY = "i";
-        series.columns.template.fill = am4core.color(config.color);
-        series.columns.template.width = am4core.percent(100);
-        series.columns.template.strokeWidth = 0;
 
         // in order to show boxes that are associated with a date when clicking on a heat map stripe
-        series.columns.template.events.on("hit", (ev) => {
+        seriesTemplate.events.on("hit", (ev) => {
             const clickedDate = ev.target.dataItem.dataContext.date;
             const dateData = this.data.time[clickedDate];
             if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
@@ -147,7 +123,7 @@ class Time extends AbstractChart {
         });
 
         // in order to change the cursor appearance when hovering heatmap series
-        series.columns.template.events.on("over", (ev) => {
+        seriesTemplate.events.on("over", (ev) => {
             ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             const hoverDate = ev.target.dataItem.dataContext.date;
             const dateData = this.data.time[hoverDate];
@@ -160,12 +136,33 @@ class Time extends AbstractChart {
             }
         });
 
-        series.heatRules.push({
-            target: series.columns.template,
-            property: "fillOpacity",
-            min: 0,
-            max: 0.8
-        });
+        return series;
+    }
+
+    generateColumnSeries(config){
+        let series = this.amTime.series.push(new am4charts.ColumnSeries());
+        series.dataFields.value = config.name;
+        series.dataFields.categoryX = "date";
+        series.dataFields.categoryY = "i";
+        series.columns.template.fill = am4core.color(config.color);
+        series.columns.template.width = am4core.percent(100);
+        series.columns.template.strokeWidth = 0;
+
+        if (this.config.timeChart === "heatmap"){
+            series.heatRules.push({
+                target: series.columns.template,
+                property: "fillOpacity",
+                min: 0,
+                max: 0.8
+            });
+        } else if (this.config.timeChart === "timeline"){
+            series.columns.template.height = am4core.percent(30);
+            series.columns.template.adapter.add("fillOpacity", (value, target) => {
+                if (target.dataItem.dataContext[config.name] === 0){
+                    return 0;
+                }
+            });
+        }
 
         return series;
     }
