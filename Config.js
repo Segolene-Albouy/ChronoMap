@@ -18,6 +18,15 @@ const timeSpans = {
     "1h": 1
 };
 
+const dateFormat = {
+    "10y": "yyyy",
+    "1y": "yyyy",
+    "1M": "yyyy-MM",
+    "10d": "yyyy-MM-dd",
+    "1d": "yyyy-MM-dd",
+    "1h": "yyyy-MM-dd hh"
+};
+
 /**
  * It defines which part of the map is visible to the user when loading the page
  * (homeZoomLevel : at what level is the map zoomed in?
@@ -30,15 +39,20 @@ const timeSpans = {
  * a color and an angle in order to create map pins and heat map stripes accordingly
  */
 class Config {
-    constructor(timeRange = "1y", theme = "primary", isClickable= true, timeChart= "timeline", height= "650", elementId="chronoMap"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "650"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
-        this.timespan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
+        this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
+        this.dateFormat = dateFormat[this.timeRange];
 
-        this.isClickable = false; // if the map pins/time chart are clickable
+        // todo : add showCountries
+        // todo : link multitimechart with a parameter in the function
+
+        this.isClickable = isClickable; // if the map pins/time chart are clickable
         this.timeChart = timeChart; // heatmap, linechart, timeline
+        this.multiTimeChart = true; // if the time data are displayed in multiple stacked charts for each series of in one chart
 
-        this.baseColors = colorScheme[theme]; // TODO : select color theme
+        this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
 
         this.chartHeight = height;

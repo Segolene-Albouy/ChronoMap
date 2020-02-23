@@ -207,7 +207,7 @@ class ChronoMap {
 
         let template = {
             date: 0,
-            i: "i"
+            series: "all"
         };
 
         Object.keys(this.series).map(e => {template[e] = 0});
@@ -230,7 +230,7 @@ class ChronoMap {
         const dates = Object.keys(timeData).map(x => parseInt(x));
 
         // in order to show year where nothing happened
-        let minDate = Math.min(... dates)-this.config.timespan, maxDate = Math.max(... dates)+this.config.timespan;
+        let minDate = Math.min(... dates)-this.config.timeSpan, maxDate = Math.max(... dates)+this.config.timeSpan;
 
         for (minDate; minDate <= maxDate; minDate++) {
             if (typeof timeData[minDate] === 'undefined'){

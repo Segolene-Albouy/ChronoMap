@@ -24,22 +24,38 @@ class Time extends AbstractChart {
         this.amTime.height = this.config.timeChartHeight;
         this.amTime.y = this.config.timeChartY;
         this.amTime.x = -10;
-        this.amTime.data = Object.values(this.data.time).sort((a, b) => (a["date"] > b["date"]) ? 1 : -1);
+        // MARKER HONNETEMENT C'EST DEGUEULASSE PROPRIFIER MOI TOUSSA FISSA
+        this.amTime.data = this.config.timeChart === "timeline" && this.config.multiTimeChart ?
+            this.generateMultiDataset() : this.generateSimpleDataset();
+        /*this.amTime.dateFormatter.dateFormat = this.config.dateFormat; // todo : add the date formatter to all time chart
+        this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;*/
 
         // Create axes
-        let xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
-        xAxes.dataFields.category = "date";
+        let yAxes, xAxes;
+        if (!this.config.multiTimeChart){
+            xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
+            xAxes.dataFields.category = "date";
+        } else {
+            xAxes = this.amTime.xAxes.push(new am4charts.ValueAxis());
+        }
 
-        let yAxes;
+        /*// TODO : all xAxes computed the same way
+        if (this.config.timeChart === "timeline") {
+            xAxes = this.amTime.xAxes.push(new am4charts.DateAxis());
+            xAxes.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit}
+            /!*xAxes.min = new Date("2019-11-10 05:00").getTime(); NOTE : calculer l'éventail de temps avec le timeSpan
+            xAxes.max = new Date("2019-11-11 02:00").getTime();*!/
+        } else {
+            xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
+            xAxes.dataFields.category = "date";
+        }*/
+
         if (this.config.timeChart === "linechart"){
             yAxes = this.amTime.yAxes.push(new am4charts.ValueAxis());
         } else {
             yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
-            yAxes.dataFields.category = "i";
+            yAxes.dataFields.category = "series";
         }
-
-        /* MARKER : for type of chart on multiple lines it might be necessary to change the whole dataset structure
-             ({"category": "series name","start": "tpq","end": "taq","title": "title to display"})*/
 
         // Creating a cursor for the heatmap
         this.amTime.cursor = new am4charts.XYCursor();
@@ -67,7 +83,7 @@ class Time extends AbstractChart {
                 tooltips = tooltips + `\n${seriesName}${s} : [bold]${dateData[seriesName]}[/]`;
             }
 
-            return number ? `[bold]${date} — ${parseInt(date)+this.config.timespan}[/]${tooltips}\nClick to see more` : "";
+            return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
         });
 
         // Configuration of the background grid
@@ -76,6 +92,19 @@ class Time extends AbstractChart {
         yAxes.renderer.grid.template.strokeOpacity = 0;
         xAxes.renderer.labels.template.fill = am4core.color("#636266");
         yAxes.renderer.labels.template.hidden = true;
+    }
+
+    generateMultiDataset(){
+        return Object.values(this.data.main).map(dataObject => {
+            Object.defineProperty(dataObject, `${dataObject.series}-minDate`,
+                Object.getOwnPropertyDescriptor(dataObject, "minDate"));
+            delete dataObject.minDate;
+            return dataObject;
+        });
+    }
+
+    generateSimpleDataset(){
+        return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
     }
 
     /**
@@ -141,27 +170,50 @@ class Time extends AbstractChart {
 
     generateColumnSeries(config){
         let series = this.amTime.series.push(new am4charts.ColumnSeries());
-        series.dataFields.value = config.name;
-        series.dataFields.categoryX = "date";
-        series.dataFields.categoryY = "i";
         series.columns.template.fill = am4core.color(config.color);
-        series.columns.template.width = am4core.percent(100);
         series.columns.template.strokeWidth = 0;
 
-        if (this.config.timeChart === "heatmap"){
-            series.heatRules.push({
-                target: series.columns.template,
-                property: "fillOpacity",
-                min: 0,
-                max: 0.8
-            });
-        } else if (this.config.timeChart === "timeline"){
-            series.columns.template.height = am4core.percent(30);
-            series.columns.template.adapter.add("fillOpacity", (value, target) => {
-                if (target.dataItem.dataContext[config.name] === 0){
-                    return 0;
+        switch (this.config.multiTimeChart) {
+            case true: // if the time chart must be on several rows (one per series)
+                switch (this.config.timeChart) {
+                    case "heatmap":
+
+                        break;
+                    case "timeline":
+                        /*series.dataFields.openDateX = "minDate";
+                        series.dataFields.dateX = "maxDate";*/
+                        series.dataFields.categoryY = "series";
+                        series.dataFields.openValueX = `${config.name}-minDate`;
+                        series.dataFields.valueX = "maxDate";
+                        break;
                 }
-            });
+                break;
+            case false:
+                series.dataFields.value = config.name;
+                series.dataFields.categoryX = "date";
+                series.dataFields.categoryY = "series";
+                series.columns.template.width = am4core.percent(100);
+
+                switch (this.config.timeChart) {
+                    case "heatmap":
+                        series.heatRules.push({
+                            target: series.columns.template,
+                            property: "fillOpacity",
+                            min: 0,
+                            max: 0.8
+                        });
+                        break;
+
+                    case "timeline":
+                        series.columns.template.height = am4core.percent(30);
+                        series.columns.template.adapter.add("fillOpacity", (value, target) => {
+                            if (target.dataItem.dataContext[config.name] === 0){
+                                return 0;
+                            }
+                        });
+                        break;
+                }
+                break;
         }
 
         return series;
@@ -174,10 +226,10 @@ class Time extends AbstractChart {
         series.stroke = am4core.color(config.color);
         series.strokeWidth = 2;
         series.tensionX = 0.75;
+        series.paddingBottom = 10;
 
         return series;
     }
-
 }
 
 /*export {Timeline};*/
