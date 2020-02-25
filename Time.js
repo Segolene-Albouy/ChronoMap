@@ -24,54 +24,52 @@ class Time extends AbstractChart {
         this.amTime.height = this.config.timeChartHeight;
         this.amTime.y = this.config.timeChartY;
         this.amTime.x = -10;
-        // MARKER HONNETEMENT C'EST DEGUEULASSE PROPRIFIER MOI TOUSSA FISSA
-        this.amTime.data = this.config.timeChart === "timeline" && this.config.multiTimeChart ?
-            this.generateMultiDataset() : this.generateSimpleDataset();
+
+        this.amTime.data = this.buildTimeDataset();
         /*this.amTime.dateFormatter.dateFormat = this.config.dateFormat; // todo : add the date formatter to all time chart
         this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;*/
 
         // Create axes
-        let yAxes, xAxes;
-        if (!this.config.multiTimeChart){
-            xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
-            xAxes.dataFields.category = "date";
+        let yAxis, xAxis;
+        // Horizontal axis : time
+        if (this.config.multiTimeChart && this.config.timeChart === "timeline"){ // marker : le bug semble provenir d'issy
+            //xAxis = this.amTime.xAxes.push(new am4charts.ValueAxis());
+            xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
+            /*xAxis.dateFormatter = new am4core.DateFormatter();
+            xAxis.dateFormatter.dateFormat = this.config.dateFormat;
+            xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
+            /*/!*xAxis.min = new Date("2019-11-10 05:00").getTime(); NOTE : calculer l'éventail de temps avec le timeSpan
+            xAxis.max = new Date("2019-11-11 02:00").getTime();*!/*/
         } else {
-            xAxes = this.amTime.xAxes.push(new am4charts.ValueAxis());
+            xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
+            xAxis.dataFields.category = "date";
         }
 
-        /*// TODO : all xAxes computed the same way
-        if (this.config.timeChart === "timeline") {
-            xAxes = this.amTime.xAxes.push(new am4charts.DateAxis());
-            xAxes.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit}
-            /!*xAxes.min = new Date("2019-11-10 05:00").getTime(); NOTE : calculer l'éventail de temps avec le timeSpan
-            xAxes.max = new Date("2019-11-11 02:00").getTime();*!/
-        } else {
-            xAxes = this.amTime.xAxes.push(new am4charts.CategoryAxis());
-            xAxes.dataFields.category = "date";
-        }*/
+        // TODO : all xAxes computed the same way, as date axis
 
+        // Vertical axis : category
         if (this.config.timeChart === "linechart"){
-            yAxes = this.amTime.yAxes.push(new am4charts.ValueAxis());
-        } else {
-            yAxes = this.amTime.yAxes.push(new am4charts.CategoryAxis());
-            yAxes.dataFields.category = "series";
+            yAxis = this.amTime.yAxes.push(new am4charts.ValueAxis());
+        } else { // marker
+            yAxis = this.amTime.yAxes.push(new am4charts.CategoryAxis());
+            yAxis.dataFields.category = "series";
         }
 
         // Creating a cursor for the heatmap
         this.amTime.cursor = new am4charts.XYCursor();
         this.amTime.cursor.lineY.disabled = true;
         this.amTime.cursor.behavior = "none";
-        yAxes.tooltip.disabled = true;
+        yAxis.tooltip.disabled = true;
         // Configuring the content of tooltip for the date axis
-        xAxes.tooltip.background.fill = am4core.color("#9b9b9b");
-        xAxes.tooltip.background.strokeWidth = 0;
-        xAxes.tooltip.background.cornerRadius = 3;
-        xAxes.tooltip.background.pointerLength = 0;
-        xAxes.tooltip.dy = this.config.timeChartTooltipY;
-        xAxes.tooltip.dx = -65;
+        xAxis.tooltip.background.fill = am4core.color("#9b9b9b");
+        xAxis.tooltip.background.strokeWidth = 0;
+        xAxis.tooltip.background.cornerRadius = 3;
+        xAxis.tooltip.background.pointerLength = 0;
+        xAxis.tooltip.dy = this.config.timeChartTooltipY;
+        xAxis.tooltip.dx = -65;
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
-        xAxes.adapter.add("getTooltipText", (date) => {
+        xAxis.adapter.add("getTooltipText", (date) => {
             const dateData = this.chronoMap.data.time[date];
             let tooltips = "";
             let number = 0;
@@ -87,23 +85,34 @@ class Time extends AbstractChart {
         });
 
         // Configuration of the background grid
-        xAxes.renderer.minGridDistance = 50; // tighten date labels
-        xAxes.renderer.grid.template.strokeOpacity = 0;
-        yAxes.renderer.grid.template.strokeOpacity = 0;
-        xAxes.renderer.labels.template.fill = am4core.color("#636266");
-        yAxes.renderer.labels.template.hidden = true;
+        xAxis.renderer.minGridDistance = 50; // tighten date labels
+        xAxis.renderer.grid.template.strokeOpacity = 0;
+        yAxis.renderer.grid.template.strokeOpacity = 0;
+        xAxis.renderer.labels.template.fill = am4core.color("#636266");
+        yAxis.renderer.labels.template.hidden = true;
     }
 
-    generateMultiDataset(){
+    buildTimeDataset(){
+        if (this.config.multiTimeChart){
+            return this.config.timeChart === "timeline" ? this.buildMultiDataset() : this.buildSimpleDataset();
+        } else {
+            return this.buildSimpleDataset();
+        }
+    }
+
+    buildMultiDataset(){
+        // in order to differentiate the series, they must rely on different field name
         return Object.values(this.data.main).map(dataObject => {
-            Object.defineProperty(dataObject, `${dataObject.series}-minDate`,
-                Object.getOwnPropertyDescriptor(dataObject, "minDate"));
+            // TODO : here to change the date formatting
+            dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
+            dataObject.maxDate = `${dataObject.maxDate}-01-01`;
             delete dataObject.minDate;
+
             return dataObject;
         });
     }
 
-    generateSimpleDataset(){
+    buildSimpleDataset(){
         return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
     }
 
@@ -172,19 +181,29 @@ class Time extends AbstractChart {
         let series = this.amTime.series.push(new am4charts.ColumnSeries());
         series.columns.template.fill = am4core.color(config.color);
         series.columns.template.strokeWidth = 0;
+        series.columns.template.width = am4core.percent(100);
 
         switch (this.config.multiTimeChart) {
             case true: // if the time chart must be on several rows (one per series)
                 switch (this.config.timeChart) {
                     case "heatmap":
+                        series.dataFields.value = config.name;
+                        series.dataFields.categoryX = "date";
+                        series.dataFields.categoryY = "series";
 
+                        series.heatRules.push({
+                            target: series.columns.template,
+                            property: "fillOpacity",
+                            min: 0,
+                            max: 0.8
+                        });
                         break;
                     case "timeline":
-                        /*series.dataFields.openDateX = "minDate";
-                        series.dataFields.dateX = "maxDate";*/
                         series.dataFields.categoryY = "series";
-                        series.dataFields.openValueX = `${config.name}-minDate`;
-                        series.dataFields.valueX = "maxDate";
+                        /*series.dataFields.openValueX = `${config.name}-minDate`;
+                        series.dataFields.valueX = "maxDate";*/
+                        series.dataFields.openDateX = `${config.name}-minDate`;
+                        series.dataFields.dateX = "maxDate";
                         break;
                 }
                 break;

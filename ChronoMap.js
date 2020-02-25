@@ -79,6 +79,7 @@ class ChronoMap {
                 console.log(dataItem);
             })*!/
         },1000);
+        // trying to put color in scrollbar series
         window.setTimeout(() => {
             for (let i = this.scrollbar.amScrollbar.scrollbarChart.series.values.length - 1; i >= 0; i--) {
                 let series = this.scrollbar.amScrollbar.scrollbarChart.series.values[i];
@@ -216,6 +217,7 @@ class ChronoMap {
             let date = data[i].minDate !== null ? data[i].minDate : 0;
             let maxDate = data[i].maxDate !== null ? data[i].maxDate : 0;
 
+            // TODO : time looping just there
             for (date; date <= maxDate; date += 1) {
                 if (typeof timeData[parseInt(date)] === 'undefined'){
                     timeData[parseInt(date)] = {...template};
