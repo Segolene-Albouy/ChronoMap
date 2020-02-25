@@ -60,6 +60,12 @@ class ChronoMap {
          */
         this.scrollbar = new Scrollbar(this);
 
+        /**
+         * Array of ids of the clicked element in the chart
+         * @type {[]}
+         */
+        this.clickedItems = [];
+
         this.bindSeriesInLegend();
 
         /* window.setTimeout(() => {
@@ -332,7 +338,8 @@ class ChronoMap {
         }
     }
 
-    generateTable(ids, title){
+    generateTable(title){
+        const ids = this.clickedItems;
 
     }
 }

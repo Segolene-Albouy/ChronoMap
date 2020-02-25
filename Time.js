@@ -50,7 +50,7 @@ class Time extends AbstractChart {
         // Vertical axis : category
         if (this.config.timeChart === "linechart"){
             yAxis = this.amTime.yAxes.push(new am4charts.ValueAxis());
-        } else { // marker
+        } else {
             yAxis = this.amTime.yAxes.push(new am4charts.CategoryAxis());
             yAxis.dataFields.category = "series";
         }
@@ -149,30 +149,42 @@ class Time extends AbstractChart {
 
         // in order to show boxes that are associated with a date when clicking on a heat map stripe
         seriesTemplate.events.on("hit", (ev) => {
-            const clickedDate = ev.target.dataItem.dataContext.date;
-            const dateData = this.data.time[clickedDate];
-            if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
-                this.chronoMap.idsClicked = dateData.ids; // set the property idsClicked
-                const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+            if (this.config.multiTimeChart && this.config.timeChart === "timeline"){
+                const clickedEvent = ev.target.dataItem.dataContext;
+                this.chronoMap.clickedItems = [clickedEvent.id];
+                this.chronoMap.generateTable(`Record created between ${clickedEvent.minDate}-${clickedEvent.maxDate}`)
 
-                // generate boxes
-                this.chronoMap.generateTable(dateData.ids, `Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`);
-            }
-        });
-
-        // in order to change the cursor appearance when hovering heatmap series
-        seriesTemplate.events.on("over", (ev) => {
-            ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-            const hoverDate = ev.target.dataItem.dataContext.date;
-            const dateData = this.data.time[hoverDate];
-
-            // if the is an item created at this date, change the cursor to be a pointer
-            if (! this.isTimeRangeEmpty(dateData)){
-                ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             } else {
-                ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
+                const clickedDate = ev.target.dataItem.dataContext.date;
+                const dateData = this.data.time[clickedDate];
+                if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
+                    this.chronoMap.clickedItems = dateData.ids; // set the property clickedItems
+                    const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+
+                    // generate boxes
+                    this.chronoMap.generateTable(`Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`);
+                }
             }
         });
+
+        if (! this.config.multiTimeChart){
+            // in order to change the cursor appearance when hovering time series
+            seriesTemplate.events.on("over", (ev) => {
+                ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+                const hoverDate = ev.target.dataItem.dataContext.date;
+                const dateData = this.data.time[hoverDate];
+
+                // if the is an item created at this date, change the cursor to be a pointer
+                if (! this.isTimeRangeEmpty(dateData)){
+                    ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+                } else {
+                    ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
+                }
+            });
+        } else {
+            seriesTemplate.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+        }
+
 
         return series;
     }

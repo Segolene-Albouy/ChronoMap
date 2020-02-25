@@ -130,12 +130,12 @@ class Map extends AbstractChart {
                 // show boxes on click on a map pin
                 seriesPins[latlong].circle.events.on("hit", function (event) {
                     let idsToDisplay = event.target._parent.properties.dummyData.ids;
-                    this.chronoMap.idsClicked = idsToDisplay; // set the property idsClicked
+                    this.chronoMap.clickedItems = idsToDisplay; // set the property clickedItems
 
                     // add an "s" if there is multiple records to display
                     let s = idsToDisplay.length > 1 ? "s" : "";
                     // generate boxes
-                    this.chronoMap.generateTable(idsToDisplay, `${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`);
+                    this.chronoMap.generateTable(`${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`);
                 }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
             }
         }
