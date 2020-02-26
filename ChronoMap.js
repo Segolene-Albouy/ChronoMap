@@ -161,8 +161,10 @@ class ChronoMap {
 
         const seriesNumber = Object.keys(series).length;
 
-        for (let i = seriesNumber - 1; i >= 0; i--) {
-            Object.values(series)[i].angle = angle[seriesNumber-1][i];
+        if (this.config.angledPointers){
+            for (let i = seriesNumber - 1; i >= 0; i--) {
+                Object.values(series)[i].angle = angle[seriesNumber-1][i];
+            }
         }
 
         return series;

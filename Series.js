@@ -73,7 +73,7 @@ class Series {
          * Will be defined at the chronomap class level
          * @type {number}
          */
-        this.angle = 0;
+        this.angle = 90;
 
         /**
          * Reference to the time chart series corresponding to the particular series

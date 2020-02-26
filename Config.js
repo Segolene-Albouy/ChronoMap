@@ -67,6 +67,7 @@ class Config {
         this.homeGeoPoint = {latitude:30, longitude: 60};
 
         this.showCountries = false;
+        this.angledPointers = false;
 
         /*if (lat.length !== 0){
             this.homeGeoPoint.latitude = getMiddleValue(lat);
