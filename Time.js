@@ -26,18 +26,18 @@ class Time extends AbstractChart {
         this.amTime.x = -10;
 
         this.amTime.data = this.buildTimeDataset();
-        /*this.amTime.dateFormatter.dateFormat = this.config.dateFormat; // todo : add the date formatter to all time chart
-        this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;*/
+
+        // Set how the dates are formatted in tooltip contents
+        this.amTime.dateFormatter.dateFormat = this.config.dateFormat;
+        this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;
+        // NOTE : the keys in the time dataset must be the same as the way the date in the time axis is expressed
 
         // Create axes
         let yAxis, xAxis;
         // Horizontal axis : time
-        if (this.config.multiTimeChart && this.config.timeChart === "timeline"){ // marker : le bug semble provenir d'issy
-            //xAxis = this.amTime.xAxes.push(new am4charts.ValueAxis());
+        if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
-            /*xAxis.dateFormatter = new am4core.DateFormatter();
-            xAxis.dateFormatter.dateFormat = this.config.dateFormat;
-            xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
+            /*xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
             /*/!*xAxis.min = new Date("2019-11-10 05:00").getTime(); NOTE : calculer l'éventail de temps avec le timeSpan
             xAxis.max = new Date("2019-11-11 02:00").getTime();*!/*/
         } else {
@@ -70,18 +70,7 @@ class Time extends AbstractChart {
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
         xAxis.adapter.add("getTooltipText", (date) => {
-            const dateData = this.chronoMap.data.time[date];
-            let tooltips = "";
-            let number = 0;
-            for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
-                let seriesName = Object.values(this.chronoMap.series)[j].name;
-                let s = dateData[seriesName] > 1 ? "s" : "";
-                if (dateData[seriesName] > 0){number ++;}
-
-                tooltips = tooltips + `\n${seriesName}${s} : [bold]${dateData[seriesName]}[/]`;
-            }
-
-            return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
+            return this.generateTooltipContent(date);
         });
 
         // Configuration of the background grid
@@ -103,7 +92,7 @@ class Time extends AbstractChart {
     buildMultiDataset(){
         // in order to differentiate the series, they must rely on different field name
         return Object.values(this.data.main).map(dataObject => {
-            // TODO : here to change the date formatting
+            // TODO : here to change the date formatting for the multiDataset only
             dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
             dataObject.maxDate = `${dataObject.maxDate}-01-01`;
             delete dataObject.minDate;
@@ -212,8 +201,6 @@ class Time extends AbstractChart {
                         break;
                     case "timeline":
                         series.dataFields.categoryY = "series";
-                        /*series.dataFields.openValueX = `${config.name}-minDate`;
-                        series.dataFields.valueX = "maxDate";*/
                         series.dataFields.openDateX = `${config.name}-minDate`;
                         series.dataFields.dateX = "maxDate";
                         break;
@@ -253,13 +240,28 @@ class Time extends AbstractChart {
     generateLineSeries(config){
         let series = this.amTime.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = config.name;
-        series.dataFields.categoryX = "date";
+        series.dataFields.dateX = "date";
         series.stroke = am4core.color(config.color);
         series.strokeWidth = 2;
         series.tensionX = 0.75;
         series.paddingBottom = 10;
 
         return series;
+    }
+
+    generateTooltipContent(date){
+        const dateData = this.chronoMap.data.time[date];
+        let tooltips = "";
+        let number = 0;
+        for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
+            let seriesName = Object.values(this.chronoMap.series)[j].name;
+            seriesName = dateData[seriesName] > 1 ? seriesName.pluralize() : seriesName;
+            if (dateData[seriesName] > 0){number ++;}
+
+            tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
+        }
+
+        return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
     }
 }
 

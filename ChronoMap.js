@@ -227,7 +227,7 @@ class ChronoMap {
             for (date; date <= maxDate; date += 1) {
                 if (typeof timeData[parseInt(date)] === 'undefined'){
                     timeData[parseInt(date)] = {...template};
-                    timeData[parseInt(date)].date = date;
+                    timeData[parseInt(date)].date = `${date}-01-01`;
                     timeData[parseInt(date)].ids = [];
                 }
                 timeData[parseInt(date)][data[i].series] += 1;
@@ -243,7 +243,7 @@ class ChronoMap {
         for (minDate; minDate <= maxDate; minDate++) {
             if (typeof timeData[minDate] === 'undefined'){
                 timeData[minDate] = {...template};
-                timeData[minDate].date = minDate;
+                timeData[minDate].date = `${minDate}-01-01`;
                 timeData[minDate].ids = [];
             }
         }

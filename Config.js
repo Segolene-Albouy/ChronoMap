@@ -39,7 +39,7 @@ const dateFormat = {
  * a color and an angle in order to create map pins and heat map stripes accordingly
  */
 class Config {
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "650"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "linechart", isClickable= true, height= "700"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
@@ -50,17 +50,17 @@ class Config {
 
         this.isClickable = isClickable; // if the map pins/time chart are clickable
         this.timeChart = timeChart; // heatmap, linechart, timeline
-        this.multiTimeChart = true; // if the time data are displayed in multiple stacked charts for each series of in one chart
+        this.multiTimeChart = false; // if the time data are displayed in multiple stacked charts for each series of in one chart
 
         this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
 
         this.chartHeight = height;
-        this.timeframeLabelY = this.chartHeight*(3.4/5);
-        this.timeChartY = this.chartHeight*(3.6/5);
-        this.timeChartHeight = this.chartHeight*(2.5/7);
-        this.timeChartTooltipY = -(this.timeChartHeight/2.3);
-        this.scrollbarHeight = this.timeChartHeight/4;
+        this.timeframeLabelY = this.chartHeight*(3.05/5);
+        this.timeChartY = this.chartHeight*(3.2/5);
+        this.timeChartHeight = this.chartHeight*(2.8/7);
+        this.timeChartTooltipY = -(this.timeChartHeight/2.2);
+        this.scrollbarHeight = this.timeChartHeight/5;
         document.getElementById(this.elementId).style.height = `${height}px`;
 
         this.homeZoomLevel = 2.1;
