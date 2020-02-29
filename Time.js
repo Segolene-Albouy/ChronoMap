@@ -273,10 +273,8 @@ class Time extends AbstractChart {
                         series.dataFields.categoryY = "series";
                         series.dataFields.openDateX = `${config.name}-minDate`;/*"minDate";*/
                         series.dataFields.dateX = "maxDate";
-                        /*series.columns.template.propertyFields.fill = "color";*/
-                        //series.columns.template.verticalCenter = "middle";
                         series.columns.template.dy = config.offset;
-                        /*series.columns.template.height = config.height;*/
+                        series.columns.template.height = config.height;
                         break;
                 }
                 break;

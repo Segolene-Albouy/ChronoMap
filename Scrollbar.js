@@ -11,7 +11,7 @@ class Scrollbar extends AbstractChart {
         this.time = chronoMap.time;
 
         this.mapData = chronoMap.data.map;
-        this.timeData = chronoMap.time.amTime.data/*chronoMap.data.time*/;
+        this.timeData = Object.values(chronoMap.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
 
         this.amScrollbar = this.config.scrollbarHeight > 50 ? new am4charts.XYChartScrollbar() : new am4core.Scrollbar();
         this.timeframeLabel = this.createBoxLabel(this.map.amMap, this.config.timeframeLabelY);
