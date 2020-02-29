@@ -6,15 +6,42 @@ class Time extends AbstractChart {
     constructor(chronoMap){
         super(chronoMap);
 
+        /**
+         * Minimal date in the time dataset
+         * @type {number}
+         */
+        this.minDate = 0;
+
+        /**
+         * Maximal date in the time dataset
+         * @type {number}
+         */
+        this.maxDate = 0;
+
+        /**
+         * Fraction of one corresponding to one time range relative to the
+         * difference between the extreme dates in the time dataset
+         * @type {number}
+         */
+        this.dateRange = 0;
+
+        /**
+         * Amcharts chart object corresponding to the time chart
+         * @type {{}}
+         */
+        this.amTime = {};
+
+        this.generate();
+    }
+
+    generate(){
+        // TODO : compute those properties using timestamp
         this.minDate = Math.min.apply(null, Object.keys(this.data.time));
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
-        this.generate();
-    }
 
-    generate(){
         this._generateConfig();
         this._generateAllSeries();
     }
@@ -25,16 +52,77 @@ class Time extends AbstractChart {
         this.amTime.y = this.config.timeChartY;
         this.amTime.x = -10;
 
-        this.amTime.data = this.buildTimeDataset();
-
-        // Set how the dates are formatted in tooltip contents
+        // Date formatting and display
         this.amTime.dateFormatter.dateFormat = this.config.dateFormat;
         this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;
+        this.amTime.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};
         // NOTE : the keys in the time dataset must be the same as the way the date in the time axis is expressed
 
-        // Create axes
-        let yAxis, xAxis;
+        // Data
+        this.amTime.data = this.generateDataset();
+
         // Horizontal axis : time
+        let xAxis = this.generateXAxis();
+        // Vertical axis : series
+        let yAxis = this.generateYAxis();
+
+        // Axes configuration
+        yAxis.tooltip.disabled = true;
+        xAxis.renderer.minGridDistance = 50; // tighten date labels
+        xAxis.renderer.grid.template.strokeOpacity = 0;
+
+        // Creating a cursor for the heatmap
+        this.amTime.cursor = new am4charts.XYCursor();
+        this.amTime.cursor.lineY.disabled = true;
+        this.amTime.cursor.behavior = "none";
+    }
+
+    /* * * * * * * * *
+     *               *
+     *    DATASET    *
+     *               *
+     * * * * * * * * */
+
+    generateDataset(){
+        if (this.config.multiTimeChart){
+            return this.config.timeChart === "timeline" ? this.generateMultiDataset() : this.generateSimpleDataset();
+        } else {
+            return this.generateSimpleDataset();
+        }
+    }
+
+    generateMultiDataset(){
+        // in order to differentiate the series, they must rely on different field name
+        return Object.values(this.data.main).map(dataObject => {
+            // TODO : here to change the date formatting for the multiDataset only
+            dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
+            delete dataObject.minDate;
+
+            dataObject.maxDate = `${dataObject.maxDate}-01-01`;
+            /*dataObject.minDate = `${dataObject.minDate}-01-01`;
+            dataObject.color = this.chronoMap.series[dataObject.series].color;*/
+
+            return dataObject;
+        });
+    }
+
+    generateSimpleDataset(){
+        return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
+    }
+
+    /* * * * * * * * *
+     *               *
+     *     AXES      *
+     *               *
+     * * * * * * * * */
+
+    /* * * * * * * * *
+     *   TIME AXIS   *
+     * * * * * * * * */
+
+    generateXAxis(){
+        // TODO : all xAxes computed the same way, as date axis
+        let xAxis;
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
             /*xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
@@ -45,9 +133,50 @@ class Time extends AbstractChart {
             xAxis.dataFields.category = "date";
         }
 
-        // TODO : all xAxes computed the same way, as date axis
+        // Configuring the content of tooltip for the date axis
+        let tooltip = xAxis.tooltip;
+        tooltip.background.fill = am4core.color("#9b9b9b");
+        tooltip.background.strokeWidth = 0;
+        tooltip.background.cornerRadius = 3;
+        tooltip.background.pointerLength = 0;
+        tooltip.dy = this.config.timeChartTooltipY;
+        tooltip.dx = -65;
 
-        // Vertical axis : category
+        // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
+        xAxis.adapter.add("getTooltipText", (date) => {
+            return this.generateTooltipContent(date);
+        });
+
+        let dateLabels = xAxis.renderer.labels.template;
+        dateLabels.fillOpacity = 0.7;
+        dateLabels.fill = am4core.color("#636266");
+
+        return xAxis;
+    }
+
+    generateTooltipContent(date){
+        // TODO : need to compute date to timestamp => do that only when dealing with time ranges under 1y
+        date = date.replace("-01-01", "");
+        const dateData = this.chronoMap.data.time[date];
+        let tooltips = "";
+        let number = 0;
+        for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
+            let seriesName = Object.values(this.chronoMap.series)[j].name;
+            seriesName = dateData[seriesName] > 1 ? seriesName.pluralize() : seriesName;
+            if (dateData[seriesName] > 0){number ++;}
+
+            tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
+        }
+
+        return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
+    }
+
+    /* * * * * * * * *
+     *  SERIES AXIS  *
+     * * * * * * * * */
+
+    generateYAxis(){
+        let yAxis;
         if (this.config.timeChart === "linechart"){
             yAxis = this.amTime.yAxes.push(new am4charts.ValueAxis());
         } else {
@@ -55,70 +184,29 @@ class Time extends AbstractChart {
             yAxis.dataFields.category = "series";
         }
 
-        // Creating a cursor for the heatmap
-        this.amTime.cursor = new am4charts.XYCursor();
-        this.amTime.cursor.lineY.disabled = true;
-        this.amTime.cursor.behavior = "none";
-        yAxis.tooltip.disabled = true;
-        // Configuring the content of tooltip for the date axis
-        xAxis.tooltip.background.fill = am4core.color("#9b9b9b");
-        xAxis.tooltip.background.strokeWidth = 0;
-        xAxis.tooltip.background.cornerRadius = 3;
-        xAxis.tooltip.background.pointerLength = 0;
-        xAxis.tooltip.dy = this.config.timeChartTooltipY;
-        xAxis.tooltip.dx = -65;
-
-        // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
-        xAxis.adapter.add("getTooltipText", (date) => {
-            return this.generateTooltipContent(date);
-        });
-
-        // Configuration of the background grid
-        xAxis.renderer.minGridDistance = 50; // tighten date labels
-        xAxis.renderer.grid.template.strokeOpacity = 0;
-        yAxis.renderer.grid.template.strokeOpacity = 0;
-        xAxis.renderer.labels.template.fill = am4core.color("#636266");
-        yAxis.renderer.labels.template.hidden = true;
-    }
-
-    buildTimeDataset(){
-        if (this.config.multiTimeChart){
-            return this.config.timeChart === "timeline" ? this.buildMultiDataset() : this.buildSimpleDataset();
+        if (!this.config.multiTimeChart){
+            yAxis.renderer.grid.template.strokeOpacity = 0;
+            yAxis.renderer.labels.template.hidden = true;
         } else {
-            return this.buildSimpleDataset();
+            let seriesLabels = yAxis.renderer.labels.template;
+            seriesLabels.verticalCenter = "middle";
+
+            /*seriesLabels.adapter.add("fill", (color, axis) => {
+                console.log(axis);
+                return am4core.color("blue");
+            });*/
+
+            /*dateLabels.fillOpacity = 0.7;
+            dateLabels.fill = am4core.color("#636266");*/
         }
+        return yAxis;
     }
 
-    buildMultiDataset(){
-        // in order to differentiate the series, they must rely on different field name
-        return Object.values(this.data.main).map(dataObject => {
-            // TODO : here to change the date formatting for the multiDataset only
-            dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
-            dataObject.maxDate = `${dataObject.maxDate}-01-01`;
-            delete dataObject.minDate;
-
-            return dataObject;
-        });
-    }
-
-    buildSimpleDataset(){
-        return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
-    }
-
-    /**
-     * Check in the data object given as parameter defining info for a particular time range
-     * if any of the chart series is present during this time span
-     * @param dateData {object}
-     * @returns {boolean}
-     */
-    isTimeRangeEmpty(dateData){
-        let empty = true;
-        for (let i = Object.keys(this.chronoMap.series).length - 1; i >= 0; i--) {
-            // if all the series in dateData are not empty
-            if (dateData[Object.keys(this.chronoMap.series)[i]] > 0) {empty = false;}
-        }
-        return empty;
-    }
+    /* * * * * * * * *
+     *               *
+     *     SERIES    *
+     *               *
+     * * * * * * * * */
 
     _generateAllSeries(){
         for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
@@ -136,46 +224,28 @@ class Time extends AbstractChart {
             seriesTemplate = series.columns.template;
         }
 
-        // in order to show boxes that are associated with a date when clicking on a heat map stripe
-        seriesTemplate.events.on("hit", (ev) => {
-            if (this.config.multiTimeChart && this.config.timeChart === "timeline"){
-                const clickedEvent = ev.target.dataItem.dataContext;
-                this.chronoMap.clickedItems = [clickedEvent.id];
-                this.chronoMap.generateTable(`Record created between ${clickedEvent.minDate}-${clickedEvent.maxDate}`)
+        // define event trigger on click on a series
+        this.hitEvent(seriesTemplate);
 
-            } else {
-                const clickedDate = ev.target.dataItem.dataContext.date;
-                const dateData = this.data.time[clickedDate];
-                if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
-                    this.chronoMap.clickedItems = dateData.ids; // set the property clickedItems
-                    const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
-
-                    // generate boxes
-                    this.chronoMap.generateTable(`Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`);
-                }
-            }
-        });
-
-        if (! this.config.multiTimeChart){
-            // in order to change the cursor appearance when hovering time series
-            seriesTemplate.events.on("over", (ev) => {
-                ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-                const hoverDate = ev.target.dataItem.dataContext.date;
-                const dateData = this.data.time[hoverDate];
-
-                // if the is an item created at this date, change the cursor to be a pointer
-                if (! this.isTimeRangeEmpty(dateData)){
-                    ev.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-                } else {
-                    ev.target.cursorOverStyle = am4core.MouseCursorStyle.default;
-                }
-            });
-        } else {
-            seriesTemplate.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-        }
-
+        // define event trigger on hover on a series
+        this.hoverEvent(seriesTemplate);
 
         return series;
+    }
+
+    /**
+     * Check in the data object given as parameter defining info for a particular time range
+     * if any of the chart series is present during this time span
+     * @param dateData {object}
+     * @returns {boolean}
+     */
+    isTimeRangeEmpty(dateData){
+        let empty = true;
+        for (let i = Object.keys(this.chronoMap.series).length - 1; i >= 0; i--) {
+            // if all the series in dateData are not empty
+            if (dateData[Object.keys(this.chronoMap.series)[i]] > 0) {empty = false;}
+        }
+        return empty;
     }
 
     generateColumnSeries(config){
@@ -201,8 +271,12 @@ class Time extends AbstractChart {
                         break;
                     case "timeline":
                         series.dataFields.categoryY = "series";
-                        series.dataFields.openDateX = `${config.name}-minDate`;
+                        series.dataFields.openDateX = `${config.name}-minDate`;/*"minDate";*/
                         series.dataFields.dateX = "maxDate";
+                        /*series.columns.template.propertyFields.fill = "color";*/
+                        //series.columns.template.verticalCenter = "middle";
+                        series.columns.template.dy = config.offset;
+                        /*series.columns.template.height = config.height;*/
                         break;
                 }
                 break;
@@ -249,19 +323,53 @@ class Time extends AbstractChart {
         return series;
     }
 
-    generateTooltipContent(date){
-        const dateData = this.chronoMap.data.time[date];
-        let tooltips = "";
-        let number = 0;
-        for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
-            let seriesName = Object.values(this.chronoMap.series)[j].name;
-            seriesName = dateData[seriesName] > 1 ? seriesName.pluralize() : seriesName;
-            if (dateData[seriesName] > 0){number ++;}
+    /* * * * * * * * *
+     *               *
+     *  INTERACTION  *
+     *               *
+     * * * * * * * * */
 
-            tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
+    hitEvent(template){
+        template.events.on("hit", (event) => {
+            if (this.config.multiTimeChart && this.config.timeChart === "timeline"){
+                const clickedEvent = event.target.dataItem.dataContext;
+                this.chronoMap.clickedItems = [clickedEvent.id];
+                this.chronoMap.generateTable(`Record created between ${clickedEvent.minDate}-${clickedEvent.maxDate}`)
+
+            } else {
+                const clickedDate = event.target.dataItem.dataContext.date;
+                const dateData = this.data.time[clickedDate];
+                if (typeof dateData.ids !== "undefined" || dateData.ids.length === 0){
+                    this.chronoMap.clickedItems = dateData.ids; // set the property clickedItems
+                    const s = dateData.ids.length > 1 ? "s" : ""; // add an "s" if there is multiple records to display
+
+                    // generate boxes
+                    this.chronoMap.generateTable(`Record${s} created between ${clickedDate}-${parseInt(clickedDate)+10}`);
+                }
+            }
+        });
+    }
+
+    hoverEvent(template){
+        if (! this.config.multiTimeChart){
+            // in order to change the cursor appearance when hovering time series
+            template.events.on("over", (event) => {
+                event.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+                let hoverDate = event.target.dataItem.dataContext.date;
+                // TODO : faire un truc plus définitif sur la gestion des dates
+                hoverDate = hoverDate.replace("-01-01", "");
+                const dateData = this.data.time[hoverDate];
+
+                // if the is an item created at this date, change the cursor to be a pointer
+                if (! this.isTimeRangeEmpty(dateData)){
+                    event.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+                } else {
+                    event.target.cursorOverStyle = am4core.MouseCursorStyle.default;
+                }
+            });
+        } else {
+            template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
         }
-
-        return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
     }
 }
 

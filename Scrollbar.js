@@ -13,7 +13,7 @@ class Scrollbar extends AbstractChart {
         this.mapData = chronoMap.data.map;
         this.timeData = chronoMap.time.amTime.data/*chronoMap.data.time*/;
 
-        this.amScrollbar = new am4charts.XYChartScrollbar();
+        this.amScrollbar = this.config.scrollbarHeight > 50 ? new am4charts.XYChartScrollbar() : new am4core.Scrollbar();
         this.timeframeLabel = this.createBoxLabel(this.map.amMap, this.config.timeframeLabelY);
 
         this.generate();
@@ -21,11 +21,17 @@ class Scrollbar extends AbstractChart {
 
     generate(){
         this.time.amTime.scrollbarX = this.amScrollbar;
-        this.amScrollbar.percentHeight = 25;
-        this.amScrollbar.height = this.config.scrollbarHeight;
 
-        for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
-            this.amScrollbar.series.push(Object.values(this.chronoMap.series)[i].time);
+        /*chart.scrollbarX = new am4core.Scrollbar();
+chart.scrollbarX.align = "center"
+chart.scrollbarX.width = am4core.percent(85);*/
+
+        if (this.config.scrollbarHeight > 50){
+            this.amScrollbar.percentHeight = 25;
+            this.amScrollbar.height = this.config.scrollbarHeight;
+            for (let i = Object.keys(this.chronoMap.series).length -1; i >= 0; i--) {
+                this.amScrollbar.series.push(Object.values(this.chronoMap.series)[i].time);
+            }
         }
 
         this.amScrollbar.events.on("rangechanged", () => {

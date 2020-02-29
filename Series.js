@@ -50,7 +50,7 @@ class Series {
      * @param {string} name
      * @param color
      */
-    constructor(index, name, color = null){
+    constructor(index, name, color = null) {
         /**
          * Name of series
          * @type {string}
@@ -86,6 +86,18 @@ class Series {
          * @type {{}}
          */
         this.map = {};
+
+        /**
+         * Vertical offset in pixel to make time series appear correctly aligned
+         * @type {number}
+         */
+        this.offset = 0;
+
+        /**
+         * Height in pixels of the time series
+         * @type {number}
+         */
+        this.height = 0;
     }
 }
 

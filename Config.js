@@ -39,28 +39,30 @@ const dateFormat = {
  * a color and an angle in order to create map pins and heat map stripes accordingly
  */
 class Config {
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "linechart", isClickable= true, height= "700"){
+    // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "1000"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
         this.dateFormat = dateFormat[this.timeRange];
 
         // todo : add showCountries
-        // todo : link multitimechart with a parameter in the function
+        // todo : allow to select the multitime chart option with
 
         this.isClickable = isClickable; // if the map pins/time chart are clickable
         this.timeChart = timeChart; // heatmap, linechart, timeline
-        this.multiTimeChart = false; // if the time data are displayed in multiple stacked charts for each series of in one chart
+        this.multiTimeChart = true; // if the time data are displayed in multiple stacked charts for each series of in one chart
 
         this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
 
         this.chartHeight = height;
-        this.timeframeLabelY = this.chartHeight*(3.05/5);
-        this.timeChartY = this.chartHeight*(3.2/5);
-        this.timeChartHeight = this.chartHeight*(2.8/7);
+        this.timeChartHeight = Math.round(this.chartHeight * 0.4); // TODO : depends on the chart type => eg timeline not multi very smol
+        this.timeChartY = this.chartHeight-this.timeChartHeight+20;
         this.timeChartTooltipY = -(this.timeChartHeight/2.2);
+        this.timeframeLabelY = this.timeChartY - 30;
         this.scrollbarHeight = this.timeChartHeight/5;
+        this.timeChartSpace = this.scrollbarHeight > 50 ? this.timeChartHeight - 180 : this.timeChartHeight - 100;
         document.getElementById(this.elementId).style.height = `${height}px`;
 
         this.homeZoomLevel = 2.1;

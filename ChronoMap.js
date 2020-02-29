@@ -6,15 +6,20 @@ import {Map} from "./Map.js";
 import {Timeline} from "./Timeline.js";
 import {Scrollbar} from "./Scrollbar.js";*/
 
-
-// mettre machin pour choisir la couleur en fonction de l'entité
-
 const angle = [
     [90], // only one series displayed on the map
     [70, 110],
     [50, 90, 130],
     [30, 70, 110, 150],
     [10, 50, 90, 130, 170]
+];
+
+const offset = [
+    [0],
+    [0.5, -0.5],
+    [1, 0, -1],
+    [1.5, 0.5, -0.5, -1.5],
+    [2, 1, 0, -1, -2]
 ];
 
 class ChronoMap {
@@ -142,8 +147,10 @@ class ChronoMap {
         } else {
             this.series[name] = new Series(seriesNumber, name, color);
 
-            for (let i = 0; i < seriesNumber.length; i++) {
-                Object.values(this.series)[i].angle = angle[seriesNumber][i];
+            if (this.config.angledPointers){
+                for (let i = 0; i < seriesNumber.length; i++) {
+                    Object.values(this.series)[i].angle = angle[seriesNumber][i];
+                }
             }
         }
     }
@@ -161,8 +168,15 @@ class ChronoMap {
 
         const seriesNumber = Object.keys(series).length;
 
-        if (this.config.angledPointers){
-            for (let i = seriesNumber - 1; i >= 0; i--) {
+        // space occupied by one series
+        const seriesSpace = this.config.timeChartSpace/seriesNumber;
+        const seriesWidth = seriesSpace/seriesNumber;
+
+        for (let i = seriesNumber - 1; i >= 0; i--) {
+            Object.values(series)[i].height = seriesSpace * 0.8;
+            Object.values(series)[i].offset = offset[seriesNumber-1][i]*seriesWidth;
+
+            if (this.config.angledPointers){
                 Object.values(series)[i].angle = angle[seriesNumber-1][i];
             }
         }
