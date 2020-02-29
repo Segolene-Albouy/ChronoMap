@@ -58,10 +58,10 @@ class Config {
 
         this.chartHeight = height;
         this.timeChartHeight = Math.round(this.chartHeight * 0.4); // TODO : depends on the chart type => eg timeline not multi very smol
-        this.timeChartY = this.chartHeight-this.timeChartHeight+20;
-        this.timeChartTooltipY = -(this.timeChartHeight/2.2);
+        this.timeChartY = this.chartHeight - this.timeChartHeight + 20;
+        this.timeChartTooltipY = -(this.timeChartHeight / 2.2);
         this.timeframeLabelY = this.timeChartY - 30;
-        this.scrollbarHeight = this.timeChartHeight/5;
+        this.scrollbarHeight = this.timeChartHeight / 5;
         this.timeChartSpace = this.scrollbarHeight > 50 ? this.timeChartHeight - 180 : this.timeChartHeight - 100;
         document.getElementById(this.elementId).style.height = `${height}px`;
 

@@ -98,7 +98,7 @@ class Time extends AbstractChart {
             dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
             delete dataObject.minDate;
 
-            dataObject.maxDate = `${dataObject.maxDate}-01-01`;
+            dataObject.maxDate = `${dataObject.maxDate+1}-01-01`;
             /*dataObject.minDate = `${dataObject.minDate}-01-01`;
             dataObject.color = this.chronoMap.series[dataObject.series].color;*/
 
@@ -275,6 +275,7 @@ class Time extends AbstractChart {
                         series.dataFields.dateX = "maxDate";
                         series.columns.template.dy = config.offset;
                         series.columns.template.height = config.height;
+                        series.columns.template.cornerRadiusBottomLeft = 10;
                         break;
                 }
                 break;

@@ -71,6 +71,12 @@ class ChronoMap {
          */
         this.clickedItems = [];
 
+        /**
+         * Number of items displayed on the ChronoMap, used to generate automatic ids
+         * @type {number}
+         */
+        this.itemNumber = 0;
+
         this.bindSeriesInLegend();
 
         /* window.setTimeout(() => {

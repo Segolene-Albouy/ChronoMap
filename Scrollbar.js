@@ -23,8 +23,8 @@ class Scrollbar extends AbstractChart {
         this.time.amTime.scrollbarX = this.amScrollbar;
 
         /*chart.scrollbarX = new am4core.Scrollbar();
-chart.scrollbarX.align = "center"
-chart.scrollbarX.width = am4core.percent(85);*/
+        chart.scrollbarX.align = "center"
+        chart.scrollbarX.width = am4core.percent(85);*/
 
         if (this.config.scrollbarHeight > 50){
             this.amScrollbar.percentHeight = 25;
@@ -35,11 +35,11 @@ chart.scrollbarX.width = am4core.percent(85);*/
         }
 
         this.amScrollbar.events.on("rangechanged", () => {
-            this.updateMap();
+            this.updateMap(this.amScrollbar.range.start, this.amScrollbar.range.end);
         });
 
         this.time.amTime.zoomOutButton.events.on("hit", () => {
-            this.updateMap(true);
+            this.updateMap(0, 1);
         });
     }
 
@@ -65,18 +65,15 @@ chart.scrollbarX.width = am4core.percent(85);*/
     }
 
     /**
-     *
-     * @param onZoomOut {boolean} : is the method triggered by a click on the zoom out button ?
+     * @param cursorMin {number} : between 0 and 1 defining the position of the cursor on the left
+     * @param cursorMax {number} : between 0 and 1 defining the position of the cursor on the right
      */
-    updateMap(onZoomOut = false){
-        const cursorMin = onZoomOut ? 0 : this.amScrollbar.range.start;
-        const cursorMax = onZoomOut ? 1 : this.amScrollbar.range.end;
-
+    updateMap(cursorMin, cursorMax){
         // Conversion of the min and max range value into date (parseInt to get rid of the floating values)
         const dateMinRange = (cursorMin / this.time.dateRange) + this.time.minDate;
         const dateMaxRange = (cursorMax / this.time.dateRange) + this.time.minDate;
         // Show the timerange selected
-        this.timeframeLabel.text = `${parseInt(dateMinRange)} — ${parseInt(dateMaxRange)}`;
+        this.timeframeLabel.text = `${Math.round(dateMinRange)} — ${Math.round(dateMaxRange)}`;
 
         /*!// remove the record boxes appearing when the user moves a cursor of the scrollbar
         $(`#${this.chronoMap.config.elementId.box}`).empty(); MARKER : box box box*/
