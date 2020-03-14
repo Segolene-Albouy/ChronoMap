@@ -9,13 +9,17 @@ const timeUnits = {
     "1h": "hour"
 };
 
+/**
+ * Difference between two dates in the chart measured in milliseconds
+ * @type {{"1d": number, "10d": number, "1h": number, "1y": number, "10y": number, "1M": number}}
+ */
 const timeSpans = {
-    "10y": 10,
-    "1y": 1,
-    "1M": 1,
-    "10d": 10,
-    "1d": 1,
-    "1h": 1
+    "10y": 315532800000,
+    "1y": 31532400000,
+    "1M": 2592000000, // approximated to 30 days
+    "10d": 864000000,
+    "1d": 86400000,
+    "1h": 3600000
 };
 
 const dateFormat = {
@@ -40,7 +44,7 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "700"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "1000"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange

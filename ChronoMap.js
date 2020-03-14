@@ -37,6 +37,12 @@ class ChronoMap {
         this.series = series ? series : this.generateSeries(dataset);
 
         /**
+         * Objects defining how data is structured in each datasets
+         * @type {{main: {}, time: {}, map: {}}}
+         */
+        this.template = { main: {}, time: {}, map: {} };
+
+        /**
          * Data : object containing all three data sets used to generate the chronomap
          * @type {{main: {}, time: {}, map: {}}}
          */
@@ -132,13 +138,27 @@ class ChronoMap {
         this.data.map = this.generateMapDataset();
     }
 
+    generateTimeTemplate(){
+        let template = {date: 0, series: "all"};
+        Object.keys(this.series).map(e => {template[e] = 0});
+        this.template.time = template;
+    }
+
+    generateMapTemplate(){
+        let template = {date: 0, series: "all"};
+        Object.keys(this.series).map(e => {template[e] = 0});
+        this.template.time = template;
+    }
+
     addData(data) {
         if (Object.keys(this.data).length !== 0){
-            this.data = {
-                main: this.addMainData(data),
-                time: this.addTimeData(data),
-                map: this.addMapData(data)
-            };
+            this.addMainData(data);
+
+            if (Object.keys(this.template.time).length === 0){
+                this.generateTimeTemplate();
+            }
+            this.addTimeData(data);
+            this.addMapData(data);
         } else {
             this.generateDatasets([data]);
         }
@@ -197,64 +217,44 @@ class ChronoMap {
     generateMainDataset(dataset) {
         let mainDataset = {};
 
-        dataset.map(data => mainDataset[`${this.series[data.series].number}${data.id}`] = data);
+        dataset.map(data => {
+            this.itemNumber += 1;
+            if (! data.id){
+                data.id = this.itemNumber;
+            }
+            mainDataset[`${this.series[data.series].number}${data.id}`] = data
+        });
 
         return mainDataset;
     }
 
     addTimeData(data) {
-        /*public function getTimeData(\TAMAS\AstroBundle\Entity\OriginalText $item, $timeData, $entities){
-        $year = $item->getTpq() ? substr($item->getTpq(),0,-1)."0" : 0;
-        $taq = $item->getTaq() ? substr($item->getTaq(),0,-1)."0" : 0;
+        let date = data.minDate !== null ? new Date(`${data.minDate}`).getTime() : 0; // TODO : replace default value with earliest date of the chronomap
+        const maxDate = data.maxDate !== null ? new Date(`${data.maxDate}`).getTime() : 0 + this.config.timeSpan; // maybe not time span
 
-        $oiId = "oi".$item->getId();
+        /* NOTE : Date(123344655) int for timestamp, Date("1980") str for other date => date.getTime() to get timestamp */
 
-        $dataTemplate = ["year" => 0, "i" => "i", "ids" => []];
-        foreach ($entities as $entity){
-            $dataTemplate[$entity] = 0;
-        }
-
-        for ($date = $year; $date <= $taq; $date += 10) {
-            if (! isset($timeData[$date])) {
-                $timeData[$date]  = $dataTemplate;
-                $timeData[$date]["year"] = $date;
+        for (date; date <= maxDate; date += 1) {
+            if (typeof this.data.time[date] === 'undefined'){
+                this.data.time[date] = {...this.template.time};
+                this.data.time[date].date = new Date(date);
+                this.data.time[date].ids = [];
             }
-
-            if (! in_array($oiId, $timeData[$date]["ids"])){
-                $timeData[$date]["ids"][] = $oiId;
-                $timeData[$date]["originalText"] += 1;
-            }
+            this.data.time[date][data.series] += 1;
+            this.data.time[date].ids.push(`${this.series[data.series].number}${data.id}`);
         }
-
-        return $timeData;
-    }*/
     };
 
     generateTimeDataset() {
         const data = Object.values(this.data.main);
         let timeData = {};
 
-        let template = {
-            date: 0,
-            series: "all"
-        };
-
-        Object.keys(this.series).map(e => {template[e] = 0});
+        if (Object.keys(this.template.time).length === 0){
+            this.generateTimeTemplate();
+        }
 
         for (let i = data.length - 1; i >= 0; i--) {
-            let date = data[i].minDate !== null ? data[i].minDate : 0;
-            let maxDate = data[i].maxDate !== null ? data[i].maxDate : 0;
-
-            // TODO : time looping just there
-            for (date; date <= maxDate; date += 1) {
-                if (typeof timeData[parseInt(date)] === 'undefined'){
-                    timeData[parseInt(date)] = {...template};
-                    timeData[parseInt(date)].date = `${date}-01-01`;
-                    timeData[parseInt(date)].ids = [];
-                }
-                timeData[parseInt(date)][data[i].series] += 1;
-                timeData[parseInt(date)].ids.push(`${this.series[data[i].series].number}${data[i].id}`);
-            }
+            this.addTimeData(data[i]);
         }
 
         const dates = Object.keys(timeData).map(x => parseInt(x));
@@ -264,7 +264,7 @@ class ChronoMap {
 
         for (minDate; minDate <= maxDate; minDate++) {
             if (typeof timeData[minDate] === 'undefined'){
-                timeData[minDate] = {...template};
+                timeData[minDate] = {...this.template.time};
                 timeData[minDate].date = `${minDate}-01-01`;
                 timeData[minDate].ids = [];
             }
