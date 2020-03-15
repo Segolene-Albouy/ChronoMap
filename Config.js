@@ -53,7 +53,7 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "heatmap", isClickable= true, height= "1000"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "linechart", isClickable= true, height= "1000"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
@@ -115,21 +115,21 @@ class Config {
         }
     }
 
-    addTimeSpan(timestamp){
+    addTimeSpan(timestamp, add = true){
         let date = timestamp instanceof Date ? timestamp : new Date(timestamp);
         switch (this.timeRange) {
             case "10y":
-                return date.setFullYear(date.getFullYear() + 10);
+                return add ? date.setFullYear(date.getFullYear() + 10) : date.setFullYear(date.getFullYear() - 10);
             case "1y":
-                return date.setFullYear(date.getFullYear() + 1);
+                return add ? date.setFullYear(date.getFullYear() + 1) : date.setFullYear(date.getFullYear() - 1);
             case "1M":
-                return date.setMonth(date.getMonth() + 1);
+                return add ? date.setMonth(date.getMonth() + 1) : date.setMonth(date.getMonth() - 1);
             case "10d":
-                return date.setDate(date.getDate() + 10);
+                return add ? date.setDate(date.getDate() + 10) : date.setDate(date.getDate() - 10);
             case "1d":
-                return date.setDate(date.getDate() + 1);
+                return add ? date.setDate(date.getDate() + 1) : date.setDate(date.getDate() - 1);
             case "1h":
-                return date.setHours(date.getHours() + 1);
+                return add ? date.setHours(date.getHours() + 1) : date.setHours(date.getHours() - 1);
         }
     }
 }

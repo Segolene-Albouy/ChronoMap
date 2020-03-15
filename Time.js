@@ -7,13 +7,13 @@ class Time extends AbstractChart {
         super(chronoMap);
 
         /**
-         * Minimal date in the time dataset
+         * Minimal date in the time dataset (timestamp)
          * @type {number}
          */
         this.minDate = 0;
 
         /**
-         * Maximal date in the time dataset
+         * Maximal date in the time dataset (timestamp)
          * @type {number}
          */
         this.maxDate = 0;
@@ -24,6 +24,18 @@ class Time extends AbstractChart {
          * @type {number}
          */
         this.dateRange = 0;
+
+        /**
+         * Minimal date displayed in the time chart (minimal date of the time dataset minus the time range)
+         * @type {null|Date}
+         */
+        this.minRange = null;
+
+        /**
+         * Maximal date displayed in the time chart (maximal date of the time dataset plus the time range)
+         * @type {null|Date}
+         */
+        this.maxRange = null;
 
         /**
          * Amcharts chart object corresponding to the time chart
@@ -39,6 +51,8 @@ class Time extends AbstractChart {
         this.minDate = Math.min.apply(null, Object.keys(this.data.time));
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
+        this.minRange = this.config.addTimeSpan(this.minDate, false);
+        this.maxRange = this.config.addTimeSpan(this.maxDate);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
 
@@ -101,8 +115,8 @@ class Time extends AbstractChart {
         });
     }
 
-    generateSimpleDataset(){
-        let dataset = Object.values(this.data.time).map(data => data.date = `${this.config.convertDate(data.date)}`);
+    generateSimpleDataset(){ // MARKER
+        Object.values(this.data.time).map(data => data.date = `${this.config.convertDate(data.date)}`);
         return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
     }
 
@@ -121,9 +135,8 @@ class Time extends AbstractChart {
         let xAxis;
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
-            /*xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
-            /*/!*xAxis.min = new Date("2019-11-10 05:00").getTime(); TODO : calculer l'éventail de temps avec le timeSpan
-            xAxis.max = new Date("2019-11-11 02:00").getTime();*!/*/
+            /*xAxis.min = this.minRange.getTime(); // TODO : why isn't it working ?? 😓
+            xAxis.max = this.maxRange.getTime();*/
         } else {
             xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
             xAxis.dataFields.category = "date";
@@ -139,6 +152,7 @@ class Time extends AbstractChart {
         tooltip.dx = -65;
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
+        // TODO : ça s'est utilisé seulement par les multi chart non ? les autres ont hover event chkroi
         xAxis.adapter.add("getTooltipText", (date) => {
             return this.generateTooltipContent(new Date(`${date}`).getTime());
         });
@@ -350,7 +364,7 @@ class Time extends AbstractChart {
             template.events.on("over", (event) => {
                 event.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
                 const hoverDate = event.target.dataItem.dataContext.date;
-                const dateData = this.data.time[hoverDate];
+                const dateData = this.data.time[new Date(hoverDate).getTime()];
 
                 // if the is an item created at this date, change the cursor to be a pointer
                 if (! this.isTimeRangeEmpty(dateData)){
