@@ -148,6 +148,56 @@ String.prototype.occurrences = (subString, allowOverlapping= false) => {
     return n;
 };
 
+String.prototype.trimHTML = function () {
+    if ((this === null) || (this === '') || (typeof this === "undefined"))
+        return false;
+    else
+        return this.toString().replace(/<[^>]*>/g, '');
+};
+
+/**
+ * Truncate string that might contain HTML tag (remove HTML and put it back)
+ *
+ * @param string {string}
+ * @param max {int}
+ * @param extra {string}
+ * @return {string|*}
+ */
+function truncateWithHtml(string, max, extra = '…'){
+    const trimmedString = string.trimHTML();
+
+    if (trimmedString.length <= max){
+        return string;
+    }
+
+    // if the string does not contains tags
+    if (trimmedString.length === string.length){
+        return `<span title="${string}">${string.substring(0, max).trim()}${extra}</span>`;
+    }
+
+    const substrings =  string.split(/(<[^>]*>)/g);
+
+    let count = 0;
+    let truncated = [];
+    for (let i = 0; i < substrings.length; i++) {
+        let substr = substrings[i];
+        if (! substr.startsWith("<")){
+            if (count > max){
+                continue;
+            } else if (substr.length > (max-count-1)){
+                truncated.push(substr.substring(0, (max-count) - 1) + '…');
+            } else {
+                truncated.push(substr);
+            }
+            count += substr.length;
+        } else {
+            truncated.push(substr);
+        }
+    }
+
+    return `<span title="${trimmedString}">${truncated.join("")}${extra}</span>`;
+}
+
 
 /**
  * Check if a variable is an array (is written between [])

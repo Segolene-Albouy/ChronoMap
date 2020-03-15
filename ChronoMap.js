@@ -133,9 +133,9 @@ class ChronoMap {
         if (! dataset)
             return;
 
-        this.data.main = this.generateMainDataset(dataset);
-        this.data.time = this.generateTimeDataset();
-        this.data.map = this.generateMapDataset();
+        this.generateMainDataset(dataset);
+        this.generateTimeDataset();
+        this.generateMapDataset();
     }
 
     generateTimeTemplate(){
@@ -145,6 +145,7 @@ class ChronoMap {
     }
 
     generateMapTemplate(){
+        // TODO change that
         let template = {date: 0, series: "all"};
         Object.keys(this.series).map(e => {template[e] = 0});
         this.template.time = template;
@@ -211,30 +212,27 @@ class ChronoMap {
     }
 
     addMainData(data) {
-
+        this.itemNumber += 1;
+        if (! data.id){
+            data.id = this.itemNumber;
+        }
+        data.minDate = data.minDate ? new Date(`${data.minDate}`).getTime() : 0; // TODO : replace default value with earliest date of the chronomap
+        data.maxDate = data.maxDate ? new Date(`${data.maxDate}`).getTime() : 0 + this.config.timeSpan;
+        this.data.main[`${this.series[data.series].number}${data.id}`] = data
     }
 
     generateMainDataset(dataset) {
-        let mainDataset = {};
-
-        dataset.map(data => {
-            this.itemNumber += 1;
-            if (! data.id){
-                data.id = this.itemNumber;
-            }
-            mainDataset[`${this.series[data.series].number}${data.id}`] = data
-        });
-
-        return mainDataset;
+        dataset.map(data => this.addMainData(data));
     }
 
     addTimeData(data) {
-        let date = data.minDate !== null ? new Date(`${data.minDate}`).getTime() : 0; // TODO : replace default value with earliest date of the chronomap
-        const maxDate = data.maxDate !== null ? new Date(`${data.maxDate}`).getTime() : 0 + this.config.timeSpan; // maybe not time span
+        // Marker : what happens if we use this method and time properties are not parse as timestamp?
+        let date = data.minDate;
+        const maxDate = data.maxDate;
 
         /* NOTE : Date(123344655) int for timestamp, Date("1980") str for other date => date.getTime() to get timestamp */
 
-        for (date; date <= maxDate; date += 1) {
+        for (date; date <= maxDate; date += this.config.timeSpan) {
             if (typeof this.data.time[date] === 'undefined'){
                 this.data.time[date] = {...this.template.time};
                 this.data.time[date].date = new Date(date);
@@ -247,7 +245,6 @@ class ChronoMap {
 
     generateTimeDataset() {
         const data = Object.values(this.data.main);
-        let timeData = {};
 
         if (Object.keys(this.template.time).length === 0){
             this.generateTimeTemplate();
@@ -257,20 +254,18 @@ class ChronoMap {
             this.addTimeData(data[i]);
         }
 
-        const dates = Object.keys(timeData).map(x => parseInt(x));
+        const dates = Object.keys(this.data.time).map(x => parseInt(x));
 
-        // in order to show year where nothing happened
-        let minDate = Math.min(... dates)-this.config.timeSpan, maxDate = Math.max(... dates)+this.config.timeSpan;
+        // in order to show dates where nothing happened
+        let minDate = Math.min(... dates) - this.config.timeSpan, maxDate = Math.max(... dates) + this.config.timeSpan;
 
-        for (minDate; minDate <= maxDate; minDate++) {
-            if (typeof timeData[minDate] === 'undefined'){
-                timeData[minDate] = {...this.template.time};
-                timeData[minDate].date = `${minDate}-01-01`;
-                timeData[minDate].ids = [];
+        for (minDate; minDate <= maxDate; minDate += this.config.timeSpan) {
+            if (typeof this.data.time[minDate] === 'undefined'){
+                this.data.time[minDate] = {...this.template.time};
+                this.data.time[minDate].date = new Date(minDate);
+                this.data.time[minDate].ids = [];
             }
         }
-
-        return timeData;
     };
 
     addMapData = (data) => {
@@ -316,26 +311,22 @@ class ChronoMap {
     generateMapDataset() {
         const data = Object.values(this.data.main);
 
-        let mapData = {};
-
         let ids = {};
         Object.keys(this.series).map(e => {ids[e] = []});
 
         for (let i = data.length - 1; i >= 0; i--) {
             const latlong = `${data[i].lat},${data[i].long}`;
 
-            if (typeof mapData[latlong] === "undefined"){
-                mapData[latlong] = {
+            if (typeof this.data.map[latlong] === "undefined"){
+                this.data.map[latlong] = {
                     "lat": data[i].lat,
                     "long": data[i].long,
                     "place": data[i].placeName,
                     "ids": JSON.parse(JSON.stringify(ids))
                 };
             }
-            mapData[latlong].ids[data[i].series].push(`${this.series[data[i].series].number}${data[i].id}`);
+            this.data.map[latlong].ids[data[i].series].push(`${this.series[data[i].series].number}${data[i].id}`);
         }
-
-        return mapData;
     }
 
     updateChronoMap() {

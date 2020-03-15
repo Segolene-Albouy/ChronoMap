@@ -95,12 +95,13 @@ class Time extends AbstractChart {
         // in order to differentiate the series, they must rely on different field name
         return Object.values(this.data.main).map(dataObject => {
             // TODO : here to change the date formatting for the multiDataset only
-            dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
+            dataObject[`${dataObject.series}-minDate`] = dataObject.minDate;
+            dataObject.maxDate = dataObject.maxDate + this.config.timeSpan;
+
+            /*dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
             delete dataObject.minDate;
 
-            dataObject.maxDate = `${dataObject.maxDate+1}-01-01`;
-            /*dataObject.minDate = `${dataObject.minDate}-01-01`;
-            dataObject.color = this.chronoMap.series[dataObject.series].color;*/
+            dataObject.maxDate = `${dataObject.maxDate+1}-01-01`;*/
 
             return dataObject;
         });
