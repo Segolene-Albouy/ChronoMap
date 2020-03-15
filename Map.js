@@ -66,7 +66,7 @@ class Map extends AbstractChart {
         this.amMap.legend.dx = 10;
 
         // Create a label to indicate that the 0-0 coordinates is an Unknown place
-        this.unknownPlaceLabel = this.createLabelOnMap("Unknown\nplace", 0, 0);
+        this.unknownPlaceLabel = this.createLabelOnMap("Unknown\nplace", this.config.defaultLat, this.config.defaultLong);
     }
 
     /**

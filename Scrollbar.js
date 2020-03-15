@@ -73,7 +73,7 @@ class Scrollbar extends AbstractChart {
         const dateMinRange = (cursorMin / this.time.dateRange) + this.time.minDate;
         const dateMaxRange = (cursorMax / this.time.dateRange) + this.time.minDate;
         // Show the timerange selected
-        this.timeframeLabel.text = `${new Date(dateMinRange).getFullYear()} — ${new Date(dateMaxRange).getFullYear()}`; // TODO chnage method depending on timeRange => create method for that
+        this.timeframeLabel.text = `${this.config.convertDate(dateMinRange)} — ${this.config.convertDate(dateMaxRange)}`;
 
         /*!// remove the record boxes appearing when the user moves a cursor of the scrollbar
         $(`#${this.chronoMap.config.elementId.box}`).empty(); MARKER : box box box*/

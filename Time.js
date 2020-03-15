@@ -55,7 +55,7 @@ class Time extends AbstractChart {
         // Date formatting and display
         this.amTime.dateFormatter.dateFormat = this.config.dateFormat;
         this.amTime.dateFormatter.inputDateFormat = this.config.dateFormat;
-        this.amTime.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};
+        //this.amTime.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};
         // NOTE : the keys in the time dataset must be the same as the way the date in the time axis is expressed
 
         // Data
@@ -94,14 +94,8 @@ class Time extends AbstractChart {
     generateMultiDataset(){
         // in order to differentiate the series, they must rely on different field name
         return Object.values(this.data.main).map(dataObject => {
-            // TODO : here to change the date formatting for the multiDataset only
             dataObject[`${dataObject.series}-minDate`] = dataObject.minDate;
-            dataObject.maxDate = dataObject.maxDate + this.config.timeSpan;
-
-            /*dataObject[`${dataObject.series}-minDate`] = `${dataObject.minDate}-01-01`;
-            delete dataObject.minDate;
-
-            dataObject.maxDate = `${dataObject.maxDate+1}-01-01`;*/
+            dataObject.maxDate = dataObject.maxDate + (this.config.timeSpan * 2);
 
             return dataObject;
         });
@@ -127,7 +121,7 @@ class Time extends AbstractChart {
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
             /*xAxis.baseInterval = {count: this.config.timeSpan, timeUnit: this.config.timeUnit};*/
-            /*/!*xAxis.min = new Date("2019-11-10 05:00").getTime(); NOTE : calculer l'éventail de temps avec le timeSpan
+            /*/!*xAxis.min = new Date("2019-11-10 05:00").getTime(); TODO : calculer l'éventail de temps avec le timeSpan
             xAxis.max = new Date("2019-11-11 02:00").getTime();*!/*/
         } else {
             xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
@@ -145,7 +139,7 @@ class Time extends AbstractChart {
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
         xAxis.adapter.add("getTooltipText", (date) => {
-            return this.generateTooltipContent(date);
+            return this.generateTooltipContent(new Date(`${date}`).getTime());
         });
 
         let dateLabels = xAxis.renderer.labels.template;
@@ -156,9 +150,8 @@ class Time extends AbstractChart {
     }
 
     generateTooltipContent(date){
-        // TODO : need to compute date to timestamp => do that only when dealing with time ranges under 1y
-        date = date.replace("-01-01", "");
-        const dateData = this.chronoMap.data.time[date];
+        const minDate = this.config.convertDate(date), maxDate = this.config.convertDate(this.config.addTimeSpan(date));
+        const dateData = this.data.time[date];
         let tooltips = "";
         let number = 0;
         for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
@@ -169,7 +162,7 @@ class Time extends AbstractChart {
             tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
         }
 
-        return number ? `[bold]${date} — ${parseInt(date)+this.config.timeSpan}[/]${tooltips}\nClick to see more` : "";
+        return number ? `[bold]${minDate} — ${maxDate}[/]${tooltips}\nClick to see more` : "";
     }
 
     /* * * * * * * * *
@@ -355,9 +348,7 @@ class Time extends AbstractChart {
             // in order to change the cursor appearance when hovering time series
             template.events.on("over", (event) => {
                 event.target.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-                let hoverDate = event.target.dataItem.dataContext.date;
-                // TODO : faire un truc plus définitif sur la gestion des dates
-                hoverDate = hoverDate.replace("-01-01", "");
+                const hoverDate = event.target.dataItem.dataContext.date;
                 const dateData = this.data.time[hoverDate];
 
                 // if the is an item created at this date, change the cursor to be a pointer

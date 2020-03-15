@@ -145,10 +145,9 @@ class ChronoMap {
     }
 
     generateMapTemplate(){
-        // TODO change that
-        let template = {date: 0, series: "all"};
-        Object.keys(this.series).map(e => {template[e] = 0});
-        this.template.time = template;
+        let template = {};
+        Object.keys(this.series).map(e => {template[e] = []});
+        this.template.map = template;
     }
 
     addData(data) {
@@ -159,6 +158,9 @@ class ChronoMap {
                 this.generateTimeTemplate();
             }
             this.addTimeData(data);
+            if (Object.keys(this.template.map).length === 0){
+                this.generateMapTemplate();
+            }
             this.addMapData(data);
         } else {
             this.generateDatasets([data]);
@@ -213,11 +215,14 @@ class ChronoMap {
 
     addMainData(data) {
         this.itemNumber += 1;
-        if (! data.id){
-            data.id = this.itemNumber;
-        }
+
+        data.id = data.id ? data.id : this.itemNumber;
+        data.lat = data.lat ? data.lat : this.config.defaultLat;
+        data.long = data.long ? data.long : this.config.defaultLong;
+
         data.minDate = data.minDate ? new Date(`${data.minDate}`).getTime() : 0; // TODO : replace default value with earliest date of the chronomap
         data.maxDate = data.maxDate ? new Date(`${data.maxDate}`).getTime() : 0 + this.config.timeSpan;
+
         this.data.main[`${this.series[data.series].number}${data.id}`] = data
     }
 
@@ -225,21 +230,23 @@ class ChronoMap {
         dataset.map(data => this.addMainData(data));
     }
 
-    addTimeData(data) {
-        // Marker : what happens if we use this method and time properties are not parse as timestamp?
-        let date = data.minDate;
-        const maxDate = data.maxDate;
+    addTimeData(data = null, minDate = null, maxDate = null) {
+        // NOTE : dates are supposed to be parsed because they passed through addMainData()
+        if (!minDate && !maxDate){
+            minDate = data.minDate;
+            maxDate = data.maxDate;
+        }
 
-        /* NOTE : Date(123344655) int for timestamp, Date("1980") str for other date => date.getTime() to get timestamp */
-
-        for (date; date <= maxDate; date += this.config.timeSpan) {
-            if (typeof this.data.time[date] === 'undefined'){
-                this.data.time[date] = {...this.template.time};
-                this.data.time[date].date = new Date(date);
-                this.data.time[date].ids = [];
+        for (minDate; minDate <= maxDate; minDate = this.config.addTimeSpan(minDate)) {
+            if (typeof this.data.time[minDate] === 'undefined'){
+                this.data.time[minDate] = {...this.template.time};
+                this.data.time[minDate].date = new Date(minDate);
+                this.data.time[minDate].ids = [];
             }
-            this.data.time[date][data.series] += 1;
-            this.data.time[date].ids.push(`${this.series[data.series].number}${data.id}`);
+            if (data){
+                this.data.time[minDate][data.series] += 1;
+                this.data.time[minDate].ids.push(`${this.series[data.series].number}${data.id}`);
+            }
         }
     };
 
@@ -258,51 +265,21 @@ class ChronoMap {
 
         // in order to show dates where nothing happened
         let minDate = Math.min(... dates) - this.config.timeSpan, maxDate = Math.max(... dates) + this.config.timeSpan;
-
-        for (minDate; minDate <= maxDate; minDate += this.config.timeSpan) {
-            if (typeof this.data.time[minDate] === 'undefined'){
-                this.data.time[minDate] = {...this.template.time};
-                this.data.time[minDate].date = new Date(minDate);
-                this.data.time[minDate].ids = [];
-            }
-        }
+        this.addTimeData(null, minDate, maxDate);
     };
 
     addMapData = (data) => {
-        /*$oiId = "oi".$item->getId();
+        const latlong = `${data.lat},${data.long}`;
 
-        if ($item->getPlace()){
-            $lat = $item->getPlace()->getLat() ? $item->getPlace()->getLat() : 0;
-            $long = $item->getPlace()->getLong() ? $item->getPlace()->getLong() : 0;
-
-            if (! isset($mapData["$lat,$long"])){
-                $mapData["$lat,$long"] = [
-                    "lat" => $lat,
-                    "long" => $long,
-                    "place" => $item->getPlace()->getPlaceName(),
-                    "ids" => $entities
-                ];
-            }
-            if (! in_array($oiId, $mapData["$lat,$long"]["ids"]["originalText"])){
-                $mapData["$lat,$long"]["ids"]["originalText"][] = $oiId;
-            }
-
-        } else {
-            if (!isset($mapData["0"])){
-                $mapData["0"] = [
-                    "lat" => 0,
-                    "long" => 0,
-                    "place" => "<span class='noInfo'>Unknown place</span>",
-                    "ids" => $entities
-                ];
-            }
-
-            if (! in_array($oiId, $mapData["0"]["ids"]["originalText"])){
-                $mapData["0"]["ids"]["originalText"][] = $oiId;
-            }
+        if (typeof this.data.map[latlong] === "undefined"){
+            this.data.map[latlong] = {
+                "lat": data.lat,
+                "long": data.long,
+                "place": data.placeName,
+                "ids": JSON.parse(JSON.stringify(this.template.map))
+            };
         }
-
-        return $mapData;*/
+        this.data.map[latlong].ids[data.series].push(`${this.series[data.series].number}${data.id}`);
     };
 
     /**
@@ -311,21 +288,12 @@ class ChronoMap {
     generateMapDataset() {
         const data = Object.values(this.data.main);
 
-        let ids = {};
-        Object.keys(this.series).map(e => {ids[e] = []});
+        if (Object.keys(this.template.map).length === 0){
+            this.generateMapTemplate();
+        }
 
         for (let i = data.length - 1; i >= 0; i--) {
-            const latlong = `${data[i].lat},${data[i].long}`;
-
-            if (typeof this.data.map[latlong] === "undefined"){
-                this.data.map[latlong] = {
-                    "lat": data[i].lat,
-                    "long": data[i].long,
-                    "place": data[i].placeName,
-                    "ids": JSON.parse(JSON.stringify(ids))
-                };
-            }
-            this.data.map[latlong].ids[data[i].series].push(`${this.series[data[i].series].number}${data[i].id}`);
+            this.addMapData(data[i]);
         }
     }
 

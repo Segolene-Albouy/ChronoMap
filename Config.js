@@ -14,14 +14,23 @@ const timeUnits = {
  * @type {{"1d": number, "10d": number, "1h": number, "1y": number, "10y": number, "1M": number}}
  */
 const timeSpans = {
-    "10y": 315532800000,
-    "1y": 31532400000,
-    "1M": 2592000000, // approximated to 30 days
+    "10y": 315532800000, // 315569260800 (3652.424 days)
+    "1y": 31557600000/*31532400000*/, // 31557600000 (365,25 days)
+    "1M": 2592000000, // 2629800000 (365,25 days / 12) approximated to 30 days
     "10d": 864000000,
     "1d": 86400000,
     "1h": 3600000
 };
 
+/**
+ * To obtain exactly one more year
+ * date.setFullYear(date.getFullYear() + 1);
+ */
+
+/**
+ *
+ * @type {{"1d": string, "10d": string, "1h": string, "1y": string, "10y": string, "1M": string}}
+ */
 const dateFormat = {
     "10y": "yyyy",
     "1y": "yyyy",
@@ -75,6 +84,9 @@ class Config {
         this.showCountries = false;
         this.angledPointers = false;
 
+        this.defaultLat = 0;
+        this.defaultLong = 0;
+
         /*if (lat.length !== 0){
             this.homeGeoPoint.latitude = getMiddleValue(lat);
         }
@@ -84,6 +96,41 @@ class Config {
         if (lat.length !== 0 && long.length !== 0){
             // ESSAYER DE FAIRE UN TRUC POUR LE ZOOM LEVEL
         }*/
+    }
+
+    convertDate(timestamp){
+        switch (this.timeRange) {
+            case "10y":
+                return new Date(timestamp).getFullYear();
+            case "1y":
+                return new Date(timestamp).getFullYear();
+            case "1M":
+                return new Date(timestamp);
+            case "10d":
+                return new Date(timestamp);
+            case "1d":
+                return new Date(timestamp);
+            case "1h":
+                return new Date(timestamp);
+        }
+    }
+
+    addTimeSpan(timestamp){
+        let date = new Date(timestamp);
+        switch (this.timeRange) {
+            case "10y":
+                return date.setFullYear(date.getFullYear() + 10);
+            case "1y":
+                return date.setFullYear(date.getFullYear() + 1);
+            case "1M":
+                return date.setMonth(date.getMonth() + 1);
+            case "10d":
+                return date.setDate(date.getDate() + 10);
+            case "1d":
+                return date.setDate(date.getDate() + 1);
+            case "1h":
+                return date.setHours(date.getHours() + 1);
+        }
     }
 }
 
