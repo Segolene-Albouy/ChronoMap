@@ -102,6 +102,7 @@ class Time extends AbstractChart {
     }
 
     generateSimpleDataset(){
+        let dataset = Object.values(this.data.time).map(data => data.date = `${this.config.convertDate(data.date)}`);
         return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
     }
 
