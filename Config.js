@@ -10,24 +10,6 @@ const timeUnits = {
 };
 
 /**
- * Difference between two dates in the chart measured in milliseconds
- * @type {{"1d": number, "10d": number, "1h": number, "1y": number, "10y": number, "1M": number}}
- */
-const timeSpans = {
-    "10y": 315532800000, // 315569260800 (3652.424 days)
-    "1y": 31557600000/*31532400000*/, // 31557600000 (365,25 days)
-    "1M": 2592000000, // 2629800000 (365,25 days / 12) approximated to 30 days
-    "10d": 864000000,
-    "1d": 86400000,
-    "1h": 3600000
-};
-
-/**
- * To obtain exactly one more year
- * date.setFullYear(date.getFullYear() + 1);
- */
-
-/**
  *
  * @type {{"1d": string, "10d": string, "1h": string, "1y": string, "10y": string, "1M": string}}
  */
@@ -53,10 +35,9 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "linechart", isClickable= true, height= "1000"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "1000"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
-        this.timeSpan = timeSpans[this.timeRange]; // timespan before and after the timedata, computed according to the timeRange
         this.dateFormat = dateFormat[this.timeRange];
 
         // todo : add showCountries
@@ -64,7 +45,7 @@ class Config {
 
         this.isClickable = isClickable; // if the map pins/time chart are clickable
         this.timeChart = timeChart; // heatmap, linechart, timeline
-        this.multiTimeChart = false; // if the time data are displayed in multiple stacked charts for each series of in one chart
+        this.multiTimeChart = true; // if the time data are displayed in multiple stacked charts for each series of in one chart
 
         this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
@@ -86,6 +67,7 @@ class Config {
 
         this.defaultLat = 0;
         this.defaultLong = 0;
+        this.defaultDate = 0;
 
         /*if (lat.length !== 0){
             this.homeGeoPoint.latitude = getMiddleValue(lat);

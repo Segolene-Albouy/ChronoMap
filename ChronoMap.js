@@ -220,8 +220,8 @@ class ChronoMap {
         data.lat = data.lat ? data.lat : this.config.defaultLat;
         data.long = data.long ? data.long : this.config.defaultLong;
 
-        data.minDate = data.minDate ? new Date(`${data.minDate}`).getTime() : 0; // TODO : replace default value with earliest date of the chronomap
-        data.maxDate = data.maxDate ? new Date(`${data.maxDate}`).getTime() : 0 + this.config.timeSpan;
+        data.minDate = data.minDate ? new Date(`${data.minDate}`).getTime() : this.config.defaultDate;
+        data.maxDate = data.maxDate ? new Date(`${data.maxDate}`).getTime() : this.config.addTimeSpan(this.config.defaultDate);
 
         this.data.main[`${this.series[data.series].number}${data.id}`] = data
     }

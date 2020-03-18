@@ -109,15 +109,14 @@ class Time extends AbstractChart {
         // in order to differentiate the series, they must rely on different field name
         return Object.values(this.data.main).map(dataObject => {
             dataObject[`${dataObject.series}-minDate`] = dataObject.minDate;
-            dataObject.maxDate = dataObject.maxDate + (this.config.timeSpan * 2);
+            dataObject.maxDate = this.config.addTimeSpan(dataObject.maxDate);
 
             return dataObject;
         });
     }
 
     generateSimpleDataset(){
-        /*// TODO : dupliquer le dataset
-        let dataset = Object.values(this.data.time);
+        /*let dataset = Object.values(this.data.time);
         dataset.map(data => data.date = `${this.config.convertDate(data.date)}`);
         return dataset.sort((a, b) => (a.date > b.date) ? 1 : -1);*/
         if (this.config.timeChart === "heatmap"){
