@@ -14,14 +14,6 @@ const angle = [
     [10, 50, 90, 130, 170]
 ];
 
-const offset = [
-    [0],
-    [0.5, -0.5],
-    [1, 0, -1],
-    [1.5, 0.5, -0.5, -1.5],
-    [2, 1, 0, -1, -2]
-];
-
 class ChronoMap {
     constructor(dataset = null, series = null, config = null) {
         /**
@@ -37,7 +29,7 @@ class ChronoMap {
         this.series = series ? series : this.generateSeries(dataset);
 
         /**
-         * Objects defining how data is structured in each datasets
+         * Objects defining how data is structured in each dataset
          * @type {{main: {}, time: {}, map: {}}}
          */
         this.template = { main: {}, time: {}, map: {} };
@@ -197,15 +189,8 @@ class ChronoMap {
 
         const seriesNumber = Object.keys(series).length;
 
-        // space occupied by one series
-        const seriesSpace = this.config.timeChartSpace/seriesNumber;
-        const seriesWidth = seriesSpace/seriesNumber;
-
-        for (let i = seriesNumber - 1; i >= 0; i--) {
-            Object.values(series)[i].height = seriesSpace * 0.8;
-            Object.values(series)[i].offset = offset[seriesNumber-1][i]*seriesWidth;
-
-            if (this.config.angledPointers){
+        if (this.config.angledPointers){
+            for (let i = seriesNumber - 1; i >= 0; i--) {
                 Object.values(series)[i].angle = angle[seriesNumber-1][i];
             }
         }

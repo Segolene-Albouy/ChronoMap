@@ -35,7 +35,7 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "1000"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "900"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.dateFormat = dateFormat[this.timeRange];
@@ -50,6 +50,9 @@ class Config {
         this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
 
+        /* * * * * * * * * * * *
+         *   CHART DIMENSION   *
+         * * * * * * * * * * * */
         this.chartHeight = height;
         this.timeChartHeight = Math.round(this.chartHeight * 0.4); // TODO : depends on the chart type => eg timeline not multi very smol
         this.timeChartY = this.chartHeight - this.timeChartHeight + 20;
@@ -97,6 +100,12 @@ class Config {
         }
     }
 
+    /**
+     *
+     * @param timestamp: number|date either a date or a timestamp to which to add the time span corresponding to the period between two dates in the chart
+     * @param add: boolean value indicating if the time span must be added or not (i.e. subtracted)
+     * @returns {number}
+     */
     addTimeSpan(timestamp, add = true){
         let date = timestamp instanceof Date ? timestamp : new Date(timestamp);
         switch (this.timeRange) {

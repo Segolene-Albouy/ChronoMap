@@ -26,16 +26,16 @@ class Time extends AbstractChart {
         this.dateRange = 0;
 
         /**
-         * Minimal date displayed in the time chart (minimal date of the time dataset minus the time range)
-         * @type {null|Date}
+         * Minimal date (timestamp) displayed in the time chart (minimal date of the time dataset minus the time range)
+         * @type number
          */
-        this.minRange = null;
+        this.minRange = 0;
 
         /**
-         * Maximal date displayed in the time chart (maximal date of the time dataset plus the time range)
-         * @type {null|Date}
+         * Maximal date (timestamp) displayed in the time chart (maximal date of the time dataset plus the time range)
+         * @type number
          */
-        this.maxRange = null;
+        this.maxRange = 0;
 
         /**
          * Amcharts chart object corresponding to the time chart
@@ -140,8 +140,8 @@ class Time extends AbstractChart {
         let xAxis;
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
-            /*xAxis.min = this.minRange.getTime(); // TODO : why isn't it working ?? 😓
-            xAxis.max = this.maxRange.getTime();*/
+            xAxis.min = this.minRange;
+            xAxis.max = this.maxRange;
         } else {
             xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
             xAxis.dataFields.category = "date";
@@ -285,11 +285,10 @@ class Time extends AbstractChart {
                         break;
                     case "timeline":
                         series.dataFields.categoryY = "series";
-                        series.dataFields.openDateX = `${config.name}-minDate`;/*"minDate";*/
+                        series.dataFields.openDateX = `${config.name}-minDate`;
                         series.dataFields.dateX = "maxDate";
-                        series.columns.template.dy = config.offset;
-                        series.columns.template.height = config.height;
-                        series.columns.template.cornerRadiusBottomLeft = 10;
+                        //series.columns.template.cornerRadiusBottomLeft = 10;
+                        series.stacked = true;
                         break;
                 }
                 break;
