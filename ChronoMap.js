@@ -264,11 +264,11 @@ class ChronoMap {
         const dates = Object.keys(this.data.time).map(x => parseInt(x));
 
         // in order to show dates where nothing happened
-        let minDate = Math.min(... dates) - this.config.timeSpan, maxDate = Math.max(... dates) + this.config.timeSpan;
+        let minDate = this.config.addTimeSpan(Math.min(... dates), false), maxDate = this.config.addTimeSpan(Math.max(... dates));
         this.addTimeData(null, minDate, maxDate);
     };
 
-    addMapData = (data) => {
+    addMapData(data) {
         const latlong = `${data.lat},${data.long}`;
 
         if (typeof this.data.map[latlong] === "undefined"){

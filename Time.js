@@ -115,8 +115,14 @@ class Time extends AbstractChart {
         });
     }
 
-    generateSimpleDataset(){ // MARKER
-        Object.values(this.data.time).map(data => data.date = `${this.config.convertDate(data.date)}`);
+    generateSimpleDataset(){
+        /*// TODO : dupliquer le dataset
+        let dataset = Object.values(this.data.time);
+        dataset.map(data => data.date = `${this.config.convertDate(data.date)}`);
+        return dataset.sort((a, b) => (a.date > b.date) ? 1 : -1);*/
+        if (this.config.timeChart === "heatmap"){
+            Object.values(this.data.time).map(data => data.date = `${this.config.convertDate(data.date)}`);
+        }
         return Object.values(this.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
     }
 
