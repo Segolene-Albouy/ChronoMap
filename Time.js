@@ -26,18 +26,6 @@ class Time extends AbstractChart {
         this.dateRange = 0;
 
         /**
-         * Minimal date (timestamp) displayed in the time chart (minimal date of the time dataset minus the time range)
-         * @type number
-         */
-        this.minRange = 0;
-
-        /**
-         * Maximal date (timestamp) displayed in the time chart (maximal date of the time dataset plus the time range)
-         * @type number
-         */
-        this.maxRange = 0;
-
-        /**
          * Amcharts chart object corresponding to the time chart
          * @type {{}}
          */
@@ -47,12 +35,9 @@ class Time extends AbstractChart {
     }
 
     generate(){
-        // TODO : compute those properties using timestamp
         this.minDate = Math.min.apply(null, Object.keys(this.data.time));
         this.maxDate = Math.max.apply(null, Object.keys(this.data.time));
         this.dateRange = 1 / (this.maxDate - this.minDate);
-        this.minRange = this.config.addTimeSpan(this.minDate, false);
-        this.maxRange = this.config.addTimeSpan(this.maxDate);
 
         this.amTime = this.chronoMap.container.createChild(am4charts.XYChart);
 
@@ -140,8 +125,14 @@ class Time extends AbstractChart {
         let xAxis;
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
-            xAxis.min = this.minRange;
-            xAxis.max = this.maxRange;
+            xAxis.min = this.minDate;
+            /*xAxis.max = this.maxDate;*/
+
+            /*let minDate = new Date(this.minDate);
+            let maxDate = new Date(this.maxDate);
+            xAxis.min = minDate.setMonth(minDate.getMonth() + 6);
+            xAxis.max = maxDate.setMonth(maxDate.getMonth() - 6);
+            console.log(this.minDate, xAxis.min, this.maxDate, xAxis.max);*/
         } else {
             xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
             xAxis.dataFields.category = "date";
@@ -174,12 +165,14 @@ class Time extends AbstractChart {
         const dateData = this.data.time[date];
         let tooltips = "";
         let number = 0;
-        for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
-            let seriesName = Object.values(this.chronoMap.series)[j].name;
-            seriesName = dateData[seriesName] > 1 ? seriesName.pluralize() : seriesName;
-            if (dateData[seriesName] > 0){number ++;}
+        if (typeof dateData !== "undefined"){
+            for (let j = Object.keys(this.chronoMap.series).length -1; j >= 0; j--) {
+                let seriesName = Object.values(this.chronoMap.series)[j].name;
+                seriesName = dateData[seriesName] > 1 ? seriesName.pluralize() : seriesName;
+                if (dateData[seriesName] > 0){number ++;}
 
-            tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
+                tooltips = tooltips + `\n${seriesName} : [bold]${dateData[seriesName]}[/]`;
+            }
         }
 
         return number ? `[bold]${minDate} — ${maxDate}[/]${tooltips}\nClick to see more` : "";

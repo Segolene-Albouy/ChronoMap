@@ -35,7 +35,7 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "900"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "750"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.dateFormat = dateFormat[this.timeRange];

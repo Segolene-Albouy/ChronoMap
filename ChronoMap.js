@@ -225,7 +225,7 @@ class ChronoMap {
         for (minDate; minDate <= maxDate; minDate = this.config.addTimeSpan(minDate)) {
             if (typeof this.data.time[minDate] === 'undefined'){
                 this.data.time[minDate] = {...this.template.time};
-                this.data.time[minDate].date = new Date(minDate);
+                this.data.time[minDate].date = minDate/*new Date(minDate)*/;
                 this.data.time[minDate].ids = [];
             }
             if (data){

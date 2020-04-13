@@ -11,6 +11,7 @@ class Scrollbar extends AbstractChart {
         this.time = chronoMap.time;
 
         this.mapData = chronoMap.data.map;
+        // TODO : might be the problem of the scrollbar offset
         this.timeData = Object.values(chronoMap.data.time).sort((a, b) => (a.date > b.date) ? 1 : -1);
 
         this.amScrollbar = this.config.scrollbarHeight > 50 ? new am4charts.XYChartScrollbar() : new am4core.Scrollbar();
@@ -80,7 +81,7 @@ class Scrollbar extends AbstractChart {
         // set the Unknown place label to be transparent
         this.map.unknownPlaceLabel.fillOpacity = 0;
 
-        // Get the index of th first and last object in the dataset corresponding to the selected timerange
+        // Get the index of the first and last object in the dataset corresponding to the selected timerange
         const start = Math.floor(cursorMin * this.timeData.length);
         const end = Math.ceil(cursorMax * this.timeData.length);
 
