@@ -189,7 +189,7 @@ class Map extends AbstractChart {
             if (typeof this.data.main[ids[0]] !== "undefined"){
                 let recordData = this.data.main[ids[0]];
                 // defining title of one record of the records associated with the map pin
-                title = `\n‣ ${recordData.title} ${getDates(recordData.minDate, recordData.maxDate)}`;
+                title = `\n‣ ${recordData.title} ${getDates(this.config.convertDate(recordData.minDate), this.config.convertDate(recordData.maxDate))}`;
             }
 
             let tooltip = `[bold; font-size:18px]${ids.length} ${seriesName}${s}[/]${title}${more}

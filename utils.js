@@ -324,21 +324,18 @@ const indexOfNth = (str, substr, n) => {
  * @return {string}
  */
 const getDates = (minDate, maxDate) => {
-    let date;
     if (isDefined(minDate) || isDefined(maxDate)){
         minDate = isDefined(minDate) ? minDate : "?";
         maxDate = isDefined(maxDate) ? maxDate : "?";
 
         if ((minDate === maxDate) && (minDate !== "?")) {
-            date = `${minDate}`;
+            return `${minDate}`;
         } else {
-            date = `${minDate}–${maxDate}`;
+            return `${minDate}–${maxDate}`;
         }
     } else {
-        date = "?–?";
+        return "?–?";
     }
-
-    return date;
 };
 
 /**

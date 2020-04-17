@@ -35,7 +35,7 @@ const dateFormat = {
  */
 class Config {
     // TODO ; trouver un moyen élégant de passer tous les éléments de config qu'on veut sans avoir des arguments à rallonge
-    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "750"){
+    constructor(elementId="chronoMap", timeRange = "1y", timeChart= "timeline", isClickable= true, height= "600"){
         this.timeRange = timeRange; // 10y, 1y, 1M, 10d, 1d, 1h
         this.timeUnit = timeUnits[this.timeRange];
         this.dateFormat = dateFormat[this.timeRange];
@@ -45,7 +45,7 @@ class Config {
 
         this.isClickable = isClickable; // if the map pins/time chart are clickable
         this.timeChart = timeChart; // heatmap, linechart, timeline
-        this.multiTimeChart = true; // if the time data are displayed in multiple stacked charts for each series of in one chart
+        this.multiTimeChart = false; // if the time data are displayed in multiple stacked charts for each series of in one chart
 
         this.baseColors = colorScheme["primary"]; // TODO : select color theme // create color set with amcharts
         this.elementId = elementId;
@@ -108,19 +108,21 @@ class Config {
      */
     addTimeSpan(timestamp, add = true){
         let date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+
+        const multi = add ? 1 : -1;
         switch (this.timeRange) {
             case "10y":
-                return add ? date.setFullYear(date.getFullYear() + 10) : date.setFullYear(date.getFullYear() - 10);
+                return date.setFullYear(date.getFullYear() + (10 * multi));
             case "1y":
-                return add ? date.setFullYear(date.getFullYear() + 1) : date.setFullYear(date.getFullYear() - 1);
+                return date.setFullYear(date.getFullYear() + multi);
             case "1M":
-                return add ? date.setMonth(date.getMonth() + 1) : date.setMonth(date.getMonth() - 1);
+                return date.setMonth(date.getMonth() + multi);
             case "10d":
-                return add ? date.setDate(date.getDate() + 10) : date.setDate(date.getDate() - 10);
+                return date.setDate(date.getDate() + (10 * multi));
             case "1d":
-                return add ? date.setDate(date.getDate() + 1) : date.setDate(date.getDate() - 1);
+                return date.setDate(date.getDate() + multi);
             case "1h":
-                return add ? date.setHours(date.getHours() + 1) : date.setHours(date.getHours() - 1);
+                return date.setHours(date.getHours() + multi);
         }
     }
 }
