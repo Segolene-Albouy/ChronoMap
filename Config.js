@@ -90,6 +90,10 @@ class Config {
     }
 
     convertDate(timestamp){
+        if (typeof timestamp !== "number"){
+            return '😢';
+        }
+
         switch (this.timeRange) {
             case "10y":
                 return new Date(timestamp).getFullYear();

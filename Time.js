@@ -148,7 +148,6 @@ class Time extends AbstractChart {
         tooltip.dx = -65;
 
         // the adapter changes how the tooltip text is displayed when the user is hovering the heat map
-        // TODO : ça s'est utilisé seulement par les multi chart non ? les autres ont hover event chkroi
         xAxis.adapter.add("getTooltipText", (date) => {
             date = isNaN(new Date(`${date}`)) ? date : new Date(`${date}`).getTime();
             return this.generateTooltipContent(date);
@@ -157,6 +156,11 @@ class Time extends AbstractChart {
         let dateLabels = xAxis.renderer.labels.template;
         dateLabels.fillOpacity = 0.7;
         dateLabels.fill = am4core.color("#636266");
+
+        dateLabels.adapter.add("text", (label, bloup) => {
+            console.log(bloup);
+            return this.config.convertDate(label);
+        });
 
         return xAxis;
     }
