@@ -22,6 +22,12 @@ const dateFormat = {
     "1h": "yyyy-MM-dd hh"
 };
 
+const timeChartHeight = {
+    timeline: 0.25,
+    linechart: 0.35,
+    heatmap: 0.3
+};
+
 /**
  * It defines which part of the map is visible to the user when loading the page
  * (homeZoomLevel : at what level is the map zoomed in?
@@ -54,7 +60,7 @@ class Config {
          *   CHART DIMENSION   *
          * * * * * * * * * * * */
         this.chartHeight = height;
-        this.timeChartHeight = Math.round(this.chartHeight * 0.4); // TODO : depends on the chart type => eg timeline not multi very smol
+        this.timeChartHeight = this.multiTimeChart ? Math.round(this.chartHeight * 0.4) : Math.round(this.chartHeight * timeChartHeight[this.timeChart]);
         this.timeChartY = this.chartHeight - this.timeChartHeight + 20;
         this.timeChartTooltipY = -(this.timeChartHeight / 2.2);
         this.timeframeLabelY = this.timeChartY - 30;
