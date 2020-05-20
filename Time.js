@@ -123,6 +123,7 @@ class Time extends AbstractChart {
     generateXAxis(){
         // TODO : all xAxes computed the same way, as date axis
         let xAxis;
+        // NOTE : Date axis is for now used only by multi timeline and line chart
         if ((this.config.multiTimeChart && this.config.timeChart === "timeline") || (this.config.timeChart === "linechart")){
             xAxis = this.amTime.xAxes.push(new am4charts.DateAxis());
             xAxis.min = this.minDate;
@@ -134,6 +135,7 @@ class Time extends AbstractChart {
             xAxis.max = maxDate.setMonth(maxDate.getMonth() - 6);
             console.log(this.minDate, xAxis.min, this.maxDate, xAxis.max);*/
         } else {
+            // NOTE : other types of charts use a category axis
             xAxis = this.amTime.xAxes.push(new am4charts.CategoryAxis());
             xAxis.dataFields.category = "date";
         }
@@ -157,10 +159,11 @@ class Time extends AbstractChart {
         dateLabels.fillOpacity = 0.7;
         dateLabels.fill = am4core.color("#636266");
 
-        dateLabels.adapter.add("text", (label, bloup) => {
+        // TODO : attempt to parse horizontal axis label in Date : weird bug
+        /*dateLabels.adapter.add("text", (label, bloup) => {
             console.log(bloup);
             return this.config.convertDate(label);
-        });
+        });*/
 
         return xAxis;
     }
@@ -205,11 +208,6 @@ class Time extends AbstractChart {
         } else {
             let seriesLabels = yAxis.renderer.labels.template;
             seriesLabels.verticalCenter = "middle";
-
-            /*seriesLabels.adapter.add("fill", (color, axis) => {
-                console.log(axis);
-                return am4core.color("blue");
-            });*/
 
             /*dateLabels.fillOpacity = 0.7;
             dateLabels.fill = am4core.color("#636266");*/

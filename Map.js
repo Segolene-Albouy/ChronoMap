@@ -121,26 +121,52 @@ class Map extends AbstractChart {
                 seriesPins[latlong].background.pointerLength = 14; // set the length of the pointy end
                 seriesPins[latlong].background.pointerAngle = config.angle; // set the angle of the pin
 
+                // define a label to show the number of records represented by the pin
+                seriesPins[latlong].label = placePoint.createChild(am4core.Label);
+                seriesPins[latlong].label.fill = am4core.color("white");
+                seriesPins[latlong].label.paddingBottom = 3;
+                // override tooltip automatic background color
+                seriesPins[latlong].label.tooltip.getFillFromObject = false;
+                seriesPins[latlong].label.tooltip.background.fill = am4core.color(config.color);
+
                 // add to the map point a property that defines which item and place it represents
                 seriesPins[latlong].properties.dummyData = {ids: place.ids[seriesName], placeName: place.place};
                 // the set radius and tooltip accordingly
                 this.definePinAppearance(seriesPins[latlong], seriesTitle);
                 seriesPins[latlong].circle.cursorOverStyle = am4core.MouseCursorStyle.pointer; // make the cursor a point when hovering the circle
+                seriesPins[latlong].label.cursorOverStyle = am4core.MouseCursorStyle.pointer;
 
                 // show boxes on click on a map pin
-                seriesPins[latlong].circle.events.on("hit", function (event) {
-                    let idsToDisplay = event.target._parent.properties.dummyData.ids;
-                    this.chronoMap.clickedItems = idsToDisplay; // set the property clickedItems
+                seriesPins[latlong].circle.events.on("hit", event => {
+                    this.hitEvent(event.target);
+                });
+                seriesPins[latlong].label.events.on("hit", event => {
+                    this.hitEvent(event.target);
+                });
 
-                    // add an "s" if there is multiple records to display
-                    let s = idsToDisplay.length > 1 ? "s" : "";
-                    // generate boxes
-                    this.chronoMap.generateTable(`${seriesTitle}${s} created in ${event.target._parent.properties.dummyData.placeName}`);
-                }.bind(this), false); // bind allow to use this referring to the instance instead to the DOM
             }
         }
         return seriesPins;
     }
+
+    /**
+     * allow to show boxes on click on a map pin
+     * @param eventTarget
+     */
+    hitEvent(eventTarget){
+        if (eventTarget.className === "Label"){
+            eventTarget = eventTarget.parent.circle;
+        }
+        super.hitEvent(eventTarget, eventTarget._parent.properties.dummyData.ids);
+        this.showClickedState(eventTarget);
+    }
+
+    generateBoxTitle(eventTarget) {
+        // pluralize if there is multiple records to display
+        const entityName = this.chronoMap.clickedItems.length > 1 ? eventTarget.entity.pluralize() : eventTarget.entity;
+        return `${entityName} created in ${eventTarget._parent.properties.dummyData.placeName}`;
+    }
+
 
     /**
      * Creates a label next to a map point
@@ -180,11 +206,11 @@ class Map extends AbstractChart {
         // if there is records associated with the place
         if (ids.length !== 0){
             // set the radius of the pin to to have a radius proportional to the number of records
-            pin.background.radius = Math.log(ids.length * 100);
+            pin.background.radius = Math.log(ids.length * 100)*1.5;
 
             // defining tooltip appearing when hovering a map point
             let more = ids.length >= 2 ? "\n‣  [bold]. . .[/]" : "";
-            let s = ids.length >= 2 ? "s" : "";
+            seriesName = ids.length >= 2 ? seriesName.pluralize() : seriesName;
             let title = "";
             if (typeof this.data.main[ids[0]] !== "undefined"){
                 let recordData = this.data.main[ids[0]];
@@ -192,12 +218,13 @@ class Map extends AbstractChart {
                 title = `\n‣ ${recordData.title} ${getDates(this.config.convertDate(recordData.minDate), this.config.convertDate(recordData.maxDate))}`;
             }
 
-            let tooltip = `[bold; font-size:18px]${ids.length} ${seriesName}${s}[/]${title}${more}
+            let tooltip = `[bold; font-size:18px]${ids.length} ${seriesName}[/]${title}${more}
                             Click to see more`;
             let placeName = pin.properties.dummyData.placeName;
 
-            pin.tooltipText = `[font-size:18px]${placeName}[/]
-                                               ${tooltip}`;
+            pin.label.text = ids.length;
+            pin.label.tooltipText = `[font-size:18px]${placeName}[/]
+                                                     ${tooltip}`;
 
             // if the pin is place on 0,0 (i.e. the "Unknown place" location) is visible
             if (placeName === "Unknown place"){

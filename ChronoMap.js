@@ -70,6 +70,12 @@ class ChronoMap {
         this.clickedItems = [];
 
         /**
+         * Last clicked element
+         * @type {null|object}
+         */
+        this.clickedElement = null;
+
+        /**
          * Number of items displayed on the ChronoMap, used to generate automatic ids
          * @type {number}
          */
@@ -323,10 +329,70 @@ class AbstractChart {
         this.config = this.chronoMap.config;
     }
 
+    /**
+     * Method used to instantiate the chart object
+     */
     generate(){}
+
+    /**
+     * Method used to generate one chart series
+     * @private
+     */
     _generateSeries(){}
+
+    /**
+     * Method used to generate all series of the chart
+     * @private
+     */
     _generateAllSeries(){}
+
+    /**
+     * Method to configure the chart display
+     * @private
+     */
     _generateConfig(){}
+
+
+    /**
+     * Returns the title to be displayed above the record boxes
+     * To be implemented via inheritance
+     */
+    generateBoxTitle(){}
+
+    /**
+     * Remove the highlight on the previously clicked element
+     * Remove boxes associated with it
+     * and set the event target as the clicked element
+     * @param eventTarget
+     */
+    deselectItem(eventTarget){
+        if (this.chronoMap.clickedElement !== null){
+            this.removeClickedState();
+        }
+        this.chronoMap.clickedElement = eventTarget;
+    }
+
+    showClickedState(element){
+        element.strokeWidth = 3;
+    }
+
+
+    removeClickedState(){
+        if (this.chronoMap.clickedElement !== null){
+            this.chronoMap.clickedElement.strokeWidth = 0;
+        }
+    }
+
+    /**
+     * Method called on hit on certain chart elements in order to show record boxes
+     * and add an highlight effect on the clicked element
+     */
+    hitEvent(eventTarget, idsClicked = null){
+        this.deselectItem(eventTarget);
+        this.chronoMap.idsClicked = idsClicked ? idsClicked : eventTarget.dummydata;
+        this.chronoMap.generateTable(this.generateBoxTitle(eventTarget));
+    }
+
 }
 
 /*export {ChronoMap, AbstractChart};*/
